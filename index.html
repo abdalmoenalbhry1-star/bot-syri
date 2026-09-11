@@ -5,18 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BOT SYRIA - Mini App</title>
 
-    <!-- مكتبة التلغرام الرسمية للـ Mini App -->
+    <!-- مكتبة التلغرام الرسمية -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --border-color: #38bdf8; /* لون المربع المحدد */
-            --primary-btn: #2563eb;
-            --success-btn: #16a34a;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --bg-color: #0b0c10;
+            --card-bg: #14161f;
+            --gold-primary: #f59e0b;
+            --gold-light: #fbbf24;
+            --gold-glow: rgba(245, 158, 11, 0.45);
+            --text-main: #ffffff;
+            --text-muted: #9ca3af;
             --error-color: #ef4444;
         }
 
@@ -30,33 +30,79 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 95vh;
+            min-height: 98vh;
             box-sizing: border-box;
         }
 
-        /* المربع المحدد بوضوح للكابتشا */
-        .captcha-box {
+        /* المربع الذهبي المتوهج والاحترافي */
+        .captcha-card {
             background-color: var(--card-bg);
-            border: 2px solid var(--border-color); /* إطار المربع المحدد */
-            border-radius: 20px;
-            padding: 25px 20px;
+            border: 2px solid var(--gold-primary);
+            border-radius: 24px;
+            padding: 30px 22px;
             max-width: 380px;
             width: 100%;
             text-align: center;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(56, 189, 248, 0.25);
+            box-shadow: 0 0 30px var(--gold-glow), inset 0 0 15px rgba(245, 158, 11, 0.1);
             box-sizing: border-box;
         }
 
-        .captcha-icon {
-            font-size: 45px;
-            margin-bottom: 10px;
+        /* شعار البوت المميز */
+        .logo-box {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--gold-light);
+            box-shadow: 0 0 20px var(--gold-glow);
         }
 
-        .captcha-title {
-            font-size: 22px;
-            font-weight: bold;
-            color: #f59e0b;
-            margin-bottom: 12px;
+        .logo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .bot-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--gold-light);
+            text-shadow: 0 0 12px var(--gold-glow);
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        /* شريط تقدم حالة التحقق */
+        .progress-wrapper {
+            background-color: #1f2330;
+            border-radius: 12px;
+            padding: 6px;
+            margin-bottom: 20px;
+            border: 1px solid #2d3245;
+        }
+
+        .progress-bar-bg {
+            background-color: #0b0c10;
+            height: 10px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 50%;
+            background: linear-gradient(90deg, #d97706, #fbbf24);
+            border-radius: 8px;
+            box-shadow: 0 0 12px var(--gold-glow);
+            transition: width 0.4s ease;
+        }
+
+        .progress-text {
+            font-size: 12px;
+            color: var(--gold-light);
+            margin-top: 8px;
+            font-weight: 600;
         }
 
         .captcha-desc {
@@ -66,7 +112,7 @@
             margin-bottom: 25px;
         }
 
-        /* أزرار التحقق والدخول */
+        /* الأزرار الذهبية والخضراء الاحترافية */
         .btn {
             display: flex;
             align-items: center;
@@ -85,28 +131,29 @@
         }
 
         .btn-verify {
-            background-color: var(--primary-btn);
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #000000;
+            box-shadow: 0 4px 15px var(--gold-glow);
         }
 
-        .btn-verify:active {
-            transform: scale(0.98);
+        .btn-verify:hover, .btn-verify:active {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.7);
         }
 
         .btn-enter {
-            background-color: var(--success-btn);
+            background: linear-gradient(135deg, #10b981, #059669);
             color: #ffffff;
-            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
         }
 
-        .btn-enter:active {
-            transform: scale(0.98);
+        .btn-enter:hover, .btn-enter:active {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
         }
 
-        /* رسالة التنبيه */
         .error-box {
-            background-color: rgba(239, 68, 68, 0.1);
+            background-color: rgba(239, 68, 68, 0.15);
             border: 1px solid var(--error-color);
             color: var(--error-color);
             font-size: 13px;
@@ -116,34 +163,47 @@
             display: none;
         }
 
-        /* الحاوية الرئيسية للتطبيق بعد التجاوز (جاهزة لتضيف فيها ميزاتك) */
+        /* قسم الواجهة الرئيسية بعد التجاوز */
         #main-app {
             display: none;
             width: 100%;
-            max-width: 450px;
+            max-width: 420px;
             text-align: center;
         }
 
         .app-card {
             background-color: var(--card-bg);
-            border: 1px solid #334155;
-            border-radius: 18px;
-            padding: 20px;
-            margin-top: 15px;
+            border: 2px solid var(--gold-primary);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 0 30px var(--gold-glow);
         }
     </style>
 </head>
 <body>
 
-    <!-- قسم صندوق الكابتشا المحدد -->
-    <div id="captcha-section" class="captcha-box">
-        <div class="captcha-icon">🤖</div>
-        <div class="captcha-title">تأكيد الأمان والتحقق</div>
-        <div class="captcha-desc">
-            يرجى الضغط على زر التحقق الأزرق أدناه لتأكيد أنك لست روبوت، ثم الضغط على زر دخول التطبيق.
+    <!-- قسم الكابتشا والتحقق -->
+    <div id="captcha-section" class="captcha-card">
+        <!-- شعار البوت -->
+        <div class="logo-box">
+            <img src="https://share.gemini.google/M9GXUupnKThm" alt="BOT SYRIA Logo">
         </div>
 
-        <!-- زر الكابتشا مع رابطك الربحي -->
+        <div class="bot-title">BOT SYRIA 🇸🇾</div>
+
+        <!-- شريط التقدم والحالة -->
+        <div class="progress-wrapper">
+            <div class="progress-bar-bg">
+                <div id="progress-fill" class="progress-bar-fill"></div>
+            </div>
+            <div id="progress-status" class="progress-text">الخطوة 1 من 2: مطلوب التحقق الأمني</div>
+        </div>
+
+        <div class="captcha-desc">
+            يرجى الضغط على زر التحقق الذهبي أدناه للتأكد من أنك لست روبوت، ثم اضغط على زر الدخول للبدء.
+        </div>
+
+        <!-- زر الكابتشا بالرابط الربحي -->
         <a id="captcha-link" 
            href="https://www.profitableratecpmnetwork.com/z1ixvvwn?key=aa801e058907a56eb9750c7b09487ca3" 
            target="_blank" 
@@ -157,22 +217,21 @@
             🚀 دخول إلى التطبيق
         </button>
 
-        <!-- رسالة التحذير في حال عدم الضغط -->
+        <!-- تنبيه الخطأ -->
         <div id="error-message" class="error-box">
-            ⚠️ يرجى الضغط على زر التحقق الأزرق أولاً ثم المحاولة!
+            ⚠️ يرجى الضغط على زر التحقق الذهبي أولاً ثم المحاولة!
         </div>
     </div>
 
-    <!-- قسم واجهة التطبيق الرئيسية (جاهز للإضافة والتطوير مستقبلاً) -->
+    <!-- قسم الواجهة الرئيسية المجهزة للتطوير المستقبلي -->
     <div id="main-app">
         <div class="app-card">
-            <h2>🇸🇾 مرحباً بك في BOT SYRIA</h2>
+            <h2 style="color: var(--gold-light);">🇸🇾 أهلاً بك في BOT SYRIA</h2>
             <p style="color: var(--text-muted);">تم التحقق بنجاح! هذه الواجهة جاهزة لإضافة كل الأقسام والخدمات الخاصة ببوتك.</p>
         </div>
     </div>
 
     <script>
-        // تهيئة الـ WebApp داخل التلغرام
         if (window.Telegram && window.Telegram.WebApp) {
             window.Telegram.WebApp.ready();
             window.Telegram.WebApp.expand();
@@ -180,17 +239,17 @@
 
         let isCaptchaClicked = false;
 
-        // تسجيل النقر على رابط التحقق
         function handleCaptchaClick() {
             isCaptchaClicked = true;
             document.getElementById('error-message').style.display = 'none';
+            document.getElementById('progress-fill').style.width = '100%';
+            document.getElementById('progress-status').innerText = 'تم التحقق بنجاح! اضغط على دخول الآن';
         }
 
-        // فحص الـ 24 ساعة عند فتح الصفحة
         function checkCaptchaStatus() {
             const lastSolved = localStorage.getItem('bot_syria_captcha_time');
             const now = new Date().getTime();
-            const twentyFourHours = 24 * 60 * 60 * 1000; // 24 ساعة بالمللي ثانية
+            const twentyFourHours = 24 * 60 * 60 * 1000;
 
             if (lastSolved && (now - parseInt(lastSolved)) < twentyFourHours) {
                 showMainApp();
@@ -199,10 +258,8 @@
             }
         }
 
-        // عند النقر على زر دخول التطبيق
         function handleEnterApp() {
             if (isCaptchaClicked) {
-                // حفظ توقيت الدخول لبدء الـ 24 ساعة
                 localStorage.setItem('bot_syria_captcha_time', new Date().getTime().toString());
                 showMainApp();
             } else {
@@ -220,7 +277,6 @@
             document.getElementById('main-app').style.display = 'none';
         }
 
-        // تشغيل التحقق التلقائي
         checkCaptchaStatus();
     </script>
 </body>
