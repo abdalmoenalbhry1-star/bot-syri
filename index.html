@@ -3,160 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BOT SYRIA</title>
+    <title>BOT SYRIA - Mini App</title>
 
-    <!-- ربط مكتبة التلغرام لعمل الـ Mini App -->
+    <!-- مكتبة التلغرام الرسمية للـ Mini App -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
     <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --border-color: #38bdf8; /* لون المربع المحدد */
+            --primary-btn: #2563eb;
+            --success-btn: #16a34a;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --error-color: #ef4444;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #12131C;
-            color: #FFFFFF;
-            text-align: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 90vh;
-        }
-
-        .captcha-card {
-            background-color: #1E202F;
-            border: 2px solid #2B2E42;
-            border-radius: 16px;
-            padding: 25px;
-            max-width: 350px;
-            width: 90%;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-        }
-
-        .captcha-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #FFC107;
-        }
-
-        .captcha-text {
-            font-size: 14px;
-            color: #B0B3C6;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 14px 0;
-            margin: 10px 0;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            transition: 0.2s;
-            text-decoration: none;
+            min-height: 95vh;
             box-sizing: border-box;
         }
 
-        .btn-captcha {
-            background-color: #3B82F6;
-            color: white;
+        /* المربع المحدد بوضوح للكابتشا */
+        .captcha-box {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color); /* إطار المربع المحدد */
+            border-radius: 20px;
+            padding: 25px 20px;
+            max-width: 380px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(56, 189, 248, 0.25);
+            box-sizing: border-box;
         }
 
-        .btn-captcha:hover {
-            background-color: #2563EB;
+        .captcha-icon {
+            font-size: 45px;
+            margin-bottom: 10px;
+        }
+
+        .captcha-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #f59e0b;
+            margin-bottom: 12px;
+        }
+
+        .captcha-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        /* أزرار التحقق والدخول */
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 14px 0;
+            margin: 12px 0;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .btn-verify {
+            background-color: var(--primary-btn);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-verify:active {
+            transform: scale(0.98);
         }
 
         .btn-enter {
-            background-color: #10B981;
-            color: white;
+            background-color: var(--success-btn);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
         }
 
-        .btn-enter:hover {
-            background-color: #059669;
+        .btn-enter:active {
+            transform: scale(0.98);
         }
 
-        .error-msg {
-            color: #EF4444;
+        /* رسالة التنبيه */
+        .error-box {
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--error-color);
+            color: var(--error-color);
             font-size: 13px;
-            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
             display: none;
         }
 
-        /* واجهة البوت الرئيسية */
+        /* الحاوية الرئيسية للتطبيق بعد التجاوز (جاهزة لتضيف فيها ميزاتك) */
         #main-app {
             display: none;
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        .app-card {
+            background-color: var(--card-bg);
+            border: 1px solid #334155;
+            border-radius: 18px;
+            padding: 20px;
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
 
-    <!-- قسم شاشة الكابتشا -->
-    <div id="captcha-section" class="captcha-card">
-        <div class="captcha-title">🤖 التحقق الأمني</div>
-        <div class="captcha-text">يرجى التأكد من أنك لست روبوت عبر الضغط على زر التحقق أولاً لتأكيد جليتك، ثم الضغط على دخول البوت.</div>
-        
-        <!-- زر التوجه لرابط حل الكابتشا -->
-        <a id="captcha-link" href="https://www.profitableratecpmnetwork.com/z1ixvvwn?key=aa801e058907a56eb9750c7b09487ca3
-" onclick="onCaptchaClick()">
-            ☑️ التحقق من أنك لست روبوت
+    <!-- قسم صندوق الكابتشا المحدد -->
+    <div id="captcha-section" class="captcha-box">
+        <div class="captcha-icon">🤖</div>
+        <div class="captcha-title">تأكيد الأمان والتحقق</div>
+        <div class="captcha-desc">
+            يرجى الضغط على زر التحقق الأزرق أدناه لتأكيد أنك لست روبوت، ثم الضغط على زر دخول التطبيق.
+        </div>
 
-        <!-- زر الدخول إلى البوت -->
-        <button class="btn btn-enter" onclick="verifyAndEnter()">
-            🚀 دخول إلى البوت
+        <!-- زر الكابتشا مع رابطك الربحي -->
+        <a id="captcha-link" 
+           href="https://www.profitableratecpmnetwork.com/z1ixvvwn?key=aa801e058907a56eb9750c7b09487ca3" 
+           target="_blank" 
+           class="btn btn-verify" 
+           onclick="handleCaptchaClick()">
+            ☑️ التحقق من أنك لست روبوت
+        </a>
+
+        <!-- زر الدخول -->
+        <button class="btn btn-enter" onclick="handleEnterApp()">
+            🚀 دخول إلى التطبيق
         </button>
 
-        <div id="error-message" class="error-msg">⚠️ يرجى الضغط على زر التحقق أولاً ثم المحاولة مرة أخرى!</div>
+        <!-- رسالة التحذير في حال عدم الضغط -->
+        <div id="error-message" class="error-box">
+            ⚠️ يرجى الضغط على زر التحقق الأزرق أولاً ثم المحاولة!
+        </div>
     </div>
 
-    <!-- قسم الواجهة الرئيسية للبوت (تظهر بعد الكابتشا) -->
+    <!-- قسم واجهة التطبيق الرئيسية (جاهز للإضافة والتطوير مستقبلاً) -->
     <div id="main-app">
-        <h1>🇸🇾 أهلاً بك في واجهة BOT SYRIA</h1>
-        <p>تم التحقق بنجاح! يمكنك الآن البدء بالعمل داخل الواجهة.</p>
+        <div class="app-card">
+            <h2>🇸🇾 مرحباً بك في BOT SYRIA</h2>
+            <p style="color: var(--text-muted);">تم التحقق بنجاح! هذه الواجهة جاهزة لإضافة كل الأقسام والخدمات الخاصة ببوتك.</p>
+        </div>
     </div>
 
     <script>
-        // إعلام التلغرام بأن التطبيق جاهز
+        // تهيئة الـ WebApp داخل التلغرام
         if (window.Telegram && window.Telegram.WebApp) {
             window.Telegram.WebApp.ready();
             window.Telegram.WebApp.expand();
         }
 
-        // متغير لتتبع ما إذا تم الضغط على زر الكابتشا
-        let captchaClicked = false;
+        let isCaptchaClicked = false;
 
-        // دالة يتم استدعاؤها عند الضغط على زر رابط الكابتشا
-        function onCaptchaClick() {
-            captchaClicked = true;
+        // تسجيل النقر على رابط التحقق
+        function handleCaptchaClick() {
+            isCaptchaClicked = true;
             document.getElementById('error-message').style.display = 'none';
         }
 
-        // دالة التحقق من الوقت والـ 24 ساعة عند تحميل الصفحة
-        function check24HourCaptcha() {
-            const lastSolvedTime = localStorage.getItem('last_captcha_solved_time');
-            const currentTime = new Date().getTime();
-            const twentyFourHoursMs = 24 * 60 * 60 * 1000; // 24 ساعة بالمللي ثانية
+        // فحص الـ 24 ساعة عند فتح الصفحة
+        function checkCaptchaStatus() {
+            const lastSolved = localStorage.getItem('bot_syria_captcha_time');
+            const now = new Date().getTime();
+            const twentyFourHours = 24 * 60 * 60 * 1000; // 24 ساعة بالمللي ثانية
 
-            // إذا كان قد حلها سابقاً ولم تمضِ 24 ساعة بعد
-            if (lastSolvedTime && (currentTime - lastSolvedTime < twentyFourHoursMs)) {
+            if (lastSolved && (now - parseInt(lastSolved)) < twentyFourHours) {
                 showMainApp();
             } else {
-                showCaptcha();
+                showCaptchaBox();
             }
         }
 
-        // دالة عند الضغط على زر "دخول إلى البوت"
-        function verifyAndEnter() {
-            if (captchaClicked) {
-                // حفظ الوقت الحالي في الذاكرة لتجاهل الكابتشا لمدة 24 ساعة
-                localStorage.setItem('last_captcha_solved_time', new Date().getTime());
+        // عند النقر على زر دخول التطبيق
+        function handleEnterApp() {
+            if (isCaptchaClicked) {
+                // حفظ توقيت الدخول لبدء الـ 24 ساعة
+                localStorage.setItem('bot_syria_captcha_time', new Date().getTime().toString());
                 showMainApp();
             } else {
-                // إظهار رسالة الخطأ إذا لم يضغط على الكابتشا أولاً
                 document.getElementById('error-message').style.display = 'block';
             }
         }
@@ -166,13 +215,13 @@
             document.getElementById('main-app').style.display = 'block';
         }
 
-        function showCaptcha() {
+        function showCaptchaBox() {
             document.getElementById('captcha-section').style.display = 'block';
             document.getElementById('main-app').style.display = 'none';
         }
 
-        // تشغيل التحقق عند بدء تحميل الصفحة
-        check24HourCaptcha();
+        // تشغيل التحقق التلقائي
+        checkCaptchaStatus();
     </script>
 </body>
 </html>
