@@ -17,7 +17,21 @@
             --gold-glow: rgba(245, 158, 11, 0.45);
             --text-main: #ffffff;
             --text-muted: #9ca3af;
+            --border-color: #2d3245;
+            --nav-bg: #14161f;
             --error-color: #ef4444;
+        }
+
+        body.light-theme {
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --gold-primary: #d97706;
+            --gold-light: #b45309;
+            --gold-glow: rgba(217, 119, 6, 0.2);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --nav-bg: #ffffff;
         }
 
         body {
@@ -25,16 +39,22 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 15px;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            padding-bottom: 85px; /* مساحة لشريط التنقل السفلي */
+        }
+
+        /* --- قسم الكابتشا --- */
+        .captcha-wrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 98vh;
-            box-sizing: border-box;
+            padding: 15px;
         }
 
-        /* المربع الذهبي المتوهج والاحترافي */
         .captcha-card {
             background-color: var(--card-bg);
             border: 2px solid var(--gold-primary);
@@ -43,14 +63,13 @@
             max-width: 380px;
             width: 100%;
             text-align: center;
-            box-shadow: 0 0 30px var(--gold-glow), inset 0 0 15px rgba(245, 158, 11, 0.1);
+            box-shadow: 0 0 30px var(--gold-glow);
             box-sizing: border-box;
         }
 
-        /* شعار البوت المميز */
         .logo-box {
-            width: 100px;
-            height: 100px;
+            width: 90px;
+            height: 90px;
             margin: 0 auto 15px;
             border-radius: 50%;
             overflow: hidden;
@@ -65,26 +84,24 @@
         }
 
         .bot-title {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 800;
             color: var(--gold-light);
-            text-shadow: 0 0 12px var(--gold-glow);
+            text-shadow: 0 0 10px var(--gold-glow);
             margin-bottom: 15px;
-            letter-spacing: 1px;
         }
 
-        /* شريط تقدم حالة التحقق */
         .progress-wrapper {
-            background-color: #1f2330;
+            background-color: rgba(255, 255, 255, 0.05);
             border-radius: 12px;
             padding: 6px;
             margin-bottom: 20px;
-            border: 1px solid #2d3245;
+            border: 1px solid var(--border-color);
         }
 
         .progress-bar-bg {
             background-color: #0b0c10;
-            height: 10px;
+            height: 8px;
             border-radius: 8px;
             overflow: hidden;
         }
@@ -94,62 +111,42 @@
             width: 50%;
             background: linear-gradient(90deg, #d97706, #fbbf24);
             border-radius: 8px;
-            box-shadow: 0 0 12px var(--gold-glow);
             transition: width 0.4s ease;
         }
 
         .progress-text {
             font-size: 12px;
             color: var(--gold-light);
-            margin-top: 8px;
+            margin-top: 6px;
             font-weight: 600;
         }
 
-        .captcha-desc {
-            font-size: 14px;
-            color: var(--text-muted);
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-
-        /* الأزرار الذهبية والخضراء الاحترافية */
         .btn {
             display: flex;
             align-items: center;
             justify-content: center;
             width: 100%;
             padding: 14px 0;
-            margin: 12px 0;
-            font-size: 16px;
+            margin: 10px 0;
+            font-size: 15px;
             font-weight: bold;
             border-radius: 12px;
             border: none;
             cursor: pointer;
             text-decoration: none;
-            transition: all 0.3s ease;
+            transition: 0.2s;
             box-sizing: border-box;
         }
 
         .btn-verify {
             background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: #000000;
+            color: #000;
             box-shadow: 0 4px 15px var(--gold-glow);
-        }
-
-        .btn-verify:hover, .btn-verify:active {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.7);
         }
 
         .btn-enter {
             background: linear-gradient(135deg, #10b981, #059669);
-            color: #ffffff;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-        }
-
-        .btn-enter:hover, .btn-enter:active {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+            color: #fff;
         }
 
         .error-box {
@@ -163,87 +160,425 @@
             display: none;
         }
 
-        /* قسم الواجهة الرئيسية بعد التجاوز */
+        /* --- الواجهة الرئيسية للمستخدم --- */
         #main-app {
             display: none;
-            width: 100%;
-            max-width: 420px;
-            text-align: center;
+            padding: 15px;
+            max-width: 480px;
+            margin: 0 auto;
         }
 
-        .app-card {
+        /* الهيدر العلوي: معلومات المستخدم والضبط */
+        .user-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 12px 16px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background-color: var(--gold-primary);
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .user-name {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .btn-settings {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: var(--gold-light);
+        }
+
+        /* المربعات الخمسة الكبيرة في الرئيسية */
+        .cards-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .feature-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--gold-primary);
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: 0 0 15px var(--gold-glow);
+            transition: transform 0.2s;
+        }
+
+        .feature-card:active {
+            transform: scale(0.98);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--gold-light);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* شريط التنقل السفلي (6 صفحات) */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--nav-bg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 5px;
+            z-index: 100;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 11px;
+            cursor: pointer;
+            width: 16%;
+            transition: 0.2s;
+        }
+
+        .nav-item .icon {
+            font-size: 18px;
+            margin-bottom: 3px;
+        }
+
+        .nav-item.active {
+            color: var(--gold-light);
+            font-weight: bold;
+        }
+
+        /* الصفحات المتنقلة */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* نافذة الإعدادات المنبثقة */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-card {
             background-color: var(--card-bg);
             border: 2px solid var(--gold-primary);
             border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 0 30px var(--gold-glow);
+            padding: 20px;
+            width: 100%;
+            max-width: 350px;
+            box-shadow: 0 0 25px var(--gold-glow);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--gold-light);
+            margin-bottom: 15px;
+        }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .toggle-btn {
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--gold-primary);
+            background: transparent;
+            color: var(--text-main);
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .about-box {
+            margin-top: 15px;
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            background: rgba(255,255,255,0.03);
+            padding: 10px;
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
 
-    <!-- قسم الكابتشا والتحقق -->
-    <div id="captcha-section" class="captcha-card">
-        <!-- شعار البوت -->
-        <div class="logo-box">
-            <img src="https://share.gemini.google/M9GXUupnKThm" alt="BOT SYRIA Logo">
-        </div>
-
-        <div class="bot-title">BOT SYRIA 🇸🇾</div>
-
-        <!-- شريط التقدم والحالة -->
-        <div class="progress-wrapper">
-            <div class="progress-bar-bg">
-                <div id="progress-fill" class="progress-bar-fill"></div>
+    <!-- ================= 1. قسم الكابتشا ================= -->
+    <div id="captcha-section" class="captcha-wrapper">
+        <div class="captcha-card">
+            <div class="logo-box">
+                <img src="https://share.gemini.google/M9GXUupnKThm" alt="BOT SYRIA Logo">
             </div>
-            <div id="progress-status" class="progress-text">الخطوة 1 من 2: مطلوب التحقق الأمني</div>
-        </div>
+            <div class="bot-title">BOT SYRIA 🇸🇾</div>
 
-        <div class="captcha-desc">
-            يرجى الضغط على زر التحقق الذهبي أدناه للتأكد من أنك لست روبوت، ثم اضغط على زر الدخول للبدء.
-        </div>
+            <div class="progress-wrapper">
+                <div class="progress-bar-bg">
+                    <div id="progress-fill" class="progress-bar-fill"></div>
+                </div>
+                <div id="progress-status" class="progress-text" data-ar="الخطوة 1 من 2: مطلوب التحقق الأمني" data-en="Step 1 of 2: Security Verification Required">الخطوة 1 من 2: مطلوب التحقق الأمني</div>
+            </div>
 
-        <!-- زر الكابتشا بالرابط الربحي -->
-        <a id="captcha-link" 
-           href="https://www.profitableratecpmnetwork.com/z1ixvvwn?key=aa801e058907a56eb9750c7b09487ca3" 
-           target="_blank" 
-           class="btn btn-verify" 
-           onclick="handleCaptchaClick()">
-            ☑️ التحقق من أنك لست روبوت
-        </a>
+            <p style="font-size: 13px; color: var(--text-muted);" data-ar="يرجى الضغط على زر التحقق الذهبي أولاً لتأكيد أنك لست روبوت، ثم اضغط دخول." data-en="Please click the golden verification button first to confirm you are not a robot, then click Enter.">
+                يرجى الضغط على زر التحقق الذهبي أولاً لتأكيد أنك لست روبوت، ثم اضغط دخول.
+            </p>
 
-        <!-- زر الدخول -->
-        <button class="btn btn-enter" onclick="handleEnterApp()">
-            🚀 دخول إلى التطبيق
-        </button>
+            <a id="captcha-link" 
+               href="https://www.profitableratecpmnetwork.com/z1ixvvwn?key=aa801e058907a56eb9750c7b09487ca3" 
+               target="_blank" 
+               class="btn btn-verify" 
+               onclick="handleCaptchaClick()"
+               data-ar="☑️ التحقق من أنك لست روبوت" data-en="☑️ Verify you are not a robot">
+                ☑️ التحقق من أنك لست روبوت
+            </a>
 
-        <!-- تنبيه الخطأ -->
-        <div id="error-message" class="error-box">
-            ⚠️ يرجى الضغط على زر التحقق الذهبي أولاً ثم المحاولة!
+            <button class="btn btn-enter" onclick="handleEnterApp()" data-ar="🚀 دخول إلى التطبيق" data-en="🚀 Enter Application">
+                🚀 دخول إلى التطبيق
+            </button>
+
+            <div id="error-message" class="error-box" data-ar="⚠️ يرجى الضغط على زر التحقق الذهبي أولاً ثم المحاولة!" data-en="⚠️ Please click the golden verification button first!">
+                ⚠️ يرجى الضغط على زر التحقق الذهبي أولاً ثم المحاولة!
+            </div>
         </div>
     </div>
 
-    <!-- قسم الواجهة الرئيسية المجهزة للتطوير المستقبلي -->
+    <!-- ================= 2. الواجهة الرئيسية للبوت ================= -->
     <div id="main-app">
-        <div class="app-card">
-            <h2 style="color: var(--gold-light);">🇸🇾 أهلاً بك في BOT SYRIA</h2>
-            <p style="color: var(--text-muted);">تم التحقق بنجاح! هذه الواجهة جاهزة لإضافة كل الأقسام والخدمات الخاصة ببوتك.</p>
+        
+        <!-- الهيدر العلوي -->
+        <div class="user-header">
+            <div class="user-info">
+                <div class="user-avatar" id="user-avatar">U</div>
+                <div class="user-name" id="user-name">المستخدم</div>
+            </div>
+            <button class="btn-settings" onclick="openSettings()">⚙️</button>
+        </div>
+
+        <!-- الصفحة 1: الرئيسية -->
+        <div id="tab-home" class="tab-content active">
+            <div class="cards-container">
+                
+                <!-- المربع 1 -->
+                <div class="feature-card">
+                    <div class="card-title">⚡ <span data-ar="التعدين السريع" data-en="Fast Mining">التعدين السريع</span></div>
+                    <div class="card-desc" data-ar="قم بتعدين عملة SYP بشكل يومي مستمر لزيادة رصيدك" data-en="Mine SYP coins daily and continuously to increase your balance">
+                        قم بتعدين عملة SYP بشكل يومي مستمر لزيادة رصيدك
+                    </div>
+                </div>
+
+                <!-- المربع 2 -->
+                <div class="feature-card">
+                    <div class="card-title">🎁 <span data-ar="المكافآت اليومية" data-en="Daily Rewards">المكافآت اليومية</span></div>
+                    <div class="card-desc" data-ar="ادخل يومياً للحصول على هدايا ونقاط مجانية مباشرة" data-en="Check in daily to receive free gifts and points directly">
+                        ادخل يومياً للحصول على هدايا ونقاط مجانية مباشرة
+                    </div>
+                </div>
+
+                <!-- المربع 3 -->
+                <div class="feature-card">
+                    <div class="card-title">🏆 <span data-ar="مسابقات الأسبوع" data-en="Weekly Contests">مسابقات الأسبوع</span></div>
+                    <div class="card-desc" data-ar="شارك بالمسابقات الأسبوعية لتضاعف أرباحك وتكسب جوائز" data-en="Join weekly competitions to double your profits and win prizes">
+                        شارك بالمسابقات الأسبوعية لتضاعف أرباحك وتكسب جوائز
+                    </div>
+                </div>
+
+                <!-- المربع 4 -->
+                <div class="feature-card">
+                    <div class="card-title">🥇 <span data-ar="لوحة الصدارة" data-en="Leaderboard">لوحة الصدارة</span></div>
+                    <div class="card-desc" data-ar="تنافس مع أفضل الأعضاء لتكون بالمراكز الأولى وتكسب" data-en="Compete with top members to rank high and earn">
+                        تنافس مع أفضل الأعضاء لتكون بالمراكز الأولى وتكسب
+                    </div>
+                </div>
+
+                <!-- المربع 5 -->
+                <div class="feature-card">
+                    <div class="card-title">📰 <span data-ar="أخبار المنصة" data-en="Platform News">أخبار المنصة</span></div>
+                    <div class="card-desc" data-ar="تابع أحدث التحديثات والأخبار الخاصة بعملة البوت دائماً" data-en="Stay updated with the latest news regarding bot tokens always">
+                        تابع أحدث التحديثات والأخبار الخاصة بعملة البوت دائماً
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- الصفحة 2: المهام -->
+        <div id="tab-tasks" class="tab-content">
+            <h2 data-ar="📋 قائمة المهام" data-en="📋 Task List">📋 قائمة المهام</h2>
+            <div class="feature-card">
+                <p data-ar="أنجز المهام اليومية للحصول على مكافآت SYP إضافية." data-en="Complete daily tasks to earn extra SYP rewards.">أنجز المهام اليومية للحصول على مكافآت SYP إضافية.</p>
+            </div>
+        </div>
+
+        <!-- الصفحة 3: الإحالات -->
+        <div id="tab-referrals" class="tab-content">
+            <h2 data-ar="👥 نظام الإحالات" data-en="👥 Referral System">👥 نظام الإحالات</h2>
+            <div class="feature-card">
+                <p data-ar="قم بدعوة أصدقائك واحصل على 10% من إجمالي أرباحهم." data-en="Invite your friends and get 10% of their total earnings.">قم بدعوة أصدقائك واحصل على 10% من إجمالي أرباحهم.</p>
+            </div>
+        </div>
+
+        <!-- الصفحة 4: السحب -->
+        <div id="tab-withdraw" class="tab-content">
+            <h2 data-ar="💎 قسم السحب" data-en="💎 Withdrawal Section">💎 قسم السحب</h2>
+            <div class="feature-card">
+                <p data-ar="يمكنك سحب أرباحك فور وصولك للحد الأدنى للسحب." data-en="You can withdraw your earnings once you reach the minimum threshold.">يمكنك سحب أرباحك فور وصولك للحد الأدنى للسحب.</p>
+            </div>
+        </div>
+
+        <!-- الصفحة 5: برومو -->
+        <div id="tab-promo" class="tab-content">
+            <h2 data-ar="🎁 أكواد البرومو" data-en="🎁 Promo Codes">🎁 أكواد البرومو</h2>
+            <div class="feature-card">
+                <p data-ar="أدخل أكواد الهدية المقدمة في القناة الرسمية للحصول على نقاط." data-en="Enter gift codes provided in the official channel to get points.">أدخل أكواد الهدية المقدمة في القناة الرسمية للحصول على نقاط.</p>
+            </div>
+        </div>
+
+        <!-- الصفحة 6: الدعم الفني -->
+        <div id="tab-support" class="tab-content">
+            <h2 data-ar="🎧 الدعم الفني" data-en="🎧 Technical Support">🎧 الدعم الفني</h2>
+            <div class="feature-card">
+                <p data-ar="هل تواجه مشكلة؟ تواصل مع فريق الدعم الفني المباشر عبر التلغرام." data-en="Facing issues? Contact our direct live support on Telegram.">هل تواجه مشكلة؟ تواصل مع فريق الدعم الفني المباشر عبر التلغرام.</p>
+            </div>
+        </div>
+
+        <!-- شريط التنقل السفلي -->
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="switchTab('home', this)">
+                <div class="icon">🏠</div>
+                <span data-ar="الرئيسية" data-en="Home">الرئيسية</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('tasks', this)">
+                <div class="icon">📋</div>
+                <span data-ar="المهام" data-en="Tasks">المهام</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('referrals', this)">
+                <div class="icon">👥</div>
+                <span data-ar="الإحالات" data-en="Referrals">الإحالات</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('withdraw', this)">
+                <div class="icon">💎</div>
+                <span data-ar="السحب" data-en="Withdraw">السحب</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('promo', this)">
+                <div class="icon">🎁</div>
+                <span data-ar="برومو" data-en="Promo">برومو</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('support', this)">
+                <div class="icon">🎧</div>
+                <span data-ar="الدعم" data-en="Support">الدعم</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ================= 3. نافذة الإعدادات ================= -->
+    <div id="settings-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <span data-ar="⚙️ الإعدادات" data-en="⚙️ Settings">⚙️ الإعدادات</span>
+                <span style="cursor: pointer;" onclick="closeSettings()">✕</span>
+            </div>
+
+            <!-- تبديل اللغة -->
+            <div class="setting-row">
+                <span data-ar="اللغة" data-en="Language">اللغة</span>
+                <button class="toggle-btn" onclick="toggleLanguage()" id="lang-btn">العربية / EN</button>
+            </div>
+
+            <!-- تبديل المظهر -->
+            <div class="setting-row">
+                <span data-ar="المظهر" data-en="Theme">المظهر</span>
+                <button class="toggle-btn" onclick="toggleTheme()" id="theme-btn">🌙 ليلي</button>
+            </div>
+
+            <!-- شرح عن البوت -->
+            <div class="about-box">
+                <strong style="color: var(--gold-light);" data-ar="📌 عن تطبيق BOT SYRIA:" data-en="📌 About BOT SYRIA:">📌 عن تطبيق BOT SYRIA:</strong><br>
+                <span data-ar="منصة متكاملة لتعدين عملة SYP الرقمية، جمع النقاط اليومية عبر المهام والإحالات، وسحب الأرباح بسهولة وأمان." data-en="An integrated platform for mining SYP tokens, gathering daily points via tasks and referrals, and withdrawing profits easily and safely.">
+                    منصة متكاملة لتعدين عملة SYP الرقمية، جمع النقاط اليومية عبر المهام والإحالات، وسحب الأرباح بسهولة وأمان.
+                </span>
+            </div>
         </div>
     </div>
 
     <script>
+        // التهيئة مع التلغرام
         if (window.Telegram && window.Telegram.WebApp) {
             window.Telegram.WebApp.ready();
             window.Telegram.WebApp.expand();
+            
+            // قراءة اسم المستخدم
+            const user = window.Telegram.WebApp.initDataUnsafe?.user;
+            if (user) {
+                const fullName = (user.first_name || '') + ' ' + (user.last_name || '');
+                document.getElementById('user-name').innerText = fullName.trim() || user.username || 'مستخدم SYRIA';
+                document.getElementById('user-avatar').innerText = (user.first_name || 'U')[0].toUpperCase();
+            }
         }
 
         let isCaptchaClicked = false;
+        let currentLang = 'ar';
+        let isDarkMode = true;
 
+        // الكابتشا والتحقق 24 ساعة
         function handleCaptchaClick() {
             isCaptchaClicked = true;
             document.getElementById('error-message').style.display = 'none';
             document.getElementById('progress-fill').style.width = '100%';
-            document.getElementById('progress-status').innerText = 'تم التحقق بنجاح! اضغط على دخول الآن';
+            document.getElementById('progress-status').innerText = currentLang === 'ar' ? 'تم التحقق بنجاح! اضغط دخول الآن' : 'Verified! Click enter now';
         }
 
         function checkCaptchaStatus() {
@@ -273,10 +608,58 @@
         }
 
         function showCaptchaBox() {
-            document.getElementById('captcha-section').style.display = 'block';
+            document.getElementById('captcha-section').style.display = 'flex';
             document.getElementById('main-app').style.display = 'none';
         }
 
+        // التنقل بين الصفحات الستة
+        function switchTab(tabName, el) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+
+            document.getElementById('tab-' + tabName).classList.add('active');
+            el.classList.add('active');
+        }
+
+        // نافذة الإعدادات
+        function openSettings() {
+            document.getElementById('settings-modal').style.display = 'flex';
+        }
+
+        function closeSettings() {
+            document.getElementById('settings-modal').style.display = 'none';
+        }
+
+        // تغيير اللغة (عربي / إنكليزي)
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.lang = currentLang;
+
+            const elements = document.querySelectorAll('[data-ar]');
+            elements.forEach(el => {
+                el.innerText = el.getAttribute(`data-${currentLang}`);
+            });
+
+            document.getElementById('lang-btn').innerText = currentLang === 'ar' ? 'العربية / EN' : 'English / AR';
+        }
+
+        // تغيير الوضع (ليلي / نهاري)
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            if (isDarkMode) {
+                document.body.classList.remove('light-theme');
+                document.getElementById('theme-btn').innerText = '🌙 ليلي';
+            } else {
+                document.body.classList.add('light-theme');
+                document.getElementById('theme-btn').innerText = '☀️ نهاري';
+            }
+        }
+
+        // تشغيل التحقق التلقائي عند التحميل
         checkCaptchaStatus();
     </script>
 </body>
