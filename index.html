@@ -2,224 +2,177 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BOT SYRIA - Official Mini App</title>
-    <!-- مكتبة الأيقونات و Tailwind للتحكم السريع -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOT SYRIA</title>
+
+    <!-- ربط مكتبة التلغرام لعمل الـ Mini App -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
     <style>
-        body { background-color: #0c0c0e; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow-x: hidden; }
-        .gold-gradient { background: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .gold-bg { background: linear-gradient(135deg, #bf953f, #aa771c); }
-        .gold-border { border-color: #d4af37; }
-        .glass { background: rgba(20, 20, 25, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(212, 175, 55, 0.2); }
-        /* شاشة التحميل */
-        #splash-screen { transition: opacity 0.5s ease; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #12131C;
+            color: #FFFFFF;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 90vh;
+        }
+
+        .captcha-card {
+            background-color: #1E202F;
+            border: 2px solid #2B2E42;
+            border-radius: 16px;
+            padding: 25px;
+            max-width: 350px;
+            width: 90%;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+        }
+
+        .captcha-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #FFC107;
+        }
+
+        .captcha-text {
+            font-size: 14px;
+            color: #B0B3C6;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px 0;
+            margin: 10px 0;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            box-sizing: border-box;
+        }
+
+        .btn-captcha {
+            background-color: #3B82F6;
+            color: white;
+        }
+
+        .btn-captcha:hover {
+            background-color: #2563EB;
+        }
+
+        .btn-enter {
+            background-color: #10B981;
+            color: white;
+        }
+
+        .btn-enter:hover {
+            background-color: #059669;
+        }
+
+        .error-msg {
+            color: #EF4444;
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* واجهة البوت الرئيسية */
+        #main-app {
+            display: none;
+        }
     </style>
 </head>
-<body class="pb-24">
+<body>
 
-    <!-- 1. شاشة البداية (Splash Screen) -->
-    <div id="splash-screen" class="fixed inset-0 z-50 bg-[#0c0c0e] flex flex-col items-center justify-center p-6">
-        <div class="relative w-32 h-32 mb-6 animate-pulse">
-            <div class="absolute inset-0 rounded-full bg-amber-500/20 blur-xl"></div>
-            <div class="relative w-full h-full rounded-full border-2 gold-border flex items-center justify-center bg-[#16161c] shadow-2xl">
-                <span class="text-4xl font-black gold-gradient">SYP</span>
-            </div>
-        </div>
-        <h1 class="text-2xl font-bold gold-gradient mb-2">BOT SYRIA</h1>
-        <p class="text-xs text-gray-400 mb-8">جاري تحميل المنصة الآمنة...</p>
-        <!-- شريط التقدم -->
-        <div class="w-48 h-1.5 bg-gray-800 rounded-full overflow-hidden">
-            <div id="loading-bar" class="h-full gold-bg w-0 transition-all duration-300"></div>
-        </div>
-    </div>
-
-    <!-- 2. صفحة التحقق من الروبوت (Captcha) -->
-    <div id="captcha-screen" class="hidden fixed inset-0 z-40 bg-[#0c0c0e] flex flex-col items-center justify-center p-6 text-center">
-        <div class="glass p-8 rounded-3xl max-w-sm w-full shadow-2xl">
-            <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-amber-500/10 border gold-border flex items-center justify-center text-amber-400 text-2xl">
-                <i class="fa-solid fa-shield-halved"></i>
-            </div>
-            <h2 class="text-xl font-bold mb-2">التحقق الأمني</h2>
-            <p class="text-gray-400 text-xs mb-6">يرجى تأكيد أنك لست روبوت للمتابعة إلى المنصة.</p>
-            
-            <!-- مكان الرابط أو التحقق -->
-            <div id="captcha-container" class="mb-6 p-4 bg-black/40 rounded-xl border border-gray-800 text-sm text-gray-300">
-                <!-- رابط التحقق أو زر التحقق الذي ستزودنا به -->
-                <p class="mb-3">اضغط للتحقق عبر النظام الآمن:</p>
-                <a id="custom-captcha-link" href="#" target="_blank" class="block w-full py-2.5 px-4 bg-amber-500/20 text-amber-300 rounded-lg font-bold text-xs border border-amber-500/30 hover:bg-amber-500/30 transition">
-                    <i class="fa-solid fa-external-link-alt ml-1"></i> رابط التحقق (انقر هنا)
-                </a>
-            </div>
-
-            <button onclick="passCaptcha()" class="w-full py-3 gold-bg text-black font-bold rounded-xl shadow-lg hover:opacity-90 transition">
-                تأكيد الدخول <i class="fa-solid fa-arrow-left mr-1"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- المحتوى الرئيسي (الصفحات) -->
-    <main id="app-content" class="hidden p-4 max-w-md mx-auto">
+    <!-- قسم شاشة الكابتشا -->
+    <div id="captcha-section" class="captcha-card">
+        <div class="captcha-title">🤖 التحقق الأمني</div>
+        <div class="captcha-text">يرجى التأكد من أنك لست روبوت عبر الضغط على زر التحقق أولاً لتأكيد جليتك، ثم الضغط على دخول البوت.</div>
         
-        <!-- صفحة الرئيسية (Home) -->
-        <div id="page-home" class="page-view space-y-4">
-            <div class="glass p-5 rounded-3xl text-center relative overflow-hidden">
-                <div class="absolute -right-10 -top-10 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl"></div>
-                <p class="text-xs text-gray-400 mb-1">إجمالي رصيدك الحالي</p>
-                <h2 class="text-3xl font-black gold-gradient mb-3">0.00 SYP</h2>
-                <div class="flex justify-center gap-2">
-                    <span class="px-3 py-1 bg-amber-500/10 border gold-border rounded-full text-xs text-amber-300">المستوى: 1 ⚡</span>
-                </div>
-            </div>
-            <!-- بطاقات سريعة -->
-            <div class="grid grid-cols-2 gap-3">
-                <div onclick="switchTab('tasks')" class="glass p-4 rounded-2xl cursor-pointer hover:border-amber-500/50 transition">
-                    <i class="fa-solid fa-list-check text-amber-400 text-xl mb-2"></i>
-                    <h3 class="font-bold text-sm">المهام اليومية</h3>
-                    <p class="text-[10px] text-gray-400">اكسب مكافآت فورية</p>
-                </div>
-                <div onclick="switchTab('referrals')" class="glass p-4 rounded-2xl cursor-pointer hover:border-amber-500/50 transition">
-                    <i class="fa-solid fa-users text-amber-400 text-xl mb-2"></i>
-                    <h3 class="font-bold text-sm">دعوة الأصدقاء</h3>
-                    <p class="text-[10px] text-gray-400">احصل على نسبة أرباح</p>
-                </div>
-            </div>
-        </div>
+        <!-- زر التوجه لرابط حل الكابتشا -->
+        <a id="captcha-link" href="https://www.profitableratecpmnetwork.com/z1ixvvwn?key=aa801e058907a56eb9750c7b09487ca3
+" onclick="onCaptchaClick()">
+            ☑️ التحقق من أنك لست روبوت
 
-        <!-- صفحة المهام (Tasks) -->
-        <div id="page-tasks" class="page-view hidden space-y-3">
-            <h2 class="text-lg font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-list-check text-amber-400"></i> المهام المتاحة</h2>
-            <div class="glass p-4 rounded-2xl flex items-center justify-between">
-                <div>
-                    <h4 class="font-bold text-sm">انضم لقناة التليجرام</h4>
-                    <p class="text-[10px] text-gray-400">+50 SYP</p>
-                </div>
-                <button class="px-3 py-1.5 bg-amber-500 text-black font-bold text-xs rounded-lg">تنفيذ</button>
-            </div>
-        </div>
+        <!-- زر الدخول إلى البوت -->
+        <button class="btn btn-enter" onclick="verifyAndEnter()">
+            🚀 دخول إلى البوت
+        </button>
 
-        <!-- صفحة الإحالات (Referrals) -->
-        <div id="page-referrals" class="page-view hidden space-y-3">
-            <h2 class="text-lg font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-users text-amber-400"></i> نظام الإحالات</h2>
-            <div class="glass p-5 rounded-2xl text-center space-y-3">
-                <p class="text-xs text-gray-400">رابط الدعوة الخاص بك</p>
-                <input type="text" readonly value="https://t.me/BOTSYRIA_bot?start=ref123" class="w-full bg-black/50 border border-gray-800 rounded-xl p-2 text-xs text-center text-amber-300">
-                <button class="w-full py-2.5 gold-bg text-black font-bold text-xs rounded-xl">نسخ الرابط</button>
-            </div>
-        </div>
+        <div id="error-message" class="error-msg">⚠️ يرجى الضغط على زر التحقق أولاً ثم المحاولة مرة أخرى!</div>
+    </div>
 
-        <!-- صفحة السحب (Withdraw) -->
-        <div id="page-withdraw" class="page-view hidden space-y-3">
-            <h2 class="text-lg font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-wallet text-amber-400"></i> سحب الأرباح</h2>
-            <div class="glass p-5 rounded-2xl space-y-3">
-                <div>
-                    <label class="text-xs text-gray-400 block mb-1">الكمية المراد سحبها</label>
-                    <input type="number" placeholder="0.00" class="w-full bg-black/50 border border-gray-800 rounded-xl p-3 text-sm text-white">
-                </div>
-                <div>
-                    <label class="text-xs text-gray-400 block mb-1">عنوان المحفظة</label>
-                    <input type="text" placeholder="أدخل محفظتك..." class="w-full bg-black/50 border border-gray-800 rounded-xl p-3 text-sm text-white">
-                </div>
-                <button class="w-full py-3 gold-bg text-black font-bold rounded-xl text-sm">طلب سحب</button>
-            </div>
-        </div>
-
-        <!-- صفحة الدعم الفني (Support) -->
-        <div id="page-support" class="page-view hidden space-y-3">
-            <h2 class="text-lg font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-headset text-amber-400"></i> الدعم الفني</h2>
-            <div class="glass p-5 rounded-2xl text-center space-y-3">
-                <p class="text-xs text-gray-400">تواجه مشكلة أو استفسار؟ فريق الدعم متاح لمساعدتك على مدار الساعة.</p>
-                <a href="https://t.me/abdalmoenal" target="_blank" class="inline-block px-6 py-3 bg-blue-600 text-white font-bold text-xs rounded-xl shadow-lg">تواصل مع المشرف مباشرة</a>
-            </div>
-        </div>
-
-        <!-- صفحة برومو كود (Promo Code) -->
-        <div id="page-promo" class="page-view hidden space-y-3">
-            <h2 class="text-lg font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-ticket text-amber-400"></i> برومو كود</h2>
-            <div class="glass p-5 rounded-2xl space-y-3">
-                <p class="text-xs text-gray-400">أدخل الكود الخاص لتحصل على مكافأة فورية في رصيدك.</p>
-                <input type="text" placeholder="أدخل الكود هنا..." class="w-full bg-black/50 border border-gray-800 rounded-xl p-3 text-sm text-center uppercase tracking-widest text-amber-300">
-                <button class="w-full py-3 gold-bg text-black font-bold rounded-xl text-sm">تفعيل الكود</button>
-            </div>
-        </div>
-
-    </main>
-
-    <!-- 3. شريط التنقل السفلي الاحترافي (Bottom Navigation Bar) -->
-    <nav class="fixed bottom-0 left-0 right-0 glass border-t border-gray-800/80 py-2 px-3 z-30 max-w-md mx-auto rounded-t-3xl shadow-2xl">
-        <div class="grid grid-cols-6 gap-1 text-center">
-            <button onclick="switchTab('home')" id="nav-home" class="nav-btn text-amber-400 flex flex-col items-center py-1 transition">
-                <i class="fa-solid fa-house text-base"></i>
-                <span class="text-[9px] mt-1">الرئيسية</span>
-            </button>
-            <button onclick="switchTab('tasks')" id="nav-tasks" class="nav-btn text-gray-400 flex flex-col items-center py-1 transition">
-                <i class="fa-solid fa-list-check text-base"></i>
-                <span class="text-[9px] mt-1">المهام</span>
-            </button>
-            <button onclick="switchTab('referrals')" id="nav-referrals" class="nav-btn text-gray-400 flex flex-col items-center py-1 transition">
-                <i class="fa-solid fa-users text-base"></i>
-                <span class="text-[9px] mt-1">الإحالات</span>
-            </button>
-            <button onclick="switchTab('withdraw')" id="nav-withdraw" class="nav-btn text-gray-400 flex flex-col items-center py-1 transition">
-                <i class="fa-solid fa-wallet text-base"></i>
-                <span class="text-[9px] mt-1">السحب</span>
-            </button>
-            <button onclick="switchTab('support')" id="nav-support" class="nav-btn text-gray-400 flex flex-col items-center py-1 transition">
-                <i class="fa-solid fa-headset text-base"></i>
-                <span class="text-[9px] mt-1">الدعم</span>
-            </button>
-            <button onclick="switchTab('promo')" id="nav-promo" class="nav-btn text-gray-400 flex flex-col items-center py-1 transition">
-                <i class="fa-solid fa-ticket text-base"></i>
-                <span class="text-[9px] mt-1">برومو</span>
-            </button>
-        </div>
-    </nav>
+    <!-- قسم الواجهة الرئيسية للبوت (تظهر بعد الكابتشا) -->
+    <div id="main-app">
+        <h1>🇸🇾 أهلاً بك في واجهة BOT SYRIA</h1>
+        <p>تم التحقق بنجاح! يمكنك الآن البدء بالعمل داخل الواجهة.</p>
+    </div>
 
     <script>
-        // تفعيل تليجرام ويب آبي
-        let tg = window.Telegram.WebApp;
-        tg.expand();
-
-        // محاكاة شاشة البداية والتحميل
-        window.addEventListener('load', () => {
-            let bar = document.getElementById('loading-bar');
-            bar.style.width = '100%';
-            setTimeout(() => {
-                document.getElementById('splash-screen').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('splash-screen').classList.add('hidden');
-                    // إظهار شاشة التحقق من الروبوت أولاً
-                    document.getElementById('captcha-screen').classList.remove('hidden');
-                }, 500);
-            }, 1200);
-        });
-
-        // دالة تجاوز الكابتشا والدخول للمنصة
-        function passCaptcha() {
-            document.getElementById('captcha-screen').classList.add('hidden');
-            document.getElementById('app-content').classList.remove('hidden');
+        // إعلام التلغرام بأن التطبيق جاهز
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.ready();
+            window.Telegram.WebApp.expand();
         }
 
-        // التنقل بين الأقسام عبر الشريط السفلي
-        function switchTab(tabId) {
-            // إخفاء كل الصفحات
-            document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
-            // إظهار الصفحة المختارة
-            document.getElementById('page-' + tabId).classList.remove('hidden');
-            
-            // تحديث ألوان الأزرار في الشريط
-            document.querySelectorAll('.nav-btn').forEach(b => {
-                b.classList.remove('text-amber-400');
-                b.classList.add('text-gray-400');
-            });
-            document.getElementById('nav-' + tabId).classList.remove('text-gray-400');
-            document.getElementById('nav-' + tabId).classList.add('text-amber-400');
+        // متغير لتتبع ما إذا تم الضغط على زر الكابتشا
+        let captchaClicked = false;
+
+        // دالة يتم استدعاؤها عند الضغط على زر رابط الكابتشا
+        function onCaptchaClick() {
+            captchaClicked = true;
+            document.getElementById('error-message').style.display = 'none';
         }
 
-        // إذا أردت تحديث رابط الكابتشا الخاص بك برمجياً:
-        // document.getElementById('custom-captcha-link').href = "رابطك_هنا";
+        // دالة التحقق من الوقت والـ 24 ساعة عند تحميل الصفحة
+        function check24HourCaptcha() {
+            const lastSolvedTime = localStorage.getItem('last_captcha_solved_time');
+            const currentTime = new Date().getTime();
+            const twentyFourHoursMs = 24 * 60 * 60 * 1000; // 24 ساعة بالمللي ثانية
+
+            // إذا كان قد حلها سابقاً ولم تمضِ 24 ساعة بعد
+            if (lastSolvedTime && (currentTime - lastSolvedTime < twentyFourHoursMs)) {
+                showMainApp();
+            } else {
+                showCaptcha();
+            }
+        }
+
+        // دالة عند الضغط على زر "دخول إلى البوت"
+        function verifyAndEnter() {
+            if (captchaClicked) {
+                // حفظ الوقت الحالي في الذاكرة لتجاهل الكابتشا لمدة 24 ساعة
+                localStorage.setItem('last_captcha_solved_time', new Date().getTime());
+                showMainApp();
+            } else {
+                // إظهار رسالة الخطأ إذا لم يضغط على الكابتشا أولاً
+                document.getElementById('error-message').style.display = 'block';
+            }
+        }
+
+        function showMainApp() {
+            document.getElementById('captcha-section').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+        }
+
+        function showCaptcha() {
+            document.getElementById('captcha-section').style.display = 'block';
+            document.getElementById('main-app').style.display = 'none';
+        }
+
+        // تشغيل التحقق عند بدء تحميل الصفحة
+        check24HourCaptcha();
     </script>
 </body>
 </html>
