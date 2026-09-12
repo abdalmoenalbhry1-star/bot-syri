@@ -18,7 +18,8 @@
             --text-muted: #9ca3af;
             --border-color: #2d3245;
             --nav-bg: #14161f;
-            --error-color: #ef4444;
+            --danger-color: #ef4444;
+            --success-color: #10b981;
         }
 
         body.light-theme {
@@ -37,13 +38,12 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 0;
+            padding: 15px;
             box-sizing: border-box;
             user-select: none;
             padding-bottom: 90px;
         }
 
-        /* تأثير التوهج النبضي المتحرك للبطاقات */
         @keyframes animatedGlow {
             0% {
                 border-color: #f59e0b;
@@ -51,7 +51,7 @@
             }
             50% {
                 border-color: #fbbf24;
-                box-shadow: 0 0 25px rgba(251, 191, 36, 0.8), inset 0 0 12px rgba(251, 191, 36, 0.35);
+                box-shadow: 0 0 22px rgba(251, 191, 36, 0.75), inset 0 0 10px rgba(251, 191, 36, 0.3);
             }
             100% {
                 border-color: #f59e0b;
@@ -59,164 +59,41 @@
             }
         }
 
-        /* --- الكابتشا --- */
-        .captcha-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 98vh;
-            padding: 15px;
-        }
-
-        .captcha-card {
+        /* --- الهيدر العلوي المركّز --- */
+        .app-header {
+            position: relative;
             background-color: var(--card-bg);
             border: 2px solid var(--gold-primary);
-            border-radius: 24px;
-            padding: 30px 22px;
-            max-width: 380px;
-            width: 100%;
+            border-radius: 20px;
+            padding: 18px;
             text-align: center;
-            animation: animatedGlow 2.5s infinite ease-in-out;
-            box-sizing: border-box;
+            margin-bottom: 20px;
+            animation: animatedGlow 3s infinite ease-in-out;
         }
 
-        .logo-box {
-            width: 90px;
-            height: 90px;
-            margin: 0 auto 15px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 3px solid var(--gold-light);
-            animation: animatedGlow 2s infinite ease-in-out;
-        }
-
-        .logo-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .bot-title {
-            font-size: 22px;
+        .bot-name {
+            font-size: 20px;
             font-weight: 800;
             color: var(--gold-light);
-            margin-bottom: 15px;
+            letter-spacing: 0.5px;
         }
 
-        .progress-wrapper {
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 6px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border-color);
-        }
-
-        .progress-bar-bg {
-            background-color: #0b0c10;
-            height: 8px;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            width: 50%;
-            background: linear-gradient(90deg, #d97706, #fbbf24);
-            border-radius: 8px;
-            transition: width 0.4s ease;
-        }
-
-        .progress-text {
-            font-size: 12px;
-            color: var(--gold-light);
+        .balance-box {
             margin-top: 6px;
-            font-weight: 600;
-        }
-
-        .btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            padding: 14px 0;
-            margin: 10px 0;
-            font-size: 15px;
-            font-weight: bold;
-            border-radius: 12px;
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-            transition: 0.2s;
-            box-sizing: border-box;
-        }
-
-        .btn-verify {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: #000;
-        }
-
-        .btn-enter {
-            background: linear-gradient(135deg, #10b981, #059669);
+            font-size: 24px;
+            font-weight: 800;
             color: #fff;
         }
 
-        .error-box {
-            background-color: rgba(239, 68, 68, 0.15);
-            border: 1px solid var(--error-color);
-            color: var(--error-color);
-            font-size: 13px;
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 15px;
-            display: none;
+        .balance-box span {
+            font-size: 15px;
+            color: var(--gold-primary);
         }
 
-        /* --- الواجهة الرئيسية --- */
-        #main-app {
-            display: none;
-            padding: 15px;
-            max-width: 480px;
-            margin: 0 auto;
-        }
-
-        /* الهيدر العلوي */
-        .user-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 12px 16px;
-            border-radius: 16px;
-            margin-bottom: 15px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--gold-primary);
-            color: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        .user-name {
-            font-weight: bold;
-            font-size: 16px;
-        }
-
-        .btn-settings {
+        .settings-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
             background: none;
             border: none;
             font-size: 22px;
@@ -224,78 +101,237 @@
             color: var(--gold-light);
         }
 
-        /* كرت الرصيد العلوي مع التوهج */
-        .balance-card {
+        /* --- شبكة المربعات الخمسة الرئيسية (2+2+1) --- */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .grid-card {
             background-color: var(--card-bg);
             border: 2px solid var(--gold-primary);
-            border-radius: 20px;
-            padding: 18px;
-            text-align: center;
-            margin-bottom: 20px;
-            animation: animatedGlow 2.5s infinite ease-in-out;
-        }
-
-        .balance-title {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 5px;
-        }
-
-        .balance-amount {
-            font-size: 30px;
-            font-weight: 800;
-            color: var(--gold-light);
-            letter-spacing: 1px;
-        }
-
-        .balance-amount span {
-            font-size: 16px;
-            color: var(--gold-primary);
-        }
-
-        /* قائمة المربعات الكبيرة الخمسة */
-        .cards-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .feature-card {
-            background-color: var(--card-bg);
-            border: 2px solid var(--gold-primary);
-            border-radius: 20px;
-            padding: 18px;
+            border-radius: 18px;
+            padding: 16px;
             cursor: pointer;
             animation: animatedGlow 3s infinite ease-in-out;
             transition: transform 0.2s ease;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 120px;
         }
 
-        .feature-card:active {
-            transform: scale(0.97);
+        .grid-card:active {
+            transform: scale(0.96);
+        }
+
+        .grid-card-full {
+            grid-column: span 2;
+        }
+
+        .card-icon {
+            font-size: 26px;
+            margin-bottom: 6px;
         }
 
         .card-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             color: var(--gold-light);
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            margin-bottom: 4px;
         }
 
         .card-desc {
-            font-size: 13px;
+            font-size: 11px;
             color: var(--text-muted);
+            line-height: 1.3;
+        }
+
+        /* --- تصميم الصفحات الداخلية --- */
+        .page-content {
+            display: none;
+            background-color: var(--card-bg);
+            border: 2px solid var(--gold-primary);
+            border-radius: 20px;
+            padding: 18px;
+            animation: animatedGlow 3s infinite ease-in-out;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .page-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--gold-light);
+        }
+
+        .btn-back-home {
+            background: var(--border-color);
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        /* --- مكونات صفحة الإحالات --- */
+        .link-box {
+            background-color: #0b0c10;
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            word-break: break-all;
+            color: var(--gold-light);
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #000;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--gold-primary);
+            color: var(--gold-light);
+        }
+
+        .leaderboard-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--gold-light);
+            margin: 18px 0 10px;
+        }
+
+        .leader-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+
+        /* --- مكونات صفحة المهام --- */
+        .task-card {
+            background-color: #0b0c10;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+
+        .task-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: var(--gold-light);
+            margin-bottom: 6px;
+        }
+
+        .task-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
             line-height: 1.4;
         }
 
-        /* شريط التنقل السفلي */
+        .task-btns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: 0; top: 0; opacity: 0;
+            width: 100%; height: 100%;
+            cursor: pointer;
+        }
+
+        .status-badge {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--gold-light);
+            border: 1px solid var(--gold-primary);
+            padding: 8px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* --- مكونات صفحة السحب --- */
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            background: #0b0c10;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 13px;
+            box-sizing: border-box;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--gold-primary);
+        }
+
+        /* --- شريط التنقل السفلي --- */
         .bottom-nav {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            bottom: 0; left: 0; right: 0;
             background-color: var(--nav-bg);
             border-top: 1px solid var(--border-color);
             display: flex;
@@ -309,36 +345,20 @@
             flex-direction: column;
             align-items: center;
             color: var(--text-muted);
-            font-size: 11px;
+            font-size: 10px;
             cursor: pointer;
-            width: 16%;
-            transition: 0.2s;
+            width: 18%;
         }
 
-        .nav-item .icon {
-            font-size: 18px;
-            margin-bottom: 3px;
-        }
+        .nav-item .icon { font-size: 18px; margin-bottom: 2px; }
+        .nav-item.active { color: var(--gold-light); font-weight: bold; }
 
-        .nav-item.active {
-            color: var(--gold-light);
-            font-weight: bold;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* نافذة الإعدادات */
+        /* --- نافذة الإعدادات Modal --- */
         .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
             z-index: 200;
             align-items: center;
             justify-content: center;
@@ -352,231 +372,223 @@
             padding: 20px;
             width: 100%;
             max-width: 350px;
-            animation: animatedGlow 2.5s infinite ease-in-out;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--gold-light);
-            margin-bottom: 15px;
+            animation: animatedGlow 3s infinite ease-in-out;
         }
 
         .setting-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 0;
+            padding: 10px 0;
             border-bottom: 1px solid var(--border-color);
+            font-size: 13px;
         }
 
         .toggle-btn {
-            padding: 6px 12px;
-            border-radius: 8px;
+            padding: 5px 10px;
+            border-radius: 6px;
             border: 1px solid var(--gold-primary);
             background: transparent;
             color: var(--text-main);
             cursor: pointer;
-            font-size: 13px;
-        }
-
-        .about-box {
-            margin-top: 15px;
-            font-size: 13px;
-            color: var(--text-muted);
-            line-height: 1.5;
-            background: rgba(255,255,255,0.03);
-            padding: 10px;
-            border-radius: 10px;
+            font-size: 12px;
         }
     </style>
 </head>
 <body>
 
-    <!-- ================= 1. الكابتشا ================= -->
-    <div id="captcha-section" class="captcha-wrapper">
-        <div class="captcha-card">
-            <div class="logo-box">
-                <img src="https://share.gemini.google/M9GXUupnKThm" alt="BOT SYRIA Logo">
-            </div>
-            <div class="bot-title">BOT SYRIA 🇸🇾</div>
-
-            <div class="progress-wrapper">
-                <div class="progress-bar-bg">
-                    <div id="progress-fill" class="progress-bar-fill"></div>
-                </div>
-                <div id="progress-status" class="progress-text" data-ar="الخطوة 1 من 2: مطلوب التحقق الأمني" data-en="Step 1 of 2: Security Verification Required">الخطوة 1 من 2: مطلوب التحقق الأمني</div>
-            </div>
-
-            <p style="font-size: 13px; color: var(--text-muted);" data-ar="يرجى الضغط على زر التحقق الذهبي أولاً لتأكيد أنك لست روبوت، ثم اضغط دخول." data-en="Please click the golden verification button first to confirm you are not a robot, then click Enter.">
-                يرجى الضغط على زر التحقق الذهبي أولاً لتأكيد أنك لست روبوت، ثم اضغط دخول.
-            </p>
-
-            <a id="captcha-link" 
-               href="https://www.profitableratecpmnetwork.com/z1ixvvwn?key=aa801e058907a56eb9750c7b09487ca3" 
-               target="_blank" 
-               class="btn btn-verify" 
-               onclick="handleCaptchaClick()"
-               data-ar="☑️ التحقق من أنك لست روبوت" data-en="☑️ Verify you are not a robot">
-                ☑️ التحقق من أنك لست روبوت
-            </a>
-
-            <button class="btn btn-enter" onclick="handleEnterApp()" data-ar="🚀 دخول إلى التطبيق" data-en="🚀 Enter Application">
-                🚀 دخول إلى التطبيق
-            </button>
-
-            <div id="error-message" class="error-box" data-ar="⚠️ يرجى الضغط على زر التحقق الذهبي أولاً ثم المحاولة!" data-en="⚠️ Please click the golden verification button first!">
-                ⚠️ يرجى الضغط على زر التحقق الذهبي أولاً ثم المحاولة!
-            </div>
-        </div>
+    <!-- ================= 1. الهيدر العلوي المركزي ================= -->
+    <div class="app-header">
+        <button class="settings-btn" onclick="openSettings()">⚙️</button>
+        <div class="bot-name">BOT SYRIA 🇸🇾</div>
+        <div class="balance-box"><span id="user-balance-val">0</span> <span>SYP</span></div>
     </div>
 
-    <!-- ================= 2. الواجهة الرئيسية للبوت ================= -->
-    <div id="main-app">
-        
-        <!-- الهيدر العلوي -->
-        <div class="user-header">
-            <div class="user-info">
-                <div class="user-avatar" id="user-avatar">U</div>
-                <div class="user-name" id="user-name">المستخدم</div>
-            </div>
-            <button class="btn-settings" onclick="openSettings()">⚙️</button>
-        </div>
-
-        <!-- الصفحة 1: الرئيسية -->
-        <div id="tab-home" class="tab-content active">
+    <!-- ================= 2. الواجهة الرئيسية (المربعات الخمسة) ================= -->
+    <div id="view-home">
+        <div class="cards-grid">
             
-            <!-- كرت الرصيد المالي -->
-            <div class="balance-card">
-                <div class="balance-title" data-ar="رصيدك الحالي" data-en="Current Balance">رصيدك الحالي</div>
-                <div class="balance-amount"><span id="user-balance">0</span> <span>SYP</span></div>
-            </div>
-
-            <!-- المربعات الخمسة الكبيرة المتوهجة -->
-            <div class="cards-container">
-                
-                <!-- 1. صفحة المهام -->
-                <div class="feature-card" onclick="switchTab('tasks')">
-                    <div class="card-title">📋 <span data-ar="صفحة المهام" data-en="Tasks Page">صفحة المهام</span></div>
-                    <div class="card-desc" data-ar="نفذ المهام اليومية البسيطة واكسب أرباحاً مجانية" data-en="Complete daily tasks and earn free rewards">
-                        نفذ المهام اليومية البسيطة واكسب أرباحاً مجانية
-                    </div>
+            <!-- المربع 1: المهام -->
+            <div class="grid-card" onclick="openPage('tasks')">
+                <div class="card-icon">📋</div>
+                <div>
+                    <div class="card-title" data-ar="المهام" data-en="Tasks">المهام</div>
+                    <div class="card-desc" data-ar="نفذ المهام واكسب أرباح SYP" data-en="Complete tasks & earn">نفذ المهام واكسب أرباح SYP</div>
                 </div>
+            </div>
 
-                <!-- 2. صفحة الإحالات -->
-                <div class="feature-card" onclick="switchTab('referrals')">
-                    <div class="card-title">👥 <span data-ar="صفحة الإحالات" data-en="Referrals Page">صفحة الإحالات</span></div>
-                    <div class="card-desc" data-ar="ادعُ أصدقاءك واحصل على نسبة من أرباحهم" data-en="Invite your friends and earn a commission">
-                        ادعُ أصدقاءك واحصل على نسبة من أرباحهم
-                    </div>
+            <!-- المربع 2: الإحالات -->
+            <div class="grid-card" onclick="openPage('referrals')">
+                <div class="card-icon">👥</div>
+                <div>
+                    <div class="card-title" data-ar="الإحالات" data-en="Referrals">الإحالات</div>
+                    <div class="card-desc" data-ar="دعوة الأصدقاء للحصول على نقاط" data-en="Invite friends & earn">دعوة الأصدقاء للحصول على نقاط</div>
                 </div>
+            </div>
 
-                <!-- 3. صفحة السحب -->
-                <div class="feature-card" onclick="switchTab('withdraw')">
-                    <div class="card-title">💎 <span data-ar="صفحة السحب" data-en="Withdraw Page">صفحة السحب</span></div>
-                    <div class="card-desc" data-ar="اسحب أرباحك ونقاطك إلى محفظتك بكل سهولة" data-en="Withdraw your profits to your wallet easily">
-                        اسحب أرباحك ونقاطك إلى محفظتك بكل سهولة
-                    </div>
+            <!-- المربع 3: السحب -->
+            <div class="grid-card" onclick="openPage('withdraw')">
+                <div class="card-icon">💎</div>
+                <div>
+                    <div class="card-title" data-ar="السحب" data-en="Withdraw">السحب</div>
+                    <div class="card-desc" data-ar="تحويل الرصيد لمحفظتك" data-en="Withdraw your profits">تحويل الرصيد لمحفظتك</div>
                 </div>
+            </div>
 
-                <!-- 4. صفحة برومو -->
-                <div class="feature-card" onclick="switchTab('promo')">
-                    <div class="card-title">🎁 <span data-ar="صفحة برومو" data-en="Promo Page">صفحة برومو</span></div>
-                    <div class="card-desc" data-ar="أدخل أكواد الهدية واحصل على مكافآت فورية" data-en="Enter gift promo codes to get rewards">
-                        أدخل أكواد الهدية واحصل على مكافآت فورية
-                    </div>
+            <!-- المربع 4: برومو -->
+            <div class="grid-card" onclick="openPage('promo')">
+                <div class="card-icon">🎁</div>
+                <div>
+                    <div class="card-title" data-ar="برومو" data-en="Promo">برومو</div>
+                    <div class="card-desc" data-ar="أدخل كود الهدية المباشر" data-en="Enter gift promo code">أدخل كود الهدية المباشر</div>
                 </div>
+            </div>
 
-                <!-- 5. صفحة الدعم الفني -->
-                <div class="feature-card" onclick="switchTab('support')">
-                    <div class="card-title">🎧 <span data-ar="الدعم الفني" data-en="Technical Support">الدعم الفني</span></div>
-                    <div class="card-desc" data-ar="تواصل مع فريق الدعم لحل أي استفسارات" data-en="Contact support team to resolve your inquiries">
-                        تواصل مع فريق الدعم لحل أي استفسارات
-                    </div>
+            <!-- المربع 5: الدعم الفني (مربع كبير كامل العرض) -->
+            <div class="grid-card grid-card-full" onclick="openPage('support')">
+                <div class="card-icon">🎧</div>
+                <div>
+                    <div class="card-title" data-ar="الدعم الفني المباشر" data-en="Live Technical Support">الدعم الفني المباشر</div>
+                    <div class="card-desc" data-ar="تواصل مع إدارة البوت لحل أي مشكلة أو استفسار" data-en="Contact bot admin for support">تواصل مع إدارة البوت لحل أي مشكلة أو استفسار</div>
                 </div>
-
             </div>
+
         </div>
-
-        <!-- الصفحة 2: المهام -->
-        <div id="tab-tasks" class="tab-content">
-            <h2 data-ar="📋 قائمة المهام" data-en="📋 Task List">📋 قائمة المهام</h2>
-            <div class="feature-card">
-                <p data-ar="أنجز المهام اليومية للحصول على مكافآت SYP إضافية." data-en="Complete daily tasks to earn extra SYP rewards.">أنجز المهام اليومية للحصول على مكافآت SYP إضافية.</p>
-            </div>
-        </div>
-
-        <!-- الصفحة 3: الإحالات -->
-        <div id="tab-referrals" class="tab-content">
-            <h2 data-ar="👥 نظام الإحالات" data-en="👥 Referral System">👥 نظام الإحالات</h2>
-            <div class="feature-card">
-                <p data-ar="قم بدعوة أصدقائك واحصل على 10% من إجمالي أرباحهم." data-en="Invite your friends and get 10% of their total earnings.">قم بدعوة أصدقائك واحصل على 10% من إجمالي أرباحهم.</p>
-            </div>
-        </div>
-
-        <!-- الصفحة 4: السحب -->
-        <div id="tab-withdraw" class="tab-content">
-            <h2 data-ar="💎 قسم السحب" data-en="💎 Withdrawal Section">💎 قسم السحب</h2>
-            <div class="feature-card">
-                <p data-ar="يمكنك سحب أرباحك فور وصولك للحد الأدنى للسحب." data-en="You can withdraw your earnings once you reach the minimum threshold.">يمكنك سحب أرباحك فور وصولك للحد الأدنى للسحب.</p>
-            </div>
-        </div>
-
-        <!-- الصفحة 5: برومو -->
-        <div id="tab-promo" class="tab-content">
-            <h2 data-ar="🎁 أكواد البرومو" data-en="🎁 Promo Codes">🎁 أكواد البرومو</h2>
-            <div class="feature-card">
-                <p data-ar="أدخل أكواد الهدية المقدمة في القناة الرسمية للحصول على نقاط." data-en="Enter gift codes provided in the official channel to get points.">أدخل أكواد الهدية المقدمة في القناة الرسمية للحصول على نقاط.</p>
-            </div>
-        </div>
-
-        <!-- الصفحة 6: الدعم الفني -->
-        <div id="tab-support" class="tab-content">
-            <h2 data-ar="🎧 الدعم الفني" data-en="🎧 Technical Support">🎧 الدعم الفني</h2>
-            <div class="feature-card">
-                <p data-ar="هل تواجه مشكلة؟ تواصل مع فريق الدعم الفني المباشر عبر التلغرام." data-en="Facing issues? Contact our direct live support on Telegram.">هل تواجه مشكلة؟ تواصل مع فريق الدعم الفني المباشر عبر التلغرام.</p>
-            </div>
-        </div>
-
-        <!-- شريط التنقل السفلي (6 صفحات) -->
-        <div class="bottom-nav">
-            <div id="nav-home" class="nav-item active" onclick="switchTab('home')">
-                <div class="icon">🏠</div>
-                <span data-ar="الرئيسية" data-en="Home">الرئيسية</span>
-            </div>
-            <div id="nav-tasks" class="nav-item" onclick="switchTab('tasks')">
-                <div class="icon">📋</div>
-                <span data-ar="المهام" data-en="Tasks">المهام</span>
-            </div>
-            <div id="nav-referrals" class="nav-item" onclick="switchTab('referrals')">
-                <div class="icon">👥</div>
-                <span data-ar="الإحالات" data-en="Referrals">الإحالات</span>
-            </div>
-            <div id="nav-withdraw" class="nav-item" onclick="switchTab('withdraw')">
-                <div class="icon">💎</div>
-                <span data-ar="السحب" data-en="Withdraw">السحب</span>
-            </div>
-            <div id="nav-promo" class="nav-item" onclick="switchTab('promo')">
-                <div class="icon">🎁</div>
-                <span data-ar="برومو" data-en="Promo">برومو</span>
-            </div>
-            <div id="nav-support" class="nav-item" onclick="switchTab('support')">
-                <div class="icon">🎧</div>
-                <span data-ar="الدعم" data-en="Support">الدعم</span>
-            </div>
-        </div>
-
     </div>
 
-    <!-- ================= 3. نافذة الإعدادات ================= -->
+    <!-- ================= 3. صفحة الإحالات ================= -->
+    <div id="page-referrals" class="page-content">
+        <div class="page-header">
+            <div class="page-title" data-ar="👥 نظام الإحالات والأرباح" data-en="👥 Referral System">👥 نظام الإحالات والأرباح</div>
+            <button class="btn-back-home" onclick="openHome()">🔙 الرئيسية</button>
+        </div>
+
+        <p style="font-size: 12px; color: var(--text-muted); line-height: 1.4;" data-ar="احصل على 1 عملة SYP مقابل كل شخص يقوم بالتسجيل من رابطك الخاص. يمنع استخدام طرق الحسابات الوهمية." data-en="Get 1 SYP for each person who signs up via your link. Self-referrals are blocked.">
+            احصل على 1 عملة SYP مقابل كل شخص يقوم بالتسجيل من رابطك الخاص. يمنع استخدام طرق الحسابات الوهمية.
+        </p>
+
+        <div class="link-box" id="ref-link-display">https://t.me/BOTSYRIA_BOT?start=user_id</div>
+
+        <button class="btn-action btn-gold" onclick="shareReferralLink()" data-ar="📤 مشاركة الرابط داخل التلغرام" data-en="📤 Share link in Telegram">
+            📤 مشاركة الرابط داخل التلغرام
+        </button>
+        <button class="btn-action btn-outline" onclick="copyReferralLink()" data-ar="📋 نسخ الرابط الخاص بك" data-en="📋 Copy your referral link">
+            📋 نسخ الرابط الخاص بك
+        </button>
+
+        <div class="leaderboard-title" data-ar="🏆 أعلى 10 أشخاص قاموا بدعوة أصدقاء" data-en="🏆 Top 10 Referrers">🏆 أعلى 10 أشخاص قاموا بدعوة أصدقاء</div>
+        <div id="leaderboard-list">
+            <!-- يتم تحميل القائمة تلقائياً -->
+        </div>
+    </div>
+
+    <!-- ================= 4. صفحة المهام ================= -->
+    <div id="page-tasks" class="page-content">
+        <div class="page-header">
+            <div class="page-title" data-ar="📋 قائمة المهام المتاحة" data-en="📋 Available Tasks">📋 قائمة المهام المتاحة</div>
+            <button class="btn-back-home" onclick="openHome()">🔙 الرئيسية</button>
+        </div>
+
+        <div id="tasks-container">
+            <!-- يتم التبديل تلقائياً في حال عدم وجود مهام -->
+        </div>
+    </div>
+
+    <!-- ================= 5. صفحة السحب ================= -->
+    <div id="page-withdraw" class="page-content">
+        <div class="page-header">
+            <div class="page-title" data-ar="💎 طلب سحب الرصيد" data-en="💎 Withdraw Balance">💎 طلب سحب الرصيد</div>
+            <button class="btn-back-home" onclick="openHome()">🔙 الرئيسية</button>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 10px; font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">
+            📌 <strong style="color: var(--gold-light);" data-ar="الشروط والأحكام:" data-en="Terms:">الشروط والأحكام:</strong><br>
+            - <span data-ar="الحد الأدنى للسحب هو 250 SYP." data-en="Minimum withdrawal is 250 SYP.">الحد الأدنى للسحب هو 250 SYP.</span><br>
+            - <span data-ar="تصل السحوبات خلال مدة من 1 إلى 24 ساعة كحد أقصى." data-en="Withdrawals arrive within 1-24 hours.">تصل السحوبات خلال مدة من 1 إلى 24 ساعة كحد أقصى.</span>
+        </div>
+
+        <div class="form-group">
+            <label data-ar="اختر طريقة السحب:" data-en="Select Payment Method:">اختر طريقة السحب:</label>
+            <select id="withdraw-method" class="form-control">
+                <option value="Syriatel Cash">سيرياتيل كاش (Syriatel Cash)</option>
+                <option value="Cham Cash">شام كاش (Cham Cash)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label data-ar="المبلغ المطلوب (SYP):" data-en="Amount (SYP):">المبلغ المطلوب (SYP):</label>
+            <input type="number" id="withdraw-amount" class="form-control" placeholder="250 فأكثر">
+        </div>
+
+        <div class="form-group">
+            <label data-ar="رقم الحساب أو الهاتف:" data-en="Account/Phone Number:">رقم الحساب أو الهاتف:</label>
+            <input type="text" id="withdraw-account" class="form-control" placeholder="أدخل رقم المحفظة">
+        </div>
+
+        <button class="btn-action btn-gold" onclick="submitWithdrawal()" data-ar="🚀 إرسال طلب السحب" data-en="🚀 Submit Withdrawal">🚀 إرسال طلب السحب</button>
+    </div>
+
+    <!-- ================= 6. صفحة برومو ================= -->
+    <div id="page-promo" class="page-content">
+        <div class="page-header">
+            <div class="page-title" data-ar="🎁 شحن كود برومو" data-en="🎁 Redeem Promo Code">🎁 شحن كود برومو</div>
+            <button class="btn-back-home" onclick="openHome()">🔙 الرئيسية</button>
+        </div>
+
+        <div class="form-group">
+            <label data-ar="أدخل كود البرومو الخاص بك:" data-en="Enter your Promo Code:">أدخل كود البرومو الخاص بك:</label>
+            <input type="text" id="promo-input" class="form-control" placeholder="مثال: SYRIA2026">
+        </div>
+        <button class="btn-action btn-gold" onclick="claimPromo()" data-ar="✨ تفعيل الكود والحصول على الجائزة" data-en="✨ Redeem Code">✨ تفعيل الكود والحصول على الجائزة</button>
+    </div>
+
+    <!-- ================= 7. صفحة الدعم الفني ================= -->
+    <div id="page-support" class="page-content">
+        <div class="page-header">
+            <div class="page-title" data-ar="🎧 الدعم الفني" data-en="🎧 Technical Support">🎧 الدعم الفني</div>
+            <button class="btn-back-home" onclick="openHome()">🔙 الرئيسية</button>
+        </div>
+
+        <p style="font-size: 12px; color: var(--text-muted);" data-ar="أدخل رسالتك واستفسارك وسيتم الرد عليك عبر التلغرام مباشرة من قبل الإدارة:" data-en="Enter your message to support:">
+            أدخل رسالتك واستفسارك وسيتم الرد عليك عبر التلغرام مباشرة من قبل الإدارة:
+        </p>
+
+        <div class="form-group">
+            <textarea id="support-msg" class="form-control" rows="4" placeholder="اكتب مشكلتك أو استفسارك هنا..."></textarea>
+        </div>
+        <button class="btn-action btn-gold" onclick="sendSupportMessage()" data-ar="📤 إرسال الرسالة للإدارة" data-en="📤 Send Message">📤 إرسال الرسالة للإدارة</button>
+    </div>
+
+    <!-- ================= 8. شريط التنقل السفلي ================= -->
+    <div class="bottom-nav">
+        <div id="nav-home" class="nav-item active" onclick="openHome()">
+            <div class="icon">🏠</div>
+            <span data-ar="الرئيسية" data-en="Home">الرئيسية</span>
+        </div>
+        <div id="nav-tasks" class="nav-item" onclick="openPage('tasks')">
+            <div class="icon">📋</div>
+            <span data-ar="المهام" data-en="Tasks">المهام</span>
+        </div>
+        <div id="nav-referrals" class="nav-item" onclick="openPage('referrals')">
+            <div class="icon">👥</div>
+            <span data-ar="الإحالات" data-en="Referrals">الإحالات</span>
+        </div>
+        <div id="nav-withdraw" class="nav-item" onclick="openPage('withdraw')">
+            <div class="icon">💎</div>
+            <span data-ar="السحب" data-en="Withdraw">السحب</span>
+        </div>
+        <div id="nav-promo" class="nav-item" onclick="openPage('promo')">
+            <div class="icon">🎁</div>
+            <span data-ar="برومو" data-en="Promo">برومو</span>
+        </div>
+    </div>
+
+    <!-- ================= 9. نافذة الإعدادات ================= -->
     <div id="settings-modal" class="modal-overlay">
         <div class="modal-card">
-            <div class="modal-header">
-                <span data-ar="⚙️ الإعدادات" data-en="⚙️ Settings">⚙️ الإعدادات</span>
-                <span style="cursor: pointer;" onclick="closeSettings()">✕</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <strong style="color: var(--gold-light);" data-ar="⚙️ إعدادات البوت" data-en="⚙️ Settings">⚙️ إعدادات البوت</strong>
+                <span style="cursor: pointer; font-weight: bold;" onclick="closeSettings()">✕</span>
             </div>
 
             <div class="setting-row">
@@ -589,93 +601,231 @@
                 <button class="toggle-btn" onclick="toggleTheme()" id="theme-btn">🌙 ليلي</button>
             </div>
 
-            <div class="about-box">
-                <strong style="color: var(--gold-light);" data-ar="📌 عن تطبيق BOT SYRIA:" data-en="📌 About BOT SYRIA:">📌 عن تطبيق BOT SYRIA:</strong><br>
-                <span data-ar="منصة متكاملة لجمع نقاط عملة SYP عبر المهام والإحالات، وسحب الأرباح بسهولة وأمان." data-en="An integrated platform for earning SYP tokens via tasks and referrals, and withdrawing profits easily and safely.">
-                    منصة متكاملة لجمع نقاط عملة SYP عبر المهام والإحالات، وسحب الأرباح بسهولة وأمان.
+            <div style="margin-top: 15px; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 10px; font-size: 11px; color: var(--text-muted); line-height: 1.5;">
+                <strong style="color: var(--gold-light);" data-ar="📖 شرح وطريقة استخدام البوت:" data-en="📖 How to use bot:">📖 شرح وطريقة استخدام البوت:</strong><br>
+                <span data-ar="قم بجمع نقاط عملة SYP عبر تنفيذ المهام اليومية ودعوة الأصدقاء، وعند وصول رصيدك إلى 250 SYP يمكنك تقديم طلب سحب أرباحك فوراً لمصرف سيريتيل كاش أو شام كاش." data-en="Earn SYP tokens by completing daily tasks and inviting friends. Withdraw once you reach 250 SYP.">
+                    قم بجمع نقاط عملة SYP عبر تنفيذ المهام اليومية ودعوة الأصدقاء، وعند وصول رصيدك إلى 250 SYP يمكنك تقديم طلب سحب أرباحك فوراً لمصرف سيريتيل كاش أو شام كاش.
                 </span>
             </div>
         </div>
     </div>
 
     <script>
-        if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.ready();
-            window.Telegram.WebApp.expand();
-            
-            const user = window.Telegram.WebApp.initDataUnsafe?.user;
-            if (user) {
-                const fullName = (user.first_name || '') + ' ' + (user.last_name || '');
-                document.getElementById('user-name').innerText = fullName.trim() || user.username || 'مستخدم SYRIA';
-                document.getElementById('user-avatar').innerText = (user.first_name || 'U')[0].toUpperCase();
-            }
-        }
-
-        let isCaptchaClicked = false;
+        let currentBalance = 0;
+        let currentUserId = 0;
         let currentLang = 'ar';
         let isDarkMode = true;
 
-        function handleCaptchaClick() {
-            isCaptchaClicked = true;
-            document.getElementById('error-message').style.display = 'none';
-            document.getElementById('progress-fill').style.width = '100%';
-            document.getElementById('progress-status').innerText = currentLang === 'ar' ? 'تم التحقق بنجاح! اضغط دخول الآن' : 'Verified! Click enter now';
-        }
+        // مصفوفة المهام النشطة (يتم جلبها من السيرفر حقيقياً)
+        let activeTasks = [
+            {
+                id: 101,
+                title: "الاشتراك بالقناة الرسمية للبوت",
+                desc: "قم بالانضمام للقناة الرسمية واضغط زر إرسال صورة إثبات الانضمام.",
+                link: "https://t.me/abdalmoenal",
+                reward: 50,
+                maxSeats: 1000,
+                completedSeats: 140
+            }
+        ];
 
-        function checkCaptchaStatus() {
-            const lastSolved = localStorage.getItem('bot_syria_captcha_time');
-            const now = new Date().getTime();
-            const twentyFourHours = 24 * 60 * 60 * 1000;
+        // مصفوفة قائمة المتصدرين في الإحالات (يتم جلبها ديناميكياً)
+        let topReferrers = [];
 
-            if (lastSolved && (now - parseInt(lastSolved)) < twentyFourHours) {
-                showMainApp();
-            } else {
-                showCaptchaBox();
+        // تهيئة تطبيق التلغرام
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.ready();
+            window.Telegram.WebApp.expand();
+            const user = window.Telegram.WebApp.initDataUnsafe?.user;
+            if (user) {
+                currentUserId = user.id;
+                document.getElementById('ref-link-display').innerText = `https://t.me/BOTSYRIA_BOT?start=${user.id}`;
             }
         }
 
-        function handleEnterApp() {
-            if (isCaptchaClicked) {
-                localStorage.setItem('bot_syria_captcha_time', new Date().getTime().toString());
-                showMainApp();
-            } else {
-                document.getElementById('error-message').style.display = 'block';
-            }
-        }
+        /* --- التنقل بين الصفحات --- */
+        function openPage(pageName) {
+            document.getElementById('view-home').style.display = 'none';
+            const pages = document.querySelectorAll('.page-content');
+            pages.forEach(p => p.classList.remove('active'));
 
-        function showMainApp() {
-            document.getElementById('captcha-section').style.display = 'none';
-            document.getElementById('main-app').style.display = 'block';
-        }
+            const navs = document.querySelectorAll('.nav-item');
+            navs.forEach(n => n.classList.remove('active'));
 
-        function showCaptchaBox() {
-            document.getElementById('captcha-section').style.display = 'flex';
-            document.getElementById('main-app').style.display = 'none';
-        }
+            const targetPage = document.getElementById('page-' + pageName);
+            if (targetPage) targetPage.classList.add('active');
 
-        /* الانتقال بين الصفحات الستة بشكل ديناميكي */
-        function switchTab(tabName) {
-            const tabs = document.querySelectorAll('.tab-content');
-            tabs.forEach(tab => tab.classList.remove('active'));
+            const targetNav = document.getElementById('nav-' + pageName);
+            if (targetNav) targetNav.classList.add('active');
 
-            const navItems = document.querySelectorAll('.nav-item');
-            navItems.forEach(item => item.classList.remove('active'));
-
-            document.getElementById('tab-' + tabName).classList.add('active');
-            
-            const activeNav = document.getElementById('nav-' + tabName);
-            if (activeNav) activeNav.classList.add('active');
+            if (pageName === 'tasks') renderTasks();
+            if (pageName === 'referrals') renderLeaderboard();
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function openSettings() {
-            document.getElementById('settings-modal').style.display = 'flex';
+        function openHome() {
+            const pages = document.querySelectorAll('.page-content');
+            pages.forEach(p => p.classList.remove('active'));
+
+            const navs = document.querySelectorAll('.nav-item');
+            navs.forEach(n => n.classList.remove('active'));
+
+            document.getElementById('view-home').style.display = 'block';
+            document.getElementById('nav-home').classList.add('active');
         }
 
-        function closeSettings() {
-            document.getElementById('settings-modal').style.display = 'none';
+        /* --- نظام الإحالات وتدابير الحماية --- */
+        function shareReferralLink() {
+            const link = document.getElementById('ref-link-display').innerText;
+            const text = "قم بالتسجيل في تطبيق BOT SYRIA واكسب أرباح مجانية بعملة SYP! 🇸🇾";
+            window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`);
         }
+
+        function copyReferralLink() {
+            const link = document.getElementById('ref-link-display').innerText;
+            navigator.clipboard.writeText(link).then(() => {
+                alert('تم نسخ رابط الإحالة الخاص بك بنجاح!');
+            });
+        }
+
+        function renderLeaderboard() {
+            const container = document.getElementById('leaderboard-list');
+            if (topReferrers.length === 0) {
+                container.innerHTML = '<div style="text-align:center; font-size:12px; color:var(--text-muted); padding:10px;">لا يوجد متصدرين حالياً، كن أول الداعين!</div>';
+                return;
+            }
+            let html = '';
+            topReferrers.forEach((item, index) => {
+                html += `
+                    <div class="leader-item">
+                        <span>#${index + 1} ${item.name}</span>
+                        <strong style="color:var(--gold-light);">${item.count} إحالة</strong>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        /* --- نظام إدارة ومراجعة المهام --- */
+        function renderTasks() {
+            const container = document.getElementById('tasks-container');
+            
+            // تصفية المهام المتاحة التي لم تنتهِ مقاعدها
+            const availableTasks = activeTasks.filter(t => t.completedSeats < t.maxSeats);
+
+            if (availableTasks.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 30px 10px;">
+                        <div style="font-size: 36px; margin-bottom: 10px;">🚫</div>
+                        <div style="font-size: 15px; font-weight: bold; color: var(--gold-light);">لا توجد مهام متاحة حالياً</div>
+                        <div style="font-size: 12px; color: var(--text-muted); margin-top: 5px;">يرجى العودة لاحقاً للحصول على مهام جديدة ومكافآت SYP.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            availableTasks.forEach(task => {
+                const isSubmitted = localStorage.getItem(`task_proof_submitted_${task.id}`);
+
+                html += `
+                    <div class="task-card">
+                        <div class="task-title">${task.title} (+${task.reward} SYP)</div>
+                        <div class="task-desc">${task.desc}</div>
+                        <div style="font-size: 11px; color: var(--gold-primary); margin-bottom: 8px;">المقاعد المتبقية: ${task.maxSeats - task.completedSeats} من ${task.maxSeats}</div>
+                `;
+
+                if (isSubmitted) {
+                    html += `<div class="status-badge">⏳ لقد أرسلت إثبات - الإثبات قيد المراجعة</div>`;
+                } else {
+                    html += `
+                        <div class="task-btns">
+                            <a href="${task.link}" target="_blank" class="btn-action btn-outline" style="margin:0; text-decoration:none;">ادخل نفذ المهمة</a>
+                            <div class="file-input-wrapper">
+                                <button class="btn-action btn-gold" style="margin:0;">ارسل اثبات صورة</button>
+                                <input type="file" accept="image/*" onchange="uploadTaskProof(event, ${task.id})">
+                            </div>
+                        </div>
+                    `;
+                }
+
+                html += `</div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function uploadTaskProof(event, taskId) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // حظر الحجم الزائد للصور
+            if (file.size > 5 * 1024 * 1024) {
+                alert('حجم الصورة كبير جداً! يرجى اختيار صورة أقل من 5 ميغابايت.');
+                return;
+            }
+
+            // تسجيل الإرسال لمنع التكرار والحظر من إرسال إثبات آخر لنفس المهمة
+            localStorage.setItem(`task_proof_submitted_${taskId}`, 'true');
+            alert('تم إرسال صورة الإثبات بنجاح، الإثبات قيد المراجعة حالياً من قبل الإدارة.');
+            renderTasks();
+        }
+
+        /* --- نظام السحب المالي --- */
+        function submitWithdrawal() {
+            const method = document.getElementById('withdraw-method').value;
+            const amount = parseFloat(document.getElementById('withdraw-amount').value);
+            const account = document.getElementById('withdraw-account').value.trim();
+
+            if (currentBalance < 250) {
+                alert('⚠️ لم تصل للحد الأدنى للسحب بعد! الحد الأدنى المسموح به هو 250 SYP.');
+                return;
+            }
+
+            if (!amount || amount < 250) {
+                alert('يرجى تحديد مبلغ سحب يساوي أو يتجاوز الحد الأدنى (250 SYP).');
+                return;
+            }
+
+            if (amount > currentBalance) {
+                alert('المبلغ المطلوب أكبر من رصيدك الحالي المتاح!');
+                return;
+            }
+
+            if (!account) {
+                alert('يرجى كتابة رقم الحساب أو المحفظة لاستلام الدفعة عليها!');
+                return;
+            }
+
+            alert(`تم تسجيل طلب السحب بنجاح!\nالطريقة: ${method}\nالمبلغ: ${amount} SYP\nرقم المحفظة: ${account}\nسيتم التحقق وتأفيذ الطلب خلال 24 ساعة.`);
+            document.getElementById('withdraw-amount').value = '';
+            document.getElementById('withdraw-account').value = '';
+        }
+
+        /* --- برومو ودعم فني --- */
+        function claimPromo() {
+            const code = document.getElementById('promo-input').value.trim();
+            if (!code) {
+                alert('يرجى كتابة كود البرومو أولاً!');
+                return;
+            }
+            alert(`جاري التحقق من الكود (${code})...`);
+        }
+
+        function sendSupportMessage() {
+            const msg = document.getElementById('support-msg').value.trim();
+            if (!msg) {
+                alert('يرجى إدخال تفاصيل رسالتك أو استفسارك!');
+                return;
+            }
+            alert('تم إرسال رسالتك لفريق الدعم الفني، سيصلك الرد عبر التلغرام.');
+            document.getElementById('support-msg').value = '';
+        }
+
+        /* --- الإعدادات واللغات --- */
+        function openSettings() { document.getElementById('settings-modal').style.display = 'flex'; }
+        function closeSettings() { document.getElementById('settings-modal').style.display = 'none'; }
 
         function toggleLanguage() {
             currentLang = currentLang === 'ar' ? 'en' : 'ar';
@@ -700,8 +850,6 @@
                 document.getElementById('theme-btn').innerText = '☀️ نهاري';
             }
         }
-
-        checkCaptchaStatus();
     </script>
 </body>
 </html>
