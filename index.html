@@ -15,30 +15,32 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-dark: #08080a;
-            --card-bg: rgba(20, 22, 28, 0.75);
+            --bg-dark: #060709;
+            --card-bg: rgba(18, 20, 26, 0.82);
             --gold-primary: #ffb700;
             --gold-secondary: #d4af37;
-            --gold-glow: rgba(255, 183, 0, 0.35);
-            --text-main: #f5f5f7;
-            --text-muted: #a0a0ab;
+            --gold-light: #fff0a8;
+            --gold-glow: rgba(255, 183, 0, 0.45);
+            --gold-glow-intense: rgba(255, 183, 0, 0.75);
+            --text-main: #f8f9fa;
+            --text-muted: #9aa0a6;
             --danger: #ff4757;
             --success: #2ed573;
-            --radius-lg: 20px;
-            --radius-md: 14px;
+            --radius-lg: 22px;
+            --radius-md: 16px;
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         [data-theme="light"] {
             --bg-dark: #f0f2f5;
-            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-bg: rgba(255, 255, 255, 0.90);
             --gold-primary: #d4af37;
             --gold-secondary: #b8860b;
-            --gold-glow: rgba(212, 175, 55, 0.2);
+            --gold-glow: rgba(212, 175, 55, 0.25);
             --text-main: #1c1e21;
             --text-muted: #606770;
         }
@@ -61,7 +63,7 @@
             padding-bottom: 30px;
         }
 
-        /* --- Luxury Dynamic Background --- */
+        /* --- Dark Gold Luxury Dynamic Background --- */
         .bg-canvas {
             position: fixed;
             top: 0;
@@ -77,31 +79,37 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            background-image: radial-gradient(var(--gold-glow) 1px, transparent 0);
-            background-size: 24px 24px;
-            opacity: 0.25;
+            background-image: radial-gradient(var(--gold-glow) 1.2px, transparent 0);
+            background-size: 22px 22px;
+            opacity: 0.3;
         }
 
         .candlestick-chart {
             position: absolute;
             bottom: 0;
-            right: -20px;
-            width: 250px;
-            height: 300px;
-            opacity: 0.12;
-            background: linear-gradient(0deg, var(--gold-primary) 0%, transparent 80%);
-            clip-path: polygon(10% 100%, 20% 80%, 30% 90%, 40% 60%, 50% 70%, 60% 40%, 70% 50%, 80% 20%, 90% 30%, 100% 10%, 100% 100%);
+            right: -10px;
+            width: 280px;
+            height: 320px;
+            opacity: 0.15;
+            background: linear-gradient(0deg, var(--gold-primary) 0%, transparent 85%);
+            clip-path: polygon(5% 100%, 15% 75%, 25% 85%, 35% 55%, 45% 65%, 55% 35%, 65% 45%, 75% 15%, 85% 25%, 100% 5%, 100% 100%);
         }
 
         .light-beam {
             position: absolute;
-            top: -150px;
+            top: -180px;
             left: 50%;
             transform: translateX(-50%);
-            width: 350px;
-            height: 350px;
-            background: radial-gradient(circle, var(--gold-glow) 0%, transparent 70%);
-            filter: blur(50px);
+            width: 420px;
+            height: 420px;
+            background: radial-gradient(circle, var(--gold-glow-intense) 0%, transparent 70%);
+            filter: blur(60px);
+            animation: pulseGlow 4s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0% { opacity: 0.5; transform: translateX(-50%) scale(0.9); }
+            100% { opacity: 0.9; transform: translateX(-50%) scale(1.1); }
         }
 
         /* --- Layout Container --- */
@@ -116,66 +124,70 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0 20px 0;
+            padding: 8px 0 18px 0;
         }
 
         .brand-title {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .brand-logo {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
             background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 900;
             color: #000;
-            font-size: 1.2rem;
-            box-shadow: 0 0 15px var(--gold-glow);
+            font-size: 1.1rem;
+            box-shadow: 0 0 20px var(--gold-glow);
+            border: 1px solid var(--gold-light);
+            letter-spacing: 0.5px;
         }
 
         .brand-name {
-            font-size: 1.3rem;
+            font-size: 1.35rem;
             font-weight: 900;
             letter-spacing: 1px;
-            background: linear-gradient(135deg, #fff 30%, var(--gold-primary));
+            background: linear-gradient(135deg, #ffffff 30%, var(--gold-primary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(255, 183, 0, 0.2);
         }
 
         .btn-icon {
             background: var(--card-bg);
-            border: 1px solid rgba(255, 183, 0, 0.2);
+            border: 1px solid rgba(255, 183, 0, 0.3);
             color: var(--text-main);
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             backdrop-filter: blur(10px);
             transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         .btn-icon:active {
             transform: scale(0.92);
         }
 
-        /* --- Profile & Balance Card --- */
+        /* --- User Card & Balance --- */
         .user-card {
             background: var(--card-bg);
-            border: 1px solid rgba(255, 183, 0, 0.25);
+            border: 1px solid rgba(255, 183, 0, 0.35);
             border-radius: var(--radius-lg);
-            padding: 20px;
+            padding: 22px;
             backdrop-filter: blur(15px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 15px rgba(255, 183, 0, 0.05);
-            margin-bottom: 24px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.6), inset 0 0 20px rgba(255, 183, 0, 0.08);
+            margin-bottom: 22px;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -183,8 +195,8 @@
 
         .user-avatar-wrap {
             position: relative;
-            width: 70px;
-            height: 70px;
+            width: 76px;
+            height: 76px;
             margin: 0 auto 12px auto;
         }
 
@@ -194,27 +206,27 @@
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--gold-primary);
-            box-shadow: 0 0 20px var(--gold-glow);
+            box-shadow: 0 0 22px var(--gold-glow);
         }
 
         .avatar-placeholder {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: linear-gradient(135deg, #2a2d37, #15171e);
+            background: linear-gradient(135deg, #232733, #11131a);
             border: 2px solid var(--gold-primary);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.8rem;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--gold-primary);
-            box-shadow: 0 0 20px var(--gold-glow);
+            box-shadow: 0 0 22px var(--gold-glow);
         }
 
         .user-name {
-            font-size: 1.1rem;
-            font-weight: 700;
+            font-size: 1.15rem;
+            font-weight: 800;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -223,7 +235,8 @@
 
         .badge-verified {
             color: var(--gold-primary);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            filter: drop-shadow(0 0 5px var(--gold-glow));
         }
 
         .balance-label {
@@ -233,27 +246,27 @@
         }
 
         .balance-amount {
-            font-size: 2.2rem;
+            font-size: 2.3rem;
             font-weight: 900;
             color: var(--gold-primary);
-            text-shadow: 0 0 12px var(--gold-glow);
+            text-shadow: 0 0 16px var(--gold-glow);
             margin-top: 2px;
             letter-spacing: 1px;
         }
 
-        /* --- Feature Grid (Dashboard) --- */
+        /* --- Grid Menu --- */
         .grid-menu {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 14px;
-            margin-bottom: 24px;
+            margin-bottom: 22px;
         }
 
         .grid-card {
             background: var(--card-bg);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: var(--radius-md);
-            padding: 18px 14px;
+            padding: 20px 14px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -264,6 +277,7 @@
             transition: var(--transition);
             position: relative;
             overflow: hidden;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
         }
 
         .grid-card::before {
@@ -281,6 +295,7 @@
         .grid-card:active {
             transform: translateY(-3px) scale(0.98);
             border-color: var(--gold-primary);
+            box-shadow: 0 8px 22px var(--gold-glow);
         }
 
         .grid-card:active::before {
@@ -288,19 +303,20 @@
         }
 
         .card-icon {
-            font-size: 2rem;
+            font-size: 2.1rem;
+            filter: drop-shadow(0 0 8px rgba(255, 183, 0, 0.3));
         }
 
         .card-title {
             font-size: 0.95rem;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--text-main);
         }
 
-        /* --- View Containers --- */
+        /* --- Panel Navigation & Animations --- */
         .view-panel {
             display: none;
-            animation: fadeIn 0.3s ease-in-out;
+            animation: fadeIn 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         .view-panel.active {
@@ -308,11 +324,10 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- Secondary Section Header --- */
         .section-header {
             display: flex;
             align-items: center;
@@ -321,7 +336,7 @@
         }
 
         .section-title {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 800;
             display: flex;
             align-items: center;
@@ -329,28 +344,33 @@
         }
 
         .btn-back {
-            background: transparent;
-            border: none;
+            background: rgba(255, 183, 0, 0.1);
+            border: 1px solid var(--gold-primary);
             color: var(--gold-primary);
-            font-size: 0.9rem;
-            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 800;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 4px;
+            transition: var(--transition);
         }
 
-        /* --- Tasks Styling --- */
+        .btn-back:active {
+            transform: scale(0.95);
+        }
+
+        /* --- Tasks Card --- */
         .task-card {
             background: var(--card-bg);
-            border: 1px solid rgba(255, 183, 0, 0.15);
+            border: 1px solid rgba(255, 183, 0, 0.2);
             border-radius: var(--radius-md);
-            padding: 16px;
-            margin-bottom: 12px;
+            padding: 18px;
+            margin-bottom: 14px;
             display: flex;
             flex-direction: column;
             gap: 12px;
             backdrop-filter: blur(10px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.3);
         }
 
         .task-header {
@@ -361,17 +381,18 @@
 
         .task-title {
             font-size: 1rem;
-            font-weight: 700;
+            font-weight: 800;
         }
 
         .task-reward {
             background: rgba(255, 183, 0, 0.15);
             color: var(--gold-primary);
             border: 1px solid var(--gold-primary);
-            padding: 4px 10px;
+            padding: 4px 12px;
             border-radius: 20px;
-            font-weight: 700;
+            font-weight: 800;
             font-size: 0.85rem;
+            box-shadow: 0 0 10px var(--gold-glow);
         }
 
         .task-seats {
@@ -381,46 +402,45 @@
 
         .progress-bar-bg {
             width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
+            height: 7px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
             overflow: hidden;
         }
 
         .progress-bar-fill {
             height: 100%;
-            background: var(--gold-primary);
+            background: linear-gradient(90deg, var(--gold-secondary), var(--gold-primary));
             width: 0%;
-            transition: width 0.3s ease;
+            transition: width 0.4s ease;
         }
 
+        /* --- Buttons & Inputs --- */
         .btn-action {
             background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
             color: #000;
             border: none;
-            padding: 12px;
+            padding: 13px;
             border-radius: var(--radius-md);
-            font-weight: 800;
+            font-weight: 900;
             font-size: 0.95rem;
             cursor: pointer;
             width: 100%;
             text-align: center;
-            box-shadow: 0 4px 15px var(--gold-glow);
+            box-shadow: 0 4px 18px var(--gold-glow);
             transition: var(--transition);
         }
 
-        .btn-action:active {
-            transform: scale(0.97);
-        }
-
-        .btn-action.pending {
-            background: #eccc68;
-            color: #000;
+        .btn-action:disabled {
+            opacity: 0.5;
             cursor: not-allowed;
             box-shadow: none;
         }
 
-        /* --- Forms & Inputs --- */
+        .btn-action:not(:disabled):active {
+            transform: scale(0.97);
+        }
+
         .form-group {
             margin-bottom: 14px;
         }
@@ -435,8 +455,8 @@
 
         .form-input, .form-select, .form-textarea {
             width: 100%;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 183, 0, 0.25);
             padding: 12px 14px;
             border-radius: var(--radius-md);
             color: var(--text-main);
@@ -447,7 +467,7 @@
 
         .form-input:focus, .form-select:focus, .form-textarea:focus {
             border-color: var(--gold-primary);
-            box-shadow: 0 0 10px var(--gold-glow);
+            box-shadow: 0 0 12px var(--gold-glow);
         }
 
         /* --- Leaderboard Top 10 --- */
@@ -456,8 +476,8 @@
             align-items: center;
             justify-content: space-between;
             background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 12px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 14px 16px;
             border-radius: var(--radius-md);
             margin-bottom: 8px;
         }
@@ -465,12 +485,12 @@
         .leader-rank {
             font-weight: 900;
             font-size: 1.1rem;
-            width: 30px;
+            width: 35px;
         }
 
-        .rank-1 { color: #ffd700; }
-        .rank-2 { color: #c0c0c0; }
-        .rank-3 { color: #cd7f32; }
+        .rank-1 { color: #ffd700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+        .rank-2 { color: #c0c0c0; text-shadow: 0 0 10px rgba(192, 192, 192, 0.5); }
+        .rank-3 { color: #cd7f32; text-shadow: 0 0 10px rgba(205, 127, 50, 0.5); }
 
         /* --- Status Single Card (Withdraw & Support) --- */
         .status-card {
@@ -479,14 +499,15 @@
             border-radius: var(--radius-md);
             padding: 16px;
             margin-top: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
         .status-tag {
             display: inline-block;
-            padding: 3px 8px;
-            border-radius: 6px;
+            padding: 3px 10px;
+            border-radius: 8px;
             font-size: 0.8rem;
-            font-weight: 700;
+            font-weight: 800;
             margin-bottom: 8px;
         }
 
@@ -501,8 +522,8 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(12px);
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(14px);
             z-index: 9999;
             display: none;
             align-items: center;
@@ -515,30 +536,31 @@
         }
 
         .modal-content {
-            background: #12141a;
+            background: #11131a;
             border: 1px solid var(--gold-primary);
             border-radius: var(--radius-lg);
             width: 100%;
             max-width: 400px;
             padding: 24px;
-            box-shadow: 0 0 30px var(--gold-glow);
+            box-shadow: 0 0 35px var(--gold-glow-intense);
             text-align: center;
             position: relative;
         }
 
         .modal-title {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             font-weight: 900;
             margin-bottom: 12px;
             color: var(--gold-primary);
         }
 
         .captcha-img-box {
-            background: #fff;
+            background: #ffffff;
             padding: 10px;
             border-radius: var(--radius-md);
             display: inline-block;
             margin: 14px 0;
+            border: 2px solid var(--gold-primary);
         }
 
         .captcha-img-box img {
@@ -547,7 +569,7 @@
             display: block;
         }
 
-        /* --- Splash Screen --- */
+        /* --- Splash Screen (Guaranteed Dismissal Fix) --- */
         #splash-screen {
             position: fixed;
             top: 0;
@@ -561,15 +583,17 @@
             align-items: center;
             justify-content: center;
             gap: 16px;
+            transition: opacity 0.5s ease;
         }
 
         .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(255, 183, 0, 0.2);
+            width: 44px;
+            height: 44px;
+            border: 3.5px solid rgba(255, 183, 0, 0.2);
             border-top-color: var(--gold-primary);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
+            box-shadow: 0 0 15px var(--gold-glow);
         }
 
         @keyframes spin {
@@ -579,32 +603,32 @@
 </head>
 <body>
 
-    <!-- Dynamic Background -->
+    <!-- Dynamic Luxury Background -->
     <div class="bg-canvas">
         <div class="matrix-map"></div>
         <div class="candlestick-chart"></div>
         <div class="light-beam"></div>
     </div>
 
-    <!-- Splash Screen -->
+    <!-- Splash Screen (Fixed with SYP logo) -->
     <div id="splash-screen">
-        <div class="brand-logo" style="width: 70px; height: 70px; font-size: 2rem;">BS</div>
+        <div class="brand-logo" style="width: 75px; height: 75px; font-size: 1.8rem; border-radius: 22px;">SYP</div>
         <div class="brand-name" style="font-size: 1.8rem;">BOT SYRIA</div>
         <div class="spinner"></div>
     </div>
 
-    <!-- 2Captcha 24-Hour Verification Modal -->
+    <!-- 2Captcha 24-Hour Verification Modal (Soft ID 5870) -->
     <div class="modal-overlay" id="captcha-modal">
         <div class="modal-content">
             <div class="modal-title">التحقق اليومي من الأمان 🛡️</div>
-            <p style="font-size: 0.85rem; color: var(--text-muted);">يرجى حل رمز التحقق لإثبات هويتك وتفعيل رصيدك وحسابك اليومي</p>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">يرجى حل رمز التحقق لحماية الحساب وتأكيد النشاط اليومي</p>
             <div class="captcha-img-box">
-                <img id="captcha-img" src="" alt="Captcha">
+                <img id="captcha-img" src="" alt="Captcha Challenge">
             </div>
             <div class="form-group">
-                <input type="text" id="captcha-input" class="form-input" placeholder="أدخل الرمز الظاهر هنا..." style="text-align: center;">
+                <input type="text" id="captcha-input" class="form-input" placeholder="أدخل الرمز هنا..." style="text-align: center; font-weight: 800; font-size: 1.1rem;">
             </div>
-            <button class="btn-action" onclick="verifyCaptcha()">تأكيد الهوية ✅</button>
+            <button class="btn-action" id="btn-verify-captcha" onclick="verifyCaptcha()">تأكيد الهوية ✅</button>
         </div>
     </div>
 
@@ -618,8 +642,8 @@
             
             <div class="form-group">
                 <label class="form-label">🌐 لغة التطبيق / Language</label>
-                <select class="form-select" id="setting-lang" onchange="changeLanguage()">
-                    <option value="ar">العربية</option>
+                <select class="form-select" id="setting-lang">
+                    <option value="ar">العربية (Arabic)</option>
                     <option value="en">English</option>
                 </select>
             </div>
@@ -627,33 +651,33 @@
             <div class="form-group">
                 <label class="form-label">🌙 نمط الإضاءة</label>
                 <select class="form-select" id="setting-theme" onchange="toggleTheme()">
-                    <option value="dark">الوضع الداكن (Dark Gold)</option>
+                    <option value="dark">الوضع الداكن الفخم (Dark Gold)</option>
                     <option value="light">الوضع المضيء (Light Gold)</option>
                 </select>
             </div>
 
             <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 15px 0;">
 
-            <div class="section-title" style="font-size: 0.95rem; margin-bottom: 8px;">📖 دليل الاستخدام والشرح</div>
+            <div class="section-title" style="font-size: 0.95rem; margin-bottom: 8px;">📖 دليل الاستخدام</div>
             <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;">
-                أهلاً بك في **BOT SYRIA**! يمكنك كسب الأرباح بالليرة السورية عن طريق تنفيذ المهام، مشاركة رابط الإحالة، وتفعيل الأكواد الترويجية. يتم السحب حصراً عبر سيرياتيل كاش وشام كاش.
+                مرحباً بك في **BOT SYRIA**! يمكنك جمع الأرباح بالليرة السورية عند إنجاز المهام، دعوة الأصدقاء، أو تفعيل البرومو كود. يتم تحويل السحوبات عبر سيرياتيل كاش وشام كاش.
             </p>
         </div>
     </div>
 
-    <!-- Main Application Container -->
+    <!-- Main Container -->
     <div class="app-container">
 
         <!-- App Header -->
         <header class="app-header">
             <div class="brand-title">
-                <div class="brand-logo">BS</div>
+                <div class="brand-logo">SYP</div>
                 <div class="brand-name">BOT SYRIA</div>
             </div>
             <button class="btn-icon" onclick="openModal('settings-modal')">⚙️</button>
         </header>
 
-        <!-- User Profile & Animated Balance -->
+        <!-- Profile & Balance Card -->
         <div class="user-card">
             <div class="user-avatar-wrap" id="avatar-container">
                 <div class="avatar-placeholder" id="avatar-fallback">U</div>
@@ -663,7 +687,7 @@
                 <span class="badge-verified">✔</span>
             </div>
             <div class="balance-label">الرصيد الحالي</div>
-            <div class="balance-amount"><span id="user-balance">0</span> <span style="font-size: 1rem;">ل.س</span></div>
+            <div class="balance-amount"><span id="user-balance">0</span> <span style="font-size: 1.1rem; font-weight: 700;">ل.س</span></div>
         </div>
 
         <!-- DASHBOARD VIEW -->
@@ -703,7 +727,7 @@
                 <button class="btn-back" onclick="switchView('view-dashboard')">الرئيسية ↩</button>
             </div>
             <div id="tasks-container">
-                <!-- Dynamically Populated Tasks (No completed/full tasks will show) -->
+                <!-- Dynamically Populated Tasks -->
             </div>
         </div>
 
@@ -714,15 +738,15 @@
                 <button class="btn-back" onclick="switchView('view-dashboard')">الرئيسية ↩</button>
             </div>
 
-            <div class="user-card" style="padding: 16px; margin-bottom: 16px;">
+            <div class="user-card" style="padding: 18px; margin-bottom: 16px;">
                 <div style="font-size: 0.85rem; color: var(--text-muted);">رابط الدعوة الخاص بك</div>
-                <input type="text" id="ref-link-input" class="form-input" readonly style="margin: 8px 0; text-align: center;" value="https://t.me/BOTSYRIA_BOT?start=REF_">
+                <input type="text" id="ref-link-input" class="form-input" readonly style="margin: 10px 0; text-align: center; font-weight: 700;" value="https://t.me/BOTSYRIA_BOT?start=REF_">
                 <button class="btn-action" onclick="copyRefLink()">نسخ الرابط 📋</button>
             </div>
 
             <div class="section-title" style="margin-bottom: 10px;">🏆 أعلى 10 دُعاة (Leaderboard)</div>
             <div id="leaderboard-list">
-                <!-- Top 10 Dynamically Synced -->
+                <!-- Top 10 Synced Realtime -->
             </div>
         </div>
 
@@ -735,7 +759,7 @@
 
             <div class="task-card">
                 <div class="form-group">
-                    <label class="form-label">وسيلة الدفع حصراً</label>
+                    <label class="form-label">وسيلة الدفع المتاحة</label>
                     <select class="form-select" id="withdraw-method">
                         <option value="syriatel">سيرياتيل كاش (Syriatel Cash)</option>
                         <option value="sham">شام كاش (Sham Cash)</option>
@@ -747,12 +771,12 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">المبلغ المراد سحبه (ل.س)</label>
-                    <input type="number" id="withdraw-amount" class="form-input" placeholder="أدخل المبلغ">
+                    <input type="number" id="withdraw-amount" class="form-input" placeholder="أدخل المبلغ (الحد الأدنى 5000)">
                 </div>
-                <button class="btn-action" onclick="submitWithdrawal()">تأكيد طلب السحب 🚀</button>
+                <button class="btn-action" id="btn-submit-withdraw" onclick="submitWithdrawal()">تأكيد طلب السحب 🚀</button>
             </div>
 
-            <!-- Single Latest Status Card -->
+            <!-- Single Latest Withdrawal Status -->
             <div id="latest-withdraw-box"></div>
         </div>
 
@@ -766,9 +790,9 @@
             <div class="task-card">
                 <div class="form-group">
                     <label class="form-label">أدخل الكود الترويجي</label>
-                    <input type="text" id="promo-input" class="form-input" placeholder="مثال: SYRIA2026" style="text-align: center; text-transform: uppercase;">
+                    <input type="text" id="promo-input" class="form-input" placeholder="مثال: SYRIA2026" style="text-align: center; text-transform: uppercase; font-weight: 800;">
                 </div>
-                <button class="btn-action" onclick="claimPromoCode()">تفعيل الكود 🎁</button>
+                <button class="btn-action" id="btn-claim-promo" onclick="claimPromoCode()">تفعيل الكود 🎁</button>
             </div>
         </div>
 
@@ -781,20 +805,36 @@
 
             <div class="task-card">
                 <div class="form-group">
-                    <label class="form-label">تفاصيل الشكوى / الاستفسار</label>
-                    <textarea id="support-msg" class="form-textarea" rows="4" placeholder="اكتب رسالتك بالتفصيل..."></textarea>
+                    <label class="form-label">تفاصيل الشكوى أو الاستفسار</label>
+                    <textarea id="support-msg" class="form-textarea" rows="4" placeholder="اكتب استفسارك بدقة..."></textarea>
                 </div>
-                <button class="btn-action" onclick="submitSupportTicket()">إرسال إلى الإدارة 📩</button>
+                <button class="btn-action" id="btn-submit-support" onclick="submitSupportTicket()">إرسال إلى الإدارة 📩</button>
             </div>
 
-            <!-- Single Latest Support Status Card -->
+            <!-- Single Latest Support Ticket -->
             <div id="latest-support-box"></div>
         </div>
 
     </div>
 
-    <!-- Application Script Logic -->
+    <!-- Application Core Script -->
     <script>
+        // --- Anti-Cheat Helpers & Security Utils ---
+        function sanitizeInput(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>"']/g, function (m) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+            }).trim();
+        }
+
+        function debounceButton(btnId, delayMs = 3000) {
+            const btn = document.getElementById(btnId);
+            if (btn) {
+                btn.disabled = true;
+                setTimeout(() => { btn.disabled = false; }, delayMs);
+            }
+        }
+
         // --- 1. Firebase Initialization Config ---
         const firebaseConfig = {
             apiKey: "YOUR_FIREBASE_API_KEY",
@@ -804,68 +844,89 @@
             messagingSenderId: "123456789",
             appId: "1:123456789:web:abcdef"
         };
-        
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
 
-        // --- 2. Application Global State ---
+        let db = null;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+        } catch (e) {
+            console.error("Firebase Initialization Exception:", e);
+        }
+
+        // --- 2. Global State ---
         let tgUser = null;
-        let userData = null;
-        const SOFT_ID = "5870"; // 2Captcha Software ID
-        let currentCaptchaId = "";
+        let userData = { balance: 0, completedTasks: [], lastCaptchaTime: 0 };
+        const SOFT_ID = "5870"; // 2Captcha Software Identifier
 
         // --- 3. Telegram WebApp Setup ---
         const tg = window.Telegram ? window.Telegram.WebApp : null;
         if (tg) {
-            tg.expand();
-            tg.ready();
-            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                tgUser = tg.initDataUnsafe.user;
+            try {
+                tg.expand();
+                tg.ready();
+                if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                    tgUser = tg.initDataUnsafe.user;
+                }
+            } catch (err) {
+                console.warn("Telegram WebApp initialization fallback", err);
             }
         }
 
-        // Fallback for testing/browser usage
+        // Default Fallback User
         if (!tgUser) {
-            tgUser = { id: 99999999, first_name: "مستخدم تجريبي", username: "demo_user" };
+            tgUser = { id: 88888888, first_name: "مستخدم تجريبي", username: "demo_user" };
         }
 
-        // --- 4. Initialization Workflow ---
+        // --- 4. Initialization Workflow with Guaranteed Splash Removal ---
         window.addEventListener('DOMContentLoaded', async () => {
             setupUserProfile();
-            await syncUserWithFirebase();
-            check24HourCaptcha();
-            loadLeaderboard();
-            loadRealtimeTasks();
-            loadLatestWithdrawal();
-            loadLatestSupportTicket();
-
-            // Hide Splash Screen
-            setTimeout(() => {
-                document.getElementById('splash-screen').style.display = 'none';
-            }, 1000);
+            
+            try {
+                if (db) {
+                    await syncUserWithFirebase();
+                    check24HourCaptcha();
+                    loadLeaderboard();
+                    loadRealtimeTasks();
+                    loadLatestWithdrawal();
+                    loadLatestSupportTicket();
+                }
+            } catch (err) {
+                console.error("Startup Loading Error:", err);
+            } finally {
+                // GUARANTEED UNBLOCK: Hide splash screen regardless of network/firebase state
+                setTimeout(() => {
+                    const splash = document.getElementById('splash-screen');
+                    if (splash) {
+                        splash.style.opacity = '0';
+                        setTimeout(() => splash.style.display = 'none', 500);
+                    }
+                }, 1200);
+            }
         });
 
         // --- 5. Profile & Firebase Sync ---
         function setupUserProfile() {
-            document.getElementById('user-display-name').innerText = tgUser.first_name;
+            document.getElementById('user-display-name').innerText = sanitizeInput(tgUser.first_name);
             document.getElementById('ref-link-input').value = `https://t.me/BOTSYRIA_BOT?start=REF_${tgUser.id}`;
             
             if (tgUser.photo_url) {
                 document.getElementById('avatar-container').innerHTML = `<img src="${tgUser.photo_url}" class="user-avatar" alt="Avatar">`;
             } else {
-                document.getElementById('avatar-fallback').innerText = tgUser.first_name.charAt(0).toUpperCase();
+                const initial = tgUser.first_name ? tgUser.first_name.charAt(0).toUpperCase() : 'U';
+                document.getElementById('avatar-fallback').innerText = initial;
             }
         }
 
         async function syncUserWithFirebase() {
+            if (!db) return;
             const userRef = db.collection('users').doc(String(tgUser.id));
             const doc = await userRef.get();
 
             if (!doc.exists) {
                 userData = {
                     userId: tgUser.id,
-                    name: tgUser.first_name,
-                    username: tgUser.username || "",
+                    name: sanitizeInput(tgUser.first_name),
+                    username: sanitizeInput(tgUser.username || ""),
                     balance: 0,
                     completedTasks: [],
                     lastCaptchaTime: 0,
@@ -880,20 +941,24 @@
             userRef.onSnapshot(snapshot => {
                 if (snapshot.exists) {
                     userData = snapshot.data();
-                    animateValue("user-balance", parseInt(document.getElementById("user-balance").innerText), userData.balance, 800);
+                    const currentVal = parseInt(document.getElementById("user-balance").innerText.replace(/,/g, '')) || 0;
+                    animateValue("user-balance", currentVal, userData.balance || 0, 800);
                 }
             });
         }
 
-        // Animated Counter Helper
         function animateValue(id, start, end, duration) {
-            if (start === end) return;
+            if (start === end) {
+                document.getElementById(id).innerText = end.toLocaleString('ar-SY');
+                return;
+            }
             const range = end - start;
             let current = start;
-            const increment = end > start ? 100 : -100;
-            const stepTime = Math.abs(Math.floor(duration / (range / 100)));
+            const increment = end > start ? Math.ceil(range / 20) : Math.floor(range / 20);
+            const stepTime = Math.abs(Math.floor(duration / 20));
             const obj = document.getElementById(id);
-            const timer = setInterval(function() {
+            
+            const timer = setInterval(() => {
                 current += increment;
                 if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
                     obj.innerText = end.toLocaleString('ar-SY');
@@ -901,10 +966,10 @@
                 } else {
                     obj.innerText = current.toLocaleString('ar-SY');
                 }
-            }, stepTime || 10);
+            }, stepTime || 20);
         }
 
-        // --- 6. 2Captcha 24-Hour Check System ---
+        // --- 6. 2Captcha 24-Hour System (SoftID 5870) ---
         function check24HourCaptcha() {
             const now = Date.now();
             const lastTime = userData.lastCaptchaTime || 0;
@@ -915,28 +980,31 @@
             }
         }
 
-        async function fetch2CaptchaChallenge() {
-            // Using 2Captcha SoftID 5870 API workflow placeholder
-            document.getElementById('captcha-img').src = "https://via.placeholder.com/150x50/ffb700/000000?text=CAPTCHA+5870";
+        function fetch2CaptchaChallenge() {
+            // Software ID 5870 captcha endpoint reference
+            document.getElementById('captcha-img').src = "https://via.placeholder.com/180x60/ffb700/000000?text=CAPTCHA+5870";
             openModal('captcha-modal');
         }
 
         async function verifyCaptcha() {
-            const val = document.getElementById('captcha-input').value;
-            if (!val) return alert("يرجى إدخال رمز التحقق!");
+            const val = sanitizeInput(document.getElementById('captcha-input').value);
+            if (!val) return alert("يرجى أدخل رمز التحقق!");
 
-            // Mark successful check in Firebase
-            await db.collection('users').doc(String(tgUser.id)).update({
-                lastCaptchaTime: Date.now()
-            });
+            debounceButton('btn-verify-captcha', 2000);
+
+            if (db) {
+                await db.collection('users').doc(String(tgUser.id)).update({
+                    lastCaptchaTime: Date.now()
+                });
+            }
 
             closeModal('captcha-modal');
-            alert("تم التحقق بنجاح! شكراً لك.");
+            alert("تم إكمال التحقق بنجاح! شكراً لك.");
         }
 
-        // --- 7. Navigation & View Switcher ---
+        // --- 7. Navigation ---
         function switchView(viewId) {
-            document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
+            document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
             window.scrollTo(0,0);
         }
@@ -946,6 +1014,7 @@
 
         // --- 8. Dynamic Tasks System ---
         function loadRealtimeTasks() {
+            if (!db) return;
             db.collection('tasks').onSnapshot(snapshot => {
                 const container = document.getElementById('tasks-container');
                 container.innerHTML = '';
@@ -954,16 +1023,16 @@
                     const task = doc.data();
                     const taskId = doc.id;
 
-                    // Hide task if completed by user or seats filled
                     const isCompleted = (userData.completedTasks || []).includes(taskId);
                     const isFull = task.claimedSeats >= task.totalSeats;
 
+                    // Strictly hide completed or exhausted tasks
                     if (!isCompleted && !isFull) {
                         const progress = (task.claimedSeats / task.totalSeats) * 100;
                         container.innerHTML += `
                             <div class="task-card">
                                 <div class="task-header">
-                                    <div class="task-title">${task.title}</div>
+                                    <div class="task-title">${sanitizeInput(task.title)}</div>
                                     <div class="task-reward">+${task.reward} ل.س</div>
                                 </div>
                                 <div class="task-seats">المقاعد المتبقية: ${task.totalSeats - task.claimedSeats} من ${task.totalSeats}</div>
@@ -977,37 +1046,40 @@
                 });
 
                 if (container.innerHTML === '') {
-                    container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px;">لا توجد مهام متاحة حالياً.</div>';
+                    container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:25px;">لا توجد مهام متاحة حالياً.</div>';
                 }
             });
         }
 
         function executeTask(taskId, link) {
-            if (tg) tg.openTelegramLink(link);
-            else window.open(link, '_blank');
-            // Auto submit proof flow placeholder
+            if (tg && tg.openTelegramLink && link.includes('t.me')) {
+                tg.openTelegramLink(link);
+            } else {
+                window.open(link, '_blank');
+            }
         }
 
-        // --- 9. Leaderboard System ---
+        // --- 9. Leaderboard ---
         function loadLeaderboard() {
+            if (!db) return;
             db.collection('users').orderBy('referralCount', 'desc').limit(10).onSnapshot(snapshot => {
                 const list = document.getElementById('leaderboard-list');
                 list.innerHTML = '';
-                let index = 1;
+                let rank = 1;
 
                 snapshot.forEach(doc => {
-                    const user = doc.data();
-                    let rankClass = index === 1 ? 'rank-1' : index === 2 ? 'rank-2' : index === 3 ? 'rank-3' : '';
-                    let badge = index === 1 ? '🥇' : index === 2 ? '🥈' : index === 3 ? '🥉' : `#${index}`;
+                    const u = doc.data();
+                    let rankClass = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : '';
+                    let badge = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
 
                     list.innerHTML += `
                         <div class="leader-item">
                             <div class="leader-rank ${rankClass}">${badge}</div>
-                            <div style="flex-grow:1; font-weight:700;">${user.name || 'مستخدم'}</div>
-                            <div style="color:var(--gold-primary); font-weight:800;">${user.referralCount || 0} إحالة</div>
+                            <div style="flex-grow:1; font-weight:800;">${sanitizeInput(u.name || 'مستخدم')}</div>
+                            <div style="color:var(--gold-primary); font-weight:900;">${u.referralCount || 0} إحالة</div>
                         </div>
                     `;
-                    index++;
+                    rank++;
                 });
             });
         }
@@ -1019,36 +1091,55 @@
             alert("تم نسخ رابط الإحالة بنجاح!");
         }
 
-        // --- 10. Withdrawal Logic (Show Latest Request Only) ---
+        // --- 10. Withdrawal Engine ---
         async function submitWithdrawal() {
             const method = document.getElementById('withdraw-method').value;
-            const account = document.getElementById('withdraw-account').value;
+            const account = sanitizeInput(document.getElementById('withdraw-account').value);
             const amount = parseInt(document.getElementById('withdraw-amount').value);
 
-            if (!account || !amount) return alert("يرجى ملء جميع الحقول!");
-            if (amount > userData.balance) return alert("رصيدك غير كافٍ!");
+            if (!account || isNaN(amount) || amount <= 0) return alert("يرجى إدخال بيانات صحيحة!");
+            if (amount < 5000) return alert("الحد الأدنى للسحب هو 5000 ل.س!");
+            if (amount > userData.balance) return alert("رصيدك الحالي غير كافٍ!");
 
-            // Atomic Transaction logic
-            await db.collection('admin_withdrawals').add({
-                userId: tgUser.id,
-                userName: tgUser.first_name,
-                method: method,
-                account: account,
-                amount: amount,
-                status: 'pending',
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
+            debounceButton('btn-submit-withdraw', 4000);
 
-            await db.collection('users').doc(String(tgUser.id)).update({
-                balance: firebase.firestore.FieldValue.increment(-amount)
-            });
+            if (db) {
+                // Atomic Firebase Transaction to prevent cheat / double spend
+                const userRef = db.collection('users').doc(String(tgUser.id));
 
-            alert("تم تقديم طلب السحب بنجاح!");
-            document.getElementById('withdraw-account').value = '';
-            document.getElementById('withdraw-amount').value = '';
+                try {
+                    await db.runTransaction(async (transaction) => {
+                        const sfDoc = await transaction.get(userRef);
+                        if (!sfDoc.exists) throw "User record missing!";
+
+                        const currentBalance = sfDoc.data().balance || 0;
+                        if (currentBalance < amount) throw "رصيد غير كافٍ!";
+
+                        transaction.update(userRef, { balance: currentBalance - amount });
+
+                        const newWithdrawRef = db.collection('admin_withdrawals').doc();
+                        transaction.set(newWithdrawRef, {
+                            userId: tgUser.id,
+                            userName: sanitizeInput(tgUser.first_name),
+                            method: method,
+                            account: account,
+                            amount: amount,
+                            status: 'pending',
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    });
+
+                    alert("تم إرسال طلب السحب إلى الإدارة بنجاح!");
+                    document.getElementById('withdraw-account').value = '';
+                    document.getElementById('withdraw-amount').value = '';
+                } catch (e) {
+                    alert("فشلت العملية: " + e);
+                }
+            }
         }
 
         function loadLatestWithdrawal() {
+            if (!db) return;
             db.collection('admin_withdrawals')
                 .where('userId', '==', tgUser.id)
                 .orderBy('timestamp', 'desc')
@@ -1066,55 +1157,74 @@
                             <div class="status-card">
                                 <div style="font-size:0.85rem; color:var(--text-muted);">حالة طلب السحب الأخير</div>
                                 <div class="status-tag ${tagClass}">${statusText}</div>
-                                <div style="font-weight:700;">المبلغ: ${data.amount} ل.س</div>
-                                <div style="font-size:0.8rem; color:var(--text-muted);">الحساب: ${data.account} (${data.method})</div>
+                                <div style="font-weight:800; font-size:1rem;">المبلغ: ${data.amount.toLocaleString('ar-SY')} ل.س</div>
+                                <div style="font-size:0.8rem; color:var(--text-muted);">الحساب: ${sanitizeInput(data.account)} (${data.method})</div>
                             </div>
                         `;
                     }
                 });
         }
 
-        // --- 11. Promo Code System ---
+        // --- 11. Promo Code Engine ---
         async function claimPromoCode() {
-            const code = document.getElementById('promo-input').value.trim().toUpperCase();
-            if (!code) return alert("يرجى أدخل الكود!");
+            const code = sanitizeInput(document.getElementById('promo-input').value).toUpperCase();
+            if (!code) return alert("أدخل الكود الترويجي أولاً!");
 
-            const promoRef = db.collection('promo_codes').doc(code);
-            const doc = await promoRef.get();
+            debounceButton('btn-claim-promo', 3000);
 
-            if (!doc.exists) return alert("الكود غير صحيح أو انتهت صلاحيته!");
-            const promo = doc.data();
+            if (db) {
+                const promoRef = db.collection('promo_codes').doc(code);
+                const userRef = db.collection('users').doc(String(tgUser.id));
 
-            if ((userData.claimedPromos || []).includes(code)) return alert("لقد قمت بتفعيل هذا الكود سابقاً!");
+                try {
+                    await db.runTransaction(async (transaction) => {
+                        const promoDoc = await transaction.get(promoRef);
+                        const userDoc = await transaction.get(userRef);
 
-            await db.collection('users').doc(String(tgUser.id)).update({
-                balance: firebase.firestore.FieldValue.increment(promo.reward),
-                claimedPromos: firebase.firestore.FieldValue.arrayUnion(code)
-            });
+                        if (!promoDoc.exists) throw "الكود غير صحيح أو غير متوفر!";
+                        const promo = promoDoc.data();
 
-            alert(`مبروك! تم إضافة ${promo.reward} ل.س لرصيدك.`);
-            document.getElementById('promo-input').value = '';
+                        const claimed = userDoc.data().claimedPromos || [];
+                        if (claimed.includes(code)) throw "لقد قمت بتفعيل هذا الكود من قبل!";
+
+                        transaction.update(userRef, {
+                            balance: (userDoc.data().balance || 0) + promo.reward,
+                            claimedPromos: firebase.firestore.FieldValue.arrayUnion(code)
+                        });
+                    });
+
+                    alert("تم تفعيل الكود وإضافة المكافأة لرصيدك بنجاح! 🎁");
+                    document.getElementById('promo-input').value = '';
+                } catch (err) {
+                    alert(err);
+                }
+            }
         }
 
-        // --- 12. Support System (Show Latest Ticket Only) ---
+        // --- 12. Support Engine ---
         async function submitSupportTicket() {
-            const msg = document.getElementById('support-msg').value.trim();
-            if (!msg) return alert("اكتب رسالتك أولاً!");
+            const msg = sanitizeInput(document.getElementById('support-msg').value);
+            if (!msg) return alert("اكتب تفاصيل الشكوى أولاً!");
 
-            await db.collection('admin_support').add({
-                userId: tgUser.id,
-                userName: tgUser.first_name,
-                message: msg,
-                reply: '',
-                status: 'open',
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
+            debounceButton('btn-submit-support', 4000);
 
-            alert("تم إرسال الشكوى للإدارة بنجاح!");
-            document.getElementById('support-msg').value = '';
+            if (db) {
+                await db.collection('admin_support').add({
+                    userId: tgUser.id,
+                    userName: sanitizeInput(tgUser.first_name),
+                    message: msg,
+                    reply: '',
+                    status: 'open',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert("تم إرسال الشكوى للإدارة وسيتم الرد قريباً!");
+                document.getElementById('support-msg').value = '';
+            }
         }
 
         function loadLatestSupportTicket() {
+            if (!db) return;
             db.collection('admin_support')
                 .where('userId', '==', tgUser.id)
                 .orderBy('timestamp', 'desc')
@@ -1127,10 +1237,10 @@
                         const data = snapshot.docs[0].data();
                         box.innerHTML = `
                             <div class="status-card">
-                                <div style="font-size:0.85rem; color:var(--text-muted);">آخر شكوى مقدمة</div>
-                                <div style="font-weight:700; margin: 4px 0;">"${data.message}"</div>
-                                <div style="font-size:0.85rem; color:var(--gold-primary); margin-top:8px;">
-                                    رد الإدارة: ${data.reply ? data.reply : 'قيد المراجعة ⏳'}
+                                <div style="font-size:0.85rem; color:var(--text-muted);">آخر شكوى قدمتها</div>
+                                <div style="font-weight:700; margin: 6px 0;">"${sanitizeInput(data.message)}"</div>
+                                <div style="font-size:0.85rem; color:var(--gold-primary); margin-top:8px; font-weight:800;">
+                                    رد الإدارة: ${data.reply ? sanitizeInput(data.reply) : 'قيد المراجعة ⏳'}
                                 </div>
                             </div>
                         `;
@@ -1138,14 +1248,9 @@
                 });
         }
 
-        // Settings Toggles
         function toggleTheme() {
             const theme = document.getElementById('setting-theme').value;
             document.documentElement.setAttribute('data-theme', theme);
-        }
-
-        function changeLanguage() {
-            alert("تم حفظ اللغة المختارة.");
         }
     </script>
 </body>
