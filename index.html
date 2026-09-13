@@ -20,12 +20,12 @@
     <style>
         :root {
             --bg-dark: #060709;
-            --card-bg: rgba(18, 20, 26, 0.85);
+            --card-bg: rgba(18, 20, 26, 0.88);
             --gold-primary: #ffb700;
             --gold-secondary: #d4af37;
             --gold-light: #fff0a8;
-            --gold-glow: rgba(255, 183, 0, 0.45);
-            --gold-glow-intense: rgba(255, 183, 0, 0.85);
+            --gold-glow: rgba(255, 183, 0, 0.4);
+            --gold-glow-intense: rgba(255, 183, 0, 0.8);
             --text-main: #f8f9fa;
             --text-muted: #9aa0a6;
             --danger: #ff4757;
@@ -37,7 +37,7 @@
 
         [data-theme="light"] {
             --bg-dark: #f0f2f5;
-            --card-bg: rgba(255, 255, 255, 0.92);
+            --card-bg: rgba(255, 255, 255, 0.95);
             --gold-primary: #d4af37;
             --gold-secondary: #b8860b;
             --gold-glow: rgba(212, 175, 55, 0.25);
@@ -144,7 +144,6 @@
             background: linear-gradient(135deg, #ffffff 30%, var(--gold-primary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 10px rgba(255, 183, 0, 0.2);
         }
 
         .btn-icon {
@@ -222,7 +221,6 @@
         .badge-verified {
             color: var(--gold-primary);
             font-size: 0.95rem;
-            filter: drop-shadow(0 0 5px var(--gold-glow));
         }
 
         .balance-label {
@@ -240,7 +238,7 @@
             letter-spacing: 1px;
         }
 
-        /* --- Main Menu Grid (5 Main Items) --- */
+        /* --- Main Menu Grid (5 Elements) --- */
         .grid-menu {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -274,16 +272,8 @@
             box-shadow: 0 8px 22px var(--gold-glow);
         }
 
-        .card-icon {
-            font-size: 2.2rem;
-            filter: drop-shadow(0 0 8px rgba(255, 183, 0, 0.3));
-        }
-
-        .card-title {
-            font-size: 0.95rem;
-            font-weight: 800;
-            color: var(--text-main);
-        }
+        .card-icon { font-size: 2.2rem; }
+        .card-title { font-size: 0.95rem; font-weight: 800; color: var(--text-main); }
 
         /* --- Panel Navigation --- */
         .view-panel {
@@ -327,7 +317,7 @@
 
         .btn-back:active { transform: scale(0.95); }
 
-        /* --- Task Cards & Stats --- */
+        /* --- Task Cards --- */
         .task-card {
             background: var(--card-bg);
             border: 1px solid rgba(255, 183, 0, 0.2);
@@ -357,7 +347,6 @@
             border-radius: 20px;
             font-weight: 800;
             font-size: 0.85rem;
-            box-shadow: 0 0 10px var(--gold-glow);
         }
 
         .task-seats { font-size: 0.8rem; color: var(--text-muted); }
@@ -448,11 +437,11 @@
         }
 
         .leader-rank { font-weight: 900; font-size: 1.1rem; width: 35px; }
-        .rank-1 { color: #ffd700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
-        .rank-2 { color: #c0c0c0; text-shadow: 0 0 10px rgba(192, 192, 192, 0.5); }
-        .rank-3 { color: #cd7f32; text-shadow: 0 0 10px rgba(205, 127, 50, 0.5); }
+        .rank-1 { color: #ffd700; }
+        .rank-2 { color: #c0c0c0; }
+        .rank-3 { color: #cd7f32; }
 
-        /* --- Status Single Cards --- */
+        /* --- Status Single Card (No Stacking) --- */
         .status-card {
             background: var(--card-bg);
             border: 1px dashed var(--gold-primary);
@@ -515,16 +504,24 @@
             color: var(--gold-primary);
         }
 
-        .captcha-img-box {
-            background: #ffffff;
-            padding: 10px;
-            border-radius: var(--radius-md);
-            display: inline-block;
-            margin: 14px 0;
+        /* --- Real Canvas Captcha Box --- */
+        .captcha-box {
+            background: #000;
             border: 2px solid var(--gold-primary);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            margin: 14px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
         }
 
-        .captcha-img-box img { max-width: 100%; height: auto; display: block; }
+        #captcha-canvas {
+            border-radius: 8px;
+            background: #11131a;
+            box-shadow: 0 0 10px rgba(255, 183, 0, 0.2);
+        }
 
         /* --- Splash Screen --- */
         #splash-screen {
@@ -550,7 +547,6 @@
             border-top-color: var(--gold-primary);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-            box-shadow: 0 0 15px var(--gold-glow);
         }
 
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -589,16 +585,19 @@
         <div class="spinner"></div>
     </div>
 
-    <!-- 2Captcha Daily Modal -->
+    <!-- Real HTML5 Canvas Captcha Modal -->
     <div class="modal-overlay" id="captcha-modal">
         <div class="modal-content">
-            <div class="modal-title">التحقق اليومي من الأمان 🛡️</div>
-            <p style="font-size: 0.85rem; color: var(--text-muted);">يرجى حل رمز التحقق اليومي للحفاظ على أمان حسابك ومنع الحسابات الوهمية.</p>
-            <div class="captcha-img-box">
-                <img id="captcha-img" src="" alt="Captcha Challenge">
+            <div class="modal-title">التحقق الأمني (الكابتشا) 🛡️</div>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">يرجى كتابة الرمز الظاهر في الصورة أدناه لتأكيد أنك لست روبوت (مرة واحدة كل 24 ساعة).</p>
+            
+            <div class="captcha-box">
+                <canvas id="captcha-canvas" width="220" height="70"></canvas>
+                <button class="btn-action secondary" style="padding: 5px 12px; font-size: 0.8rem; width: auto;" onclick="generateCaptcha()">تحديث الرمز 🔄</button>
             </div>
+
             <div class="form-group">
-                <input type="text" id="captcha-input" class="form-input" placeholder="أدخل رمز الكابتشا..." style="text-align: center; font-weight: 800; font-size: 1.1rem;">
+                <input type="text" id="captcha-input" class="form-input" placeholder="أدخل كود الكابتشا..." style="text-align: center; font-weight: 800; font-size: 1.2rem; letter-spacing: 2px;">
             </div>
             <button class="btn-action" id="btn-verify-captcha" onclick="verifyCaptcha()">تأكيد الهوية ✅</button>
         </div>
@@ -613,10 +612,10 @@
             </div>
             
             <div style="background: rgba(0,0,0,0.3); border:1px solid rgba(255,183,0,0.2); padding:12px; border-radius:14px; margin-bottom:14px; text-align:right;">
-                <div style="font-size:0.85rem; color:var(--text-muted);">معرف الحساب (Telegram ID):</div>
-                <div style="font-weight:800; color:var(--gold-primary);" id="info-user-id">...</div>
-                <div style="font-size:0.85rem; color:var(--text-muted); margin-top:6px;">تاريخ الإنضمام:</div>
-                <div style="font-weight:800; color:var(--text-main);" id="info-join-date">...</div>
+                <div style="font-size:0.85rem; color:var(--text-muted);">معرف التلغرام (Telegram ID):</div>
+                <div style="font-weight:800; color:var(--gold-primary); font-size: 1.1rem;" id="info-user-id">جار التحميل...</div>
+                <div style="font-size:0.85rem; color:var(--text-muted); margin-top:8px;">تاريخ الإنضمام للبوت:</div>
+                <div style="font-weight:800; color:var(--text-main);" id="info-join-date">جار التحميل...</div>
             </div>
 
             <div class="form-group">
@@ -641,7 +640,7 @@
             <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.7; text-align: right;" id="lbl-guide-body">
                 أهلاً بك في منصة **BOT SYRIA** الأولى والأكثر أماناً لكسب الأرباح بالليرة السورية.<br>
                 🔹 **المهام**: قم بتنفيذ المهام المتاحة وإرسال إثباتك، وسيتم مراجعته وإضافة المكافأة فوراً.<br>
-                🔹 **الإحالات**: شارك رابطك الخاص مع أصدقائك، واكسب نقاط وأرباح مباشرة عن كل شخص ينضم.<br>
+                🔹 **الإحالات**: شارك رابطك الخاص مع أصدقائك، واكسب نقاط وأرباح مباشرة عن كل شخص ينضم عبر بوتنا الرسمى.<br>
                 🔹 **السحب**: اختر وسيلة السحب المناسبة (سيرياتيل كاش / شام كاش) وسيتم معالجة طلبك بدقة عالية.<br>
                 🔹 **البرومو كود**: تابع قناتنا للحصول على أكواد الهدايا اليومية وتفعيلها مباشرة.
             </p>
@@ -657,18 +656,18 @@
             </div>
             <div class="form-group">
                 <label class="form-label">عنوان المهمة</label>
-                <input type="text" id="proof-task-title" class="form-input" readonly>
+                <input type="text" id="proof-task-title" class="form-input" readonly style="color:var(--gold-primary); font-weight:800;">
                 <input type="hidden" id="proof-task-id">
             </div>
             <div class="form-group">
-                <label class="form-label">نص الإثبات / معرف التلغرام أو رابط الصورة</label>
-                <textarea id="proof-input-text" class="form-textarea" rows="3" placeholder="أدخل اسم المستخدم الخاص بك أو رابط اللقطة..."></textarea>
+                <label class="form-label">تفاصيل الإثبات / معرف التلغرام</label>
+                <textarea id="proof-input-text" class="form-textarea" rows="3" placeholder="أدخل اسم المستخدم الخاص بك أو تفاصيل الإثبات..."></textarea>
             </div>
             <button class="btn-action" id="btn-submit-proof" onclick="submitTaskProof()">إرسال الإثبات للمراجعة 🚀</button>
         </div>
     </div>
 
-    <!-- Main Container -->
+    <!-- Main App Container -->
     <div class="app-container">
 
         <!-- App Header -->
@@ -693,7 +692,7 @@
             <div class="balance-amount"><span id="user-balance">0</span> <span style="font-size: 1.1rem; font-weight: 700;">ل.س</span></div>
         </div>
 
-        <!-- DASHBOARD VIEW (5 Grid Elements Only) -->
+        <!-- DASHBOARD VIEW (5 Grid Elements) -->
         <div id="view-dashboard" class="view-panel active">
             <div class="grid-menu">
                 <div class="grid-card" onclick="switchView('view-tasks')">
@@ -727,7 +726,7 @@
             </div>
             
             <div id="tasks-container">
-                <!-- Dynamically Rendered Tasks -->
+                <!-- Dynamically Loaded Tasks -->
             </div>
 
             <!-- Single Latest Task Proof Status -->
@@ -743,7 +742,7 @@
 
             <div class="user-card" style="padding: 18px; margin-bottom: 16px;">
                 <div style="font-size: 0.85rem; color: var(--text-muted);">رابط الدعوة الخاص بك</div>
-                <input type="text" id="ref-link-input" class="form-input" readonly style="margin: 10px 0; text-align: center; font-weight: 700;" value="https://t.me/BOTSYRIA_BOT?start=REF_">
+                <input type="text" id="ref-link-input" class="form-input" readonly style="margin: 10px 0; text-align: center; font-weight: 700; direction: ltr;" value="https://t.me/BotSyria_2026_bot?start=REF_">
                 
                 <div style="display: flex; gap: 8px; margin-top: 4px;">
                     <button class="btn-action" style="flex:1;" onclick="copyRefLink()">نسخ 📋</button>
@@ -764,7 +763,7 @@
 
             <div class="section-title" style="margin-bottom: 10px;">🏆 أعلى 10 دُعاة (Leaderboard)</div>
             <div id="leaderboard-list">
-                <!-- Top 10 Synced Realtime -->
+                <!-- Top 10 Realtime List -->
             </div>
         </div>
 
@@ -794,7 +793,7 @@
                 <button class="btn-action" id="btn-submit-withdraw" onclick="submitWithdrawal()">تأكيد طلب السحب 🚀</button>
             </div>
 
-            <!-- Single Latest Withdrawal Status -->
+            <!-- Single Latest Withdrawal Request Status (Old disappears) -->
             <div id="latest-withdraw-box"></div>
         </div>
 
@@ -808,7 +807,7 @@
             <div class="task-card">
                 <div class="form-group">
                     <label class="form-label">أدخل الكود الترويجي</label>
-                    <input type="text" id="promo-input" class="form-input" placeholder="مثال: SYRIA2026" style="text-align: center; text-transform: uppercase; font-weight: 800;">
+                    <input type="text" id="promo-input" class="form-input" placeholder="مثال: SYRIA2026" style="text-align: center; text-transform: uppercase; font-weight: 800; letter-spacing: 1px;">
                 </div>
                 <button class="btn-action" id="btn-claim-promo" onclick="claimPromoCode()">تفعيل الكود 🎁</button>
             </div>
@@ -829,15 +828,17 @@
                 <button class="btn-action" id="btn-submit-support" onclick="submitSupportTicket()">إرسال إلى الإدارة 📩</button>
             </div>
 
-            <!-- Single Latest Support Ticket -->
+            <!-- Single Latest Support Ticket Status (Old disappears, expires after 5h from reply) -->
             <div id="latest-support-box"></div>
         </div>
 
     </div>
 
-    <!-- Application Engine Logic -->
+    <!-- Application Script Engine -->
     <script>
-        // --- Security Helper Utils ---
+        const BOT_USERNAME = "BotSyria_2026_bot";
+
+        // Security Utility Helpers
         function sanitizeInput(str) {
             if (!str) return '';
             return String(str).replace(/[&<>"']/g, function (m) {
@@ -853,7 +854,7 @@
             }
         }
 
-        // --- Firebase Configuration ---
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "YOUR_FIREBASE_API_KEY",
             authDomain: "bot-syria.firebaseapp.com",
@@ -868,12 +869,13 @@
             firebase.initializeApp(firebaseConfig);
             db = firebase.firestore();
         } catch (e) {
-            console.error("Firebase init error:", e);
+            console.error("Firebase Initialization Error:", e);
         }
 
-        // --- Application State ---
+        // Application Global State
         let tgUser = null;
         let userData = { balance: 0, referralCount: 0, referralEarnings: 0, completedTasks: [], lastCaptchaTime: 0, claimedPromos: [] };
+        let currentCaptchaCode = "";
 
         const tg = window.Telegram ? window.Telegram.WebApp : null;
         if (tg) {
@@ -883,14 +885,14 @@
                 if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                     tgUser = tg.initDataUnsafe.user;
                 }
-            } catch (err) { console.warn("Telegram WebApp init warning", err); }
+            } catch (err) { console.warn("Telegram WebApp Context Error:", err); }
         }
 
         if (!tgUser) {
-            tgUser = { id: 88888888, first_name: "مستخدم تجريبي", username: "demo_user" };
+            tgUser = { id: 77777777, first_name: "مستخدم اختباري", username: "demo_user" };
         }
 
-        // --- Application Startup ---
+        // Application Lifecycle Startup
         window.addEventListener('DOMContentLoaded', async () => {
             setupUserProfile();
             
@@ -905,23 +907,22 @@
                     loadLatestProof();
                 }
             } catch (err) {
-                console.error("Startup error:", err);
+                console.error("Startup Logic Error:", err);
             } finally {
-                // Guaranteed splash dismissal
                 setTimeout(() => {
                     const splash = document.getElementById('splash-screen');
                     if (splash) {
                         splash.style.opacity = '0';
                         setTimeout(() => splash.style.display = 'none', 500);
                     }
-                }, 1000);
+                }, 800);
             }
         });
 
-        // --- User Profile Sync ---
+        // User Profile Setup
         function setupUserProfile() {
             document.getElementById('user-display-name').innerText = sanitizeInput(tgUser.first_name);
-            document.getElementById('ref-link-input').value = `https://t.me/BOTSYRIA_BOT?start=REF_${tgUser.id}`;
+            document.getElementById('ref-link-input').value = `https://t.me/${BOT_USERNAME}?start=REF_${tgUser.id}`;
             document.getElementById('info-user-id').innerText = tgUser.id;
 
             if (tgUser.photo_url) {
@@ -957,15 +958,17 @@
                 if (userData.createdAt) {
                     const dateObj = userData.createdAt.toDate ? userData.createdAt.toDate() : new Date();
                     document.getElementById('info-join-date').innerText = dateObj.toLocaleDateString('ar-SY');
+                } else {
+                    document.getElementById('info-join-date').innerText = new Date().toLocaleDateString('ar-SY');
                 }
             }
 
-            // Realtime user update listener
+            // Realtime user balance & info sync
             userRef.onSnapshot(snapshot => {
                 if (snapshot.exists) {
                     userData = snapshot.data();
                     const currentVal = parseInt(document.getElementById("user-balance").innerText.replace(/,/g, '')) || 0;
-                    animateValue("user-balance", currentVal, userData.balance || 0, 800);
+                    animateValue("user-balance", currentVal, userData.balance || 0, 600);
                     
                     document.getElementById('user-ref-count').innerText = (userData.referralCount || 0).toLocaleString('ar-SY');
                     document.getElementById('user-ref-earnings').innerText = `${(userData.referralEarnings || 0).toLocaleString('ar-SY')} ل.س`;
@@ -980,8 +983,8 @@
             }
             const range = end - start;
             let current = start;
-            const increment = end > start ? Math.ceil(range / 20) : Math.floor(range / 20);
-            const stepTime = Math.abs(Math.floor(duration / 20));
+            const increment = end > start ? Math.ceil(range / 15) : Math.floor(range / 15);
+            const stepTime = Math.abs(Math.floor(duration / 15));
             const obj = document.getElementById(id);
             
             const timer = setInterval(() => {
@@ -995,25 +998,65 @@
             }, stepTime || 20);
         }
 
-        // --- 2Captcha 24-Hour Check ---
+        // REAL HTML5 Canvas Captcha System
+        function generateCaptcha() {
+            const canvas = document.getElementById('captcha-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Dark background
+            ctx.fillStyle = '#11131a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Random chars generator (No ambiguous characters like O/0/1/I)
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            currentCaptchaCode = '';
+            for (let i = 0; i < 5; i++) {
+                currentCaptchaCode += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+
+            // Render background interference lines
+            for (let i = 0; i < 7; i++) {
+                ctx.strokeStyle = i % 2 === 0 ? 'rgba(255, 183, 0, 0.4)' : 'rgba(255, 255, 255, 0.15)';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.stroke();
+            }
+
+            // Render Distorted Text
+            ctx.font = '900 26px Cairo, sans-serif';
+            ctx.fillStyle = '#ffb700';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.shadowColor = 'rgba(255, 183, 0, 0.8)';
+            ctx.shadowBlur = 10;
+            ctx.fillText(currentCaptchaCode, canvas.width / 2, canvas.height / 2);
+        }
+
         function check24HourCaptcha() {
             const now = Date.now();
             const lastTime = userData.lastCaptchaTime || 0;
             const hoursPassed = (now - lastTime) / (1000 * 60 * 60);
 
             if (hoursPassed >= 24) {
-                fetch2CaptchaChallenge();
+                generateCaptcha();
+                openModal('captcha-modal');
             }
         }
 
-        function fetch2CaptchaChallenge() {
-            document.getElementById('captcha-img').src = "https://via.placeholder.com/180x60/ffb700/000000?text=CAPTCHA+5870";
-            openModal('captcha-modal');
-        }
-
         async function verifyCaptcha() {
-            const val = sanitizeInput(document.getElementById('captcha-input').value);
-            if (!val) return alert("يرجى أدخل رمز التحقق!");
+            const val = sanitizeInput(document.getElementById('captcha-input').value).toUpperCase();
+            if (!val) return alert("يرجى إدخال رمز الكابتشا!");
+
+            if (val !== currentCaptchaCode) {
+                alert("رمز الكابتشا غير صحيح! حاول مرة أخرى.");
+                generateCaptcha();
+                document.getElementById('captcha-input').value = '';
+                return;
+            }
 
             debounceButton('btn-verify-captcha', 2000);
 
@@ -1023,11 +1066,12 @@
                 });
             }
 
+            document.getElementById('captcha-input').value = '';
             closeModal('captcha-modal');
-            alert("تم إكمال التحقق الأمني بنجاح! شكراً لك.");
+            alert("تم التحقق من الكابتشا بنجاح! شكراً لك ✅");
         }
 
-        // --- Navigation ---
+        // Navigation Management
         function switchView(viewId) {
             document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
@@ -1037,7 +1081,7 @@
         function openModal(id) { document.getElementById(id).classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-        // --- Referrals Engine ---
+        // Referrals Engine
         function copyRefLink() {
             const input = document.getElementById('ref-link-input');
             input.select();
@@ -1046,9 +1090,7 @@
         }
 
         function shareRefTelegram() {
-            const url = encodeURIComponent(`https://t.me/BOTSYRIA_BOT?start=REF_${tgUser.id}`);
-            const text = encodeURIComponent("انضم الآن إلى بوت سوريا وابدأ بكسب الليرة السورية مجاناً! 🚀💰");
-            const shareUrl = `https://t.me/share/url?url=${url}&text=${text}`;
+            const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(`https://t.me/${BOT_USERNAME}?start=REF_${tgUser.id}`)}&text=${encodeURIComponent("انضم الآن إلى بوت سوريا الرسمي وابدأ بكسب الأرباح بالليرة السورية سهلة وموثوقة! 🚀💰")}`;
             
             if (tg && tg.openTelegramLink) tg.openTelegramLink(shareUrl);
             else window.open(shareUrl, '_blank');
@@ -1078,7 +1120,7 @@
             });
         }
 
-        // --- Tasks Engine ---
+        // Tasks Realtime Engine
         function loadRealtimeTasks() {
             if (!db) return;
             db.collection('tasks').onSnapshot(snapshot => {
@@ -1114,7 +1156,7 @@
                 });
 
                 if (container.innerHTML === '') {
-                    container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:25px;">لا توجد مهام متاحة حالياً.</div>';
+                    container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:25px;">لا توجد مهام جديدة حالياً.</div>';
                 }
             });
         }
@@ -1141,7 +1183,8 @@
             debounceButton('btn-submit-proof', 4000);
 
             if (db) {
-                await db.collection('task_proofs').add({
+                // Sent to admin_proofs collection for future Admin Panel linking
+                await db.collection('admin_proofs').add({
                     userId: tgUser.id,
                     userName: sanitizeInput(tgUser.first_name),
                     taskId: taskId,
@@ -1151,6 +1194,8 @@
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
+                // Clear input textarea after sending
+                document.getElementById('proof-input-text').value = '';
                 closeModal('proof-modal');
                 alert("تم إرسال الإثبات إلى صفحة المراجعة بنجاح! 🚀");
             }
@@ -1158,7 +1203,7 @@
 
         function loadLatestProof() {
             if (!db) return;
-            db.collection('task_proofs')
+            db.collection('admin_proofs')
                 .where('userId', '==', tgUser.id)
                 .orderBy('timestamp', 'desc')
                 .limit(1)
@@ -1169,7 +1214,7 @@
                     if (!snapshot.empty) {
                         const data = snapshot.docs[0].data();
                         
-                        // Hide proof if approved/rejected and completed
+                        // Hide proof box when approved or rejected by admin
                         if (data.status === 'pending') {
                             box.innerHTML = `
                                 <div class="status-card">
@@ -1184,15 +1229,15 @@
                 });
         }
 
-        // --- Withdrawal Engine ---
+        // Withdrawal Engine
         async function submitWithdrawal() {
             const method = document.getElementById('withdraw-method').value;
             const account = sanitizeInput(document.getElementById('withdraw-account').value);
             const amount = parseInt(document.getElementById('withdraw-amount').value);
 
-            if (!account || isNaN(amount) || amount <= 0) return alert("يرجى إدخال بيانات صحيحة!");
+            if (!account || isNaN(amount) || amount <= 0) return alert("يرجى إدخال بيانات السحب بشكل صحيح!");
             if (amount < 5000) return alert("الحد الأدنى للسحب هو 5000 ل.س!");
-            if (amount > userData.balance) return alert("رصيدك الحالي غير كافٍ!");
+            if (amount > userData.balance) return alert("رصيدك الحالي غير كافٍ لهذا الطلب!");
 
             debounceButton('btn-submit-withdraw', 4000);
 
@@ -1207,10 +1252,10 @@
                         const currentBalance = sfDoc.data().balance || 0;
                         if (currentBalance < amount) throw "رصيد غير كافٍ!";
 
-                        // Deduct balance securely
+                        // Deduct balance atomically
                         transaction.update(userRef, { balance: currentBalance - amount });
 
-                        // Add withdrawal request (sent to admin panel)
+                        // Add withdrawal request to admin_withdrawals collection for future Admin Panel linking
                         const newWithdrawRef = db.collection('admin_withdrawals').doc();
                         transaction.set(newWithdrawRef, {
                             userId: tgUser.id,
@@ -1223,9 +1268,10 @@
                         });
                     });
 
-                    alert("تم إرسال طلب السحب إلى الإدارة بنجاح!");
+                    // Clear inputs immediately
                     document.getElementById('withdraw-account').value = '';
                     document.getElementById('withdraw-amount').value = '';
+                    alert("تم إرسال طلب السحب إلى صفحة الإدارة بنجاح!");
                 } catch (e) {
                     alert("فشلت العملية: " + e);
                 }
@@ -1249,7 +1295,7 @@
 
                         box.innerHTML = `
                             <div class="status-card">
-                                <div style="font-size:0.85rem; color:var(--text-muted);">حالة طلب السحب الأخير</div>
+                                <div style="font-size:0.85rem; color:var(--text-muted);">حالة أحدث طلب سحب</div>
                                 <div class="status-tag ${tagClass}">${statusText}</div>
                                 <div style="font-weight:800; font-size:1rem;">المبلغ: ${data.amount.toLocaleString('ar-SY')} ل.س</div>
                                 <div style="font-size:0.8rem; color:var(--text-muted);">الحساب: ${sanitizeInput(data.account)} (${data.method})</div>
@@ -1259,7 +1305,7 @@
                 });
         }
 
-        // --- Promo Code Engine ---
+        // Promo Code Realtime Engine (Auto-deletes when exhausted in Admin)
         async function claimPromoCode() {
             const code = sanitizeInput(document.getElementById('promo-input').value).toUpperCase();
             if (!code) return alert("أدخل الكود الترويجي أولاً!");
@@ -1275,36 +1321,50 @@
                         const promoDoc = await transaction.get(promoRef);
                         const userDoc = await transaction.get(userRef);
 
-                        if (!promoDoc.exists) throw "الكود غير صحيح أو غير متوفر!";
+                        if (!promoDoc.exists) throw "الكود الترويجي غير صحيح أو قد تم حذفه!";
                         const promo = promoDoc.data();
 
+                        if (promo.status !== 'active') throw "هذا الكود غير فعال حالياً!";
+
                         if ((promo.usedCount || 0) >= (promo.maxUses || 0)) {
-                            throw "عذراً، نفذت المقاعد المتاحة لهذا الكود!";
+                            throw "عذراً، نفذت المقاعد المتاحة لهذا الكود وانتهى صلاحيته!";
                         }
 
                         const claimed = userDoc.data().claimedPromos || [];
                         if (claimed.includes(code)) throw "لقد قمت بتفعيل هذا الكود سابقاً!";
 
-                        // Atomically increment code usage & add reward to user balance
-                        transaction.update(promoRef, {
-                            usedCount: firebase.firestore.FieldValue.increment(1)
-                        });
+                        const newUsedCount = (promo.usedCount || 0) + 1;
 
+                        // Increment usage count atomically
+                        if (newUsedCount >= promo.maxUses) {
+                            // Automatically set inactive / delete if limit reached
+                            transaction.update(promoRef, {
+                                usedCount: newUsedCount,
+                                status: 'exhausted'
+                            });
+                        } else {
+                            transaction.update(promoRef, {
+                                usedCount: newUsedCount
+                            });
+                        }
+
+                        // Credit user balance
                         transaction.update(userRef, {
-                            balance: (userDoc.data().balance || 0) + promo.reward,
+                            balance: (userDoc.data().balance || 0) + (promo.reward || 0),
                             claimedPromos: firebase.firestore.FieldValue.arrayUnion(code)
                         });
                     });
 
-                    alert("تم تفعيل الكود بنجاح وإضافة الأرباح لرصيدك! 🎁");
+                    // Clear promo input after claiming
                     document.getElementById('promo-input').value = '';
+                    alert("تم تفعيل الكود بنجاح وإضافة الأرباح لحسابك! 🎁");
                 } catch (err) {
                     alert(err);
                 }
             }
         }
 
-        // --- Support Engine (Auto-Disappear after 5 Hours of Reply) ---
+        // Support Engine (Clears text immediately & Expires after 5h from admin reply)
         async function submitSupportTicket() {
             const msg = sanitizeInput(document.getElementById('support-msg').value);
             if (!msg) return alert("اكتب تفاصيل الشكوى أولاً!");
@@ -1312,6 +1372,7 @@
             debounceButton('btn-submit-support', 4000);
 
             if (db) {
+                // Sent to admin_support collection for future Admin Panel linking
                 await db.collection('admin_support').add({
                     userId: tgUser.id,
                     userName: sanitizeInput(tgUser.first_name),
@@ -1322,8 +1383,9 @@
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
-                alert("تم إرسال الشكوى للإدارة وسيتم الرد قريباً!");
-                document.getElementById('support-msg').value = ''; // Input cleared
+                // Clear textarea immediately after sending
+                document.getElementById('support-msg').value = '';
+                alert("تم إرسال الرسالة إلى الدعم الفني بنجاح وسيتم الرد قريباً!");
             }
         }
 
@@ -1340,23 +1402,22 @@
                     if (!snapshot.empty) {
                         const data = snapshot.docs[0].data();
 
-                        // 5 Hours expiration check after admin reply
+                        // Auto-hide ticket 5 hours after admin replies
                         if (data.replyTimestamp) {
                             const replyTime = data.replyTimestamp.toDate ? data.replyTimestamp.toDate().getTime() : data.replyTimestamp;
                             const hoursPassed = (Date.now() - replyTime) / (1000 * 60 * 60);
 
                             if (hoursPassed >= 5) {
-                                // Exceeded 5 hours -> Hide ticket completely
-                                return;
+                                return; // Hidden automatically
                             }
                         }
 
                         box.innerHTML = `
                             <div class="status-card">
-                                <div style="font-size:0.85rem; color:var(--text-muted);">آخر شكوى مقدمة</div>
+                                <div style="font-size:0.85rem; color:var(--text-muted);">أحدث استفسار مقدم</div>
                                 <div style="font-weight:700; margin: 6px 0;">"${sanitizeInput(data.message)}"</div>
                                 <div style="font-size:0.85rem; color:var(--gold-primary); margin-top:8px; font-weight:800;">
-                                    رد الإدارة: ${data.reply ? sanitizeInput(data.reply) : 'قيد المراجعة ⏳'}
+                                    رد الإدارة: ${data.reply ? sanitizeInput(data.reply) : 'قيد المراجعة والرد ⏳'}
                                 </div>
                             </div>
                         `;
@@ -1364,7 +1425,7 @@
                 });
         }
 
-        // --- Settings Utilities ---
+        // Settings Utilities
         function toggleTheme() {
             const theme = document.getElementById('setting-theme').value;
             document.documentElement.setAttribute('data-theme', theme);
