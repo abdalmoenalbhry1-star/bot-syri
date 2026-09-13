@@ -50,7 +50,8 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            user-select: none;
+            user-select: none !important;
+            -webkit-user-select: none !important;
             -webkit-tap-highlight-color: transparent;
             font-family: 'Cairo', sans-serif;
         }
@@ -64,7 +65,6 @@
             padding-bottom: 30px;
         }
 
-        /* --- Dynamic Glow Background --- */
         .bg-canvas {
             position: fixed;
             top: 0;
@@ -108,7 +108,6 @@
             padding: 16px;
         }
 
-        /* --- Header & Logo --- */
         .app-header {
             display: flex;
             justify-content: space-between;
@@ -164,7 +163,6 @@
 
         .btn-icon:active { transform: scale(0.92); }
 
-        /* --- User Profile Card --- */
         .user-card {
             background: var(--card-bg);
             border: 1px solid rgba(255, 183, 0, 0.35);
@@ -238,7 +236,6 @@
             letter-spacing: 1px;
         }
 
-        /* --- Main Menu Grid (5 Elements) --- */
         .grid-menu {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -275,7 +272,6 @@
         .card-icon { font-size: 2.2rem; }
         .card-title { font-size: 0.95rem; font-weight: 800; color: var(--text-main); }
 
-        /* --- Panel Navigation --- */
         .view-panel {
             display: none;
             animation: fadeIn 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -317,7 +313,6 @@
 
         .btn-back:active { transform: scale(0.95); }
 
-        /* --- Task Cards --- */
         .task-card {
             background: var(--card-bg);
             border: 1px solid rgba(255, 183, 0, 0.2);
@@ -366,7 +361,6 @@
             transition: width 0.4s ease;
         }
 
-        /* --- Buttons & Inputs --- */
         .btn-action {
             background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
             color: #000;
@@ -407,7 +401,7 @@
             color: var(--text-muted);
         }
 
-        .form-input, .form-select, .form-textarea {
+        .form-input, .form-textarea {
             width: 100%;
             background: rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 183, 0, 0.25);
@@ -419,12 +413,65 @@
             transition: var(--transition);
         }
 
-        .form-input:focus, .form-select:focus, .form-textarea:focus {
+        .form-input:focus, .form-textarea:focus {
             border-color: var(--gold-primary);
             box-shadow: 0 0 12px var(--gold-glow);
         }
 
-        /* --- Leaderboard Top 10 --- */
+        /* --- Internal Custom Dropdown System --- */
+        .custom-select-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .custom-select-trigger {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 183, 0, 0.35);
+            padding: 14px;
+            border-radius: var(--radius-md);
+            color: var(--gold-primary);
+            font-size: 0.95rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+
+        .custom-select-options {
+            position: absolute;
+            top: 110%;
+            left: 0;
+            right: 0;
+            background: #11131a;
+            border: 1px solid var(--gold-primary);
+            border-radius: var(--radius-md);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            display: none;
+            overflow: hidden;
+        }
+
+        .custom-select-options.open { display: block; animation: fadeIn 0.2s ease; }
+
+        .custom-option {
+            padding: 14px;
+            color: var(--text-main);
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .custom-option:last-child { border-bottom: none; }
+        .custom-option:hover, .custom-option.selected {
+            background: rgba(255, 183, 0, 0.15);
+            color: var(--gold-primary);
+        }
+
         .leader-item {
             display: flex;
             align-items: center;
@@ -441,7 +488,6 @@
         .rank-2 { color: #c0c0c0; }
         .rank-3 { color: #cd7f32; }
 
-        /* --- Status Single Card (No Stacking) --- */
         .status-card {
             background: var(--card-bg);
             border: 1px dashed var(--gold-primary);
@@ -465,7 +511,6 @@
         .tag-success { background: #2ed573; color: #000; }
         .tag-rejected { background: #ff4757; color: #fff; }
 
-        /* --- Modal Overlays --- */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -504,7 +549,6 @@
             color: var(--gold-primary);
         }
 
-        /* --- Real Canvas Captcha Box --- */
         .captcha-box {
             background: #000;
             border: 2px solid var(--gold-primary);
@@ -523,7 +567,6 @@
             box-shadow: 0 0 10px rgba(255, 183, 0, 0.2);
         }
 
-        /* --- Splash Screen --- */
         #splash-screen {
             position: fixed;
             top: 0;
@@ -572,7 +615,6 @@
 </head>
 <body>
 
-    <!-- Dynamic Background -->
     <div class="bg-canvas">
         <div class="matrix-map"></div>
         <div class="light-beam"></div>
@@ -585,15 +627,24 @@
         <div class="spinner"></div>
     </div>
 
-    <!-- Real HTML5 Canvas Captcha Modal -->
+    <!-- Internal Notification Modal (Replaces Browser Alerts) -->
+    <div class="modal-overlay" id="alert-modal">
+        <div class="modal-content" style="padding: 20px;">
+            <div class="modal-title" id="alert-title">تنبيه</div>
+            <p id="alert-msg" style="font-size: 0.95rem; color: var(--text-main); margin: 15px 0;"></p>
+            <button class="btn-action" onclick="closeModal('alert-modal')" id="lbl-alert-close">حسناً 👍</button>
+        </div>
+    </div>
+
+    <!-- Canvas Captcha Modal -->
     <div class="modal-overlay" id="captcha-modal">
         <div class="modal-content">
-            <div class="modal-title">التحقق الأمني (الكابتشا) 🛡️</div>
-            <p style="font-size: 0.85rem; color: var(--text-muted);">يرجى كتابة الرمز الظاهر في الصورة أدناه لتأكيد أنك لست روبوت (مرة واحدة كل 24 ساعة).</p>
+            <div class="modal-title" id="lbl-captcha-title">التحقق الأمني (الكابتشا) 🛡️</div>
+            <p style="font-size: 0.85rem; color: var(--text-muted);" id="lbl-captcha-desc">يرجى كتابة الرمز الظاهر في الصورة أدناه لتأكيد أنك لست روبوت (مرة واحدة كل 24 ساعة).</p>
             
             <div class="captcha-box">
                 <canvas id="captcha-canvas" width="220" height="70"></canvas>
-                <button class="btn-action secondary" style="padding: 5px 12px; font-size: 0.8rem; width: auto;" onclick="generateCaptcha()">تحديث الرمز 🔄</button>
+                <button class="btn-action secondary" style="padding: 5px 12px; font-size: 0.8rem; width: auto;" onclick="generateCaptcha()" id="lbl-captcha-refresh">تحديث الرمز 🔄</button>
             </div>
 
             <div class="form-group">
@@ -607,31 +658,43 @@
     <div class="modal-overlay" id="settings-modal">
         <div class="modal-content">
             <div class="section-header">
-                <div class="section-title">⚙️ الإعدادات والمعلومات</div>
+                <div class="section-title" id="lbl-settings-title">⚙️ الإعدادات والمعلومات</div>
                 <button class="btn-back" onclick="closeModal('settings-modal')">إغلاق ✖</button>
             </div>
             
             <div style="background: rgba(0,0,0,0.3); border:1px solid rgba(255,183,0,0.2); padding:12px; border-radius:14px; margin-bottom:14px; text-align:right;">
-                <div style="font-size:0.85rem; color:var(--text-muted);">معرف التلغرام (Telegram ID):</div>
+                <div style="font-size:0.85rem; color:var(--text-muted);" id="lbl-user-id">معرف التلغرام (Telegram ID):</div>
                 <div style="font-weight:800; color:var(--gold-primary); font-size: 1.1rem;" id="info-user-id">جار التحميل...</div>
-                <div style="font-size:0.85rem; color:var(--text-muted); margin-top:8px;">تاريخ الإنضمام للبوت:</div>
+                <div style="font-size:0.85rem; color:var(--text-muted); margin-top:8px;" id="lbl-join-date">تاريخ الإنضمام للبوت:</div>
                 <div style="font-weight:800; color:var(--text-main);" id="info-join-date">جار التحميل...</div>
             </div>
 
             <div class="form-group">
                 <label class="form-label" id="lbl-lang">🌐 لغة التطبيق / Language</label>
-                <select class="form-select" id="setting-lang" onchange="switchLanguage()">
-                    <option value="ar">العربية (Arabic)</option>
-                    <option value="en">English</option>
-                </select>
+                <div class="custom-select-wrapper">
+                    <div class="custom-select-trigger" onclick="toggleDropdown('lang-options')">
+                        <span id="selected-lang-text">العربية (Arabic)</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="custom-select-options" id="lang-options">
+                        <div class="custom-option selected" onclick="selectLanguage('ar')">العربية (Arabic)</div>
+                        <div class="custom-option" onclick="selectLanguage('en')">English</div>
+                    </div>
+                </div>
             </div>
 
             <div class="form-group">
                 <label class="form-label" id="lbl-theme">🌙 نمط الإضاءة</label>
-                <select class="form-select" id="setting-theme" onchange="toggleTheme()">
-                    <option value="dark">الوضع الليلي الفخم (Dark Gold)</option>
-                    <option value="light">الوضع النهاري المضيء (Light Gold)</option>
-                </select>
+                <div class="custom-select-wrapper">
+                    <div class="custom-select-trigger" onclick="toggleDropdown('theme-options')">
+                        <span id="selected-theme-text">الوضع الليلي (Dark Gold)</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="custom-select-options" id="theme-options">
+                        <div class="custom-option selected" onclick="selectTheme('dark')">الوضع الليلي (Dark Gold)</div>
+                        <div class="custom-option" onclick="selectTheme('light')">الوضع النهاري (Light Gold)</div>
+                    </div>
+                </div>
             </div>
 
             <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 15px 0;">
@@ -651,26 +714,24 @@
     <div class="modal-overlay" id="proof-modal">
         <div class="modal-content">
             <div class="section-header">
-                <div class="section-title">📤 تقديم إثبات المهمة</div>
+                <div class="section-title" id="lbl-proof-title">📤 تقديم إثبات المهمة</div>
                 <button class="btn-back" onclick="closeModal('proof-modal')">إغلاق ✖</button>
             </div>
             <div class="form-group">
-                <label class="form-label">عنوان المهمة</label>
+                <label class="form-label" id="lbl-proof-task">عنوان المهمة</label>
                 <input type="text" id="proof-task-title" class="form-input" readonly style="color:var(--gold-primary); font-weight:800;">
                 <input type="hidden" id="proof-task-id">
             </div>
             <div class="form-group">
-                <label class="form-label">تفاصيل الإثبات / معرف التلغرام</label>
+                <label class="form-label" id="lbl-proof-desc">تفاصيل الإثبات / معرف التلغرام</label>
                 <textarea id="proof-input-text" class="form-textarea" rows="3" placeholder="أدخل اسم المستخدم الخاص بك أو تفاصيل الإثبات..."></textarea>
             </div>
             <button class="btn-action" id="btn-submit-proof" onclick="submitTaskProof()">إرسال الإثبات للمراجعة 🚀</button>
         </div>
     </div>
 
-    <!-- Main App Container -->
     <div class="app-container">
 
-        <!-- App Header -->
         <header class="app-header">
             <div class="brand-title">
                 <div class="brand-logo">SYP</div>
@@ -679,7 +740,6 @@
             <button class="btn-icon" onclick="openModal('settings-modal')">⚙️</button>
         </header>
 
-        <!-- User Profile & Balance -->
         <div class="user-card">
             <div class="user-avatar-wrap" id="avatar-container">
                 <div class="avatar-placeholder" id="avatar-fallback">U</div>
@@ -689,10 +749,10 @@
                 <span class="badge-verified">✔</span>
             </div>
             <div class="balance-label" id="lbl-balance-title">الرصيد الحالي</div>
-            <div class="balance-amount"><span id="user-balance">0</span> <span style="font-size: 1.1rem; font-weight: 700;">ل.س</span></div>
+            <div class="balance-amount"><span id="user-balance">0</span> <span style="font-size: 1.1rem; font-weight: 700;" id="lbl-currency">ل.س</span></div>
         </div>
 
-        <!-- DASHBOARD VIEW (5 Grid Elements) -->
+        <!-- DASHBOARD VIEW -->
         <div id="view-dashboard" class="view-panel active">
             <div class="grid-menu">
                 <div class="grid-card" onclick="switchView('view-tasks')">
@@ -721,92 +781,91 @@
         <!-- TASKS VIEW -->
         <div id="view-tasks" class="view-panel">
             <div class="section-header">
-                <div class="section-title">🎯 المهام المتاحة</div>
-                <button class="btn-back" onclick="switchView('view-dashboard')">الرئيسية ↩</button>
+                <div class="section-title" id="lbl-tasks-head">🎯 المهام المتاحة</div>
+                <button class="btn-back" onclick="switchView('view-dashboard')" id="btn-back-1">الرئيسية ↩</button>
             </div>
             
-            <div id="tasks-container">
-                <!-- Dynamically Loaded Tasks -->
-            </div>
-
-            <!-- Single Latest Task Proof Status -->
+            <div id="tasks-container"></div>
             <div id="latest-proof-box"></div>
         </div>
 
         <!-- REFERRALS VIEW -->
         <div id="view-referrals" class="view-panel">
             <div class="section-header">
-                <div class="section-title">👥 نظام الإحالات</div>
-                <button class="btn-back" onclick="switchView('view-dashboard')">الرئيسية ↩</button>
+                <div class="section-title" id="lbl-ref-head">👥 نظام الإحالات</div>
+                <button class="btn-back" onclick="switchView('view-dashboard')" id="btn-back-2">الرئيسية ↩</button>
             </div>
 
             <div class="user-card" style="padding: 18px; margin-bottom: 16px;">
-                <div style="font-size: 0.85rem; color: var(--text-muted);">رابط الدعوة الخاص بك</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);" id="lbl-ref-link">رابط الدعوة الخاص بك</div>
                 <input type="text" id="ref-link-input" class="form-input" readonly style="margin: 10px 0; text-align: center; font-weight: 700; direction: ltr;" value="https://t.me/BotSyria_2026_bot?start=REF_">
                 
                 <div style="display: flex; gap: 8px; margin-top: 4px;">
-                    <button class="btn-action" style="flex:1;" onclick="copyRefLink()">نسخ 📋</button>
-                    <button class="btn-action secondary" style="flex:1;" onclick="shareRefTelegram()">مشاركة 🚀</button>
+                    <button class="btn-action" style="flex:1;" onclick="copyRefLink()" id="btn-ref-copy">نسخ 📋</button>
+                    <button class="btn-action secondary" style="flex:1;" onclick="shareRefTelegram()" id="btn-ref-share">مشاركة 🚀</button>
                 </div>
 
                 <div class="stats-grid">
                     <div class="stat-box">
                         <div class="stat-box-val" id="user-ref-count">0</div>
-                        <div class="stat-box-lbl">عدد الأصدقاء المدعوين</div>
+                        <div class="stat-box-lbl" id="lbl-ref-count">عدد الأصدقاء المدعوين</div>
                     </div>
                     <div class="stat-box">
                         <div class="stat-box-val" id="user-ref-earnings">0 ل.س</div>
-                        <div class="stat-box-lbl">إجمالي أرباح الإحالات</div>
+                        <div class="stat-box-lbl" id="lbl-ref-earnings">إجمالي أرباح الإحالات</div>
                     </div>
                 </div>
             </div>
 
-            <div class="section-title" style="margin-bottom: 10px;">🏆 أعلى 10 دُعاة (Leaderboard)</div>
-            <div id="leaderboard-list">
-                <!-- Top 10 Realtime List -->
-            </div>
+            <div class="section-title" style="margin-bottom: 10px;" id="lbl-leaderboard">🏆 أعلى 10 دُعاة (Leaderboard)</div>
+            <div id="leaderboard-list"></div>
         </div>
 
         <!-- WITHDRAW VIEW -->
         <div id="view-withdraw" class="view-panel">
             <div class="section-header">
-                <div class="section-title">💰 طلب سحب الأرباح</div>
-                <button class="btn-back" onclick="switchView('view-dashboard')">الرئيسية ↩</button>
+                <div class="section-title" id="lbl-withdraw-head">💰 طلب سحب الأرباح</div>
+                <button class="btn-back" onclick="switchView('view-dashboard')" id="btn-back-3">الرئيسية ↩</button>
             </div>
 
             <div class="task-card">
                 <div class="form-group">
-                    <label class="form-label">وسيلة الدفع حصراً</label>
-                    <select class="form-select" id="withdraw-method">
-                        <option value="سيرياتيل كاش (Syriatel Cash)">سيرياتيل كاش (Syriatel Cash)</option>
-                        <option value="شام كاش (Sham Cash)">شام كاش (Sham Cash)</option>
-                    </select>
+                    <label class="form-label" id="lbl-withdraw-method">وسيلة الدفع حصراً</label>
+                    <div class="custom-select-wrapper">
+                        <div class="custom-select-trigger" onclick="toggleDropdown('withdraw-options')">
+                            <span id="selected-withdraw-text">سيرياتيل كاش (Syriatel Cash)</span>
+                            <span>▼</span>
+                        </div>
+                        <div class="custom-select-options" id="withdraw-options">
+                            <div class="custom-option selected" onclick="selectWithdrawMethod('سيرياتيل كاش (Syriatel Cash)')">سيرياتيل كاش (Syriatel Cash)</div>
+                            <div class="custom-option" onclick="selectWithdrawMethod('شام كاش (Sham Cash)')">شام كاش (Sham Cash)</div>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">رقم الحساب / الهاتف</label>
+                    <label class="form-label" id="lbl-withdraw-acc">رقم الحساب / الهاتف</label>
                     <input type="number" id="withdraw-account" class="form-input" placeholder="09xxxxxxxx">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">المبلغ المراد سحبه (ل.س)</label>
+                    <label class="form-label" id="lbl-withdraw-amt">المبلغ المراد سحبه (ل.س)</label>
                     <input type="number" id="withdraw-amount" class="form-input" placeholder="أدخل المبلغ">
                 </div>
                 <button class="btn-action" id="btn-submit-withdraw" onclick="submitWithdrawal()">تأكيد طلب السحب 🚀</button>
             </div>
 
-            <!-- Single Latest Withdrawal Request Status (Old disappears) -->
             <div id="latest-withdraw-box"></div>
         </div>
 
         <!-- PROMO CODE VIEW -->
         <div id="view-promo" class="view-panel">
             <div class="section-header">
-                <div class="section-title">🎁 الكود الترويجي</div>
-                <button class="btn-back" onclick="switchView('view-dashboard')">الرئيسية ↩</button>
+                <div class="section-title" id="lbl-promo-head">🎁 الكود الترويجي</div>
+                <button class="btn-back" onclick="switchView('view-dashboard')" id="btn-back-4">الرئيسية ↩</button>
             </div>
 
             <div class="task-card">
                 <div class="form-group">
-                    <label class="form-label">أدخل الكود الترويجي</label>
+                    <label class="form-label" id="lbl-promo-input">أدخل الكود الترويجي</label>
                     <input type="text" id="promo-input" class="form-input" placeholder="مثال: SYRIA2026" style="text-align: center; text-transform: uppercase; font-weight: 800; letter-spacing: 1px;">
                 </div>
                 <button class="btn-action" id="btn-claim-promo" onclick="claimPromoCode()">تفعيل الكود 🎁</button>
@@ -816,29 +875,35 @@
         <!-- SUPPORT VIEW -->
         <div id="view-support" class="view-panel">
             <div class="section-header">
-                <div class="section-title">💬 الدعم الفني</div>
-                <button class="btn-back" onclick="switchView('view-dashboard')">الرئيسية ↩</button>
+                <div class="section-title" id="lbl-support-head">💬 الدعم الفني</div>
+                <button class="btn-back" onclick="switchView('view-dashboard')" id="btn-back-5">الرئيسية ↩</button>
             </div>
 
             <div class="task-card">
                 <div class="form-group">
-                    <label class="form-label">تفاصيل الشكوى أو الاستفسار</label>
+                    <label class="form-label" id="lbl-support-desc">تفاصيل الشكوى أو الاستفسار</label>
                     <textarea id="support-msg" class="form-textarea" rows="4" placeholder="اكتب استفسارك بدقة..."></textarea>
                 </div>
                 <button class="btn-action" id="btn-submit-support" onclick="submitSupportTicket()">إرسال إلى الإدارة 📩</button>
             </div>
 
-            <!-- Single Latest Support Ticket Status (Old disappears, expires after 5h from reply) -->
             <div id="latest-support-box"></div>
         </div>
 
     </div>
 
-    <!-- Application Script Engine -->
     <script>
         const BOT_USERNAME = "BotSyria_2026_bot";
+        let currentLang = 'ar';
+        let selectedWithdrawMethodVal = 'سيرياتيل كاش (Syriatel Cash)';
 
-        // Security Utility Helpers
+        // Internal Alert Helper
+        function showAlert(msg, title = null) {
+            document.getElementById('alert-msg').innerText = msg;
+            document.getElementById('alert-title').innerText = title || (currentLang === 'en' ? 'Notice' : 'تنبيه');
+            openModal('alert-modal');
+        }
+
         function sanitizeInput(str) {
             if (!str) return '';
             return String(str).replace(/[&<>"']/g, function (m) {
@@ -854,7 +919,30 @@
             }
         }
 
-        // Firebase Configuration
+        // Custom Internal Dropdown Controllers
+        function toggleDropdown(id) {
+            const options = document.getElementById(id);
+            const isOpened = options.classList.contains('open');
+            document.querySelectorAll('.custom-select-options').forEach(el => el.classList.remove('open'));
+            if (!isOpened) options.classList.add('open');
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.custom-select-wrapper')) {
+                document.querySelectorAll('.custom-select-options').forEach(el => el.classList.remove('open'));
+            }
+        });
+
+        function selectWithdrawMethod(val) {
+            selectedWithdrawMethodVal = val;
+            document.getElementById('selected-withdraw-text').innerText = val;
+            document.querySelectorAll('#withdraw-options .custom-option').forEach(el => {
+                el.classList.toggle('selected', el.innerText === val);
+            });
+            document.getElementById('withdraw-options').classList.remove('open');
+        }
+
+        // Firebase Setup
         const firebaseConfig = {
             apiKey: "YOUR_FIREBASE_API_KEY",
             authDomain: "bot-syria.firebaseapp.com",
@@ -869,10 +957,9 @@
             firebase.initializeApp(firebaseConfig);
             db = firebase.firestore();
         } catch (e) {
-            console.error("Firebase Initialization Error:", e);
+            console.error("Firebase Init Error:", e);
         }
 
-        // Application Global State
         let tgUser = null;
         let userData = { balance: 0, referralCount: 0, referralEarnings: 0, completedTasks: [], lastCaptchaTime: 0, claimedPromos: [] };
         let currentCaptchaCode = "";
@@ -885,14 +972,13 @@
                 if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                     tgUser = tg.initDataUnsafe.user;
                 }
-            } catch (err) { console.warn("Telegram WebApp Context Error:", err); }
+            } catch (err) { console.warn("Telegram WebApp Error:", err); }
         }
 
         if (!tgUser) {
             tgUser = { id: 77777777, first_name: "مستخدم اختباري", username: "demo_user" };
         }
 
-        // Application Lifecycle Startup
         window.addEventListener('DOMContentLoaded', async () => {
             setupUserProfile();
             
@@ -919,7 +1005,6 @@
             }
         });
 
-        // User Profile Setup
         function setupUserProfile() {
             document.getElementById('user-display-name').innerText = sanitizeInput(tgUser.first_name);
             document.getElementById('ref-link-input').value = `https://t.me/${BOT_USERNAME}?start=REF_${tgUser.id}`;
@@ -936,44 +1021,48 @@
         async function syncUserWithFirebase() {
             if (!db) return;
             const userRef = db.collection('users').doc(String(tgUser.id));
-            const doc = await userRef.get();
+            
+            try {
+                const doc = await userRef.get();
 
-            if (!doc.exists) {
-                userData = {
-                    userId: tgUser.id,
-                    name: sanitizeInput(tgUser.first_name),
-                    username: sanitizeInput(tgUser.username || ""),
-                    balance: 0,
-                    referralCount: 0,
-                    referralEarnings: 0,
-                    completedTasks: [],
-                    lastCaptchaTime: 0,
-                    claimedPromos: [],
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
-                await userRef.set(userData);
-                document.getElementById('info-join-date').innerText = new Date().toLocaleDateString('ar-SY');
-            } else {
-                userData = doc.data();
-                if (userData.createdAt) {
-                    const dateObj = userData.createdAt.toDate ? userData.createdAt.toDate() : new Date();
-                    document.getElementById('info-join-date').innerText = dateObj.toLocaleDateString('ar-SY');
-                } else {
+                if (!doc.exists) {
+                    userData = {
+                        userId: tgUser.id,
+                        name: sanitizeInput(tgUser.first_name),
+                        username: sanitizeInput(tgUser.username || ""),
+                        balance: 0,
+                        referralCount: 0,
+                        referralEarnings: 0,
+                        completedTasks: [],
+                        lastCaptchaTime: 0,
+                        claimedPromos: [],
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                    await userRef.set(userData);
                     document.getElementById('info-join-date').innerText = new Date().toLocaleDateString('ar-SY');
+                } else {
+                    userData = doc.data();
+                    if (userData.createdAt) {
+                        const dateObj = userData.createdAt.toDate ? userData.createdAt.toDate() : new Date();
+                        document.getElementById('info-join-date').innerText = dateObj.toLocaleDateString('ar-SY');
+                    } else {
+                        document.getElementById('info-join-date').innerText = new Date().toLocaleDateString('ar-SY');
+                    }
                 }
-            }
 
-            // Realtime user balance & info sync
-            userRef.onSnapshot(snapshot => {
-                if (snapshot.exists) {
-                    userData = snapshot.data();
-                    const currentVal = parseInt(document.getElementById("user-balance").innerText.replace(/,/g, '')) || 0;
-                    animateValue("user-balance", currentVal, userData.balance || 0, 600);
-                    
-                    document.getElementById('user-ref-count').innerText = (userData.referralCount || 0).toLocaleString('ar-SY');
-                    document.getElementById('user-ref-earnings').innerText = `${(userData.referralEarnings || 0).toLocaleString('ar-SY')} ل.س`;
-                }
-            });
+                userRef.onSnapshot(snapshot => {
+                    if (snapshot.exists) {
+                        userData = snapshot.data();
+                        const currentVal = parseInt(document.getElementById("user-balance").innerText.replace(/,/g, '')) || 0;
+                        animateValue("user-balance", currentVal, userData.balance || 0, 600);
+                        
+                        document.getElementById('user-ref-count').innerText = (userData.referralCount || 0).toLocaleString('ar-SY');
+                        document.getElementById('user-ref-earnings').innerText = `${(userData.referralEarnings || 0).toLocaleString('ar-SY')} ${currentLang === 'en' ? 'SYP' : 'ل.س'}`;
+                    }
+                });
+            } catch (err) {
+                console.error("Firestore sync bypassed:", err);
+            }
         }
 
         function animateValue(id, start, end, duration) {
@@ -998,25 +1087,22 @@
             }, stepTime || 20);
         }
 
-        // REAL HTML5 Canvas Captcha System
+        // Canvas Captcha System
         function generateCaptcha() {
             const canvas = document.getElementById('captcha-canvas');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Dark background
             ctx.fillStyle = '#11131a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Random chars generator (No ambiguous characters like O/0/1/I)
             const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
             currentCaptchaCode = '';
             for (let i = 0; i < 5; i++) {
                 currentCaptchaCode += chars.charAt(Math.floor(Math.random() * chars.length));
             }
 
-            // Render background interference lines
             for (let i = 0; i < 7; i++) {
                 ctx.strokeStyle = i % 2 === 0 ? 'rgba(255, 183, 0, 0.4)' : 'rgba(255, 255, 255, 0.15)';
                 ctx.lineWidth = 1.5;
@@ -1026,7 +1112,6 @@
                 ctx.stroke();
             }
 
-            // Render Distorted Text
             ctx.font = '900 26px Cairo, sans-serif';
             ctx.fillStyle = '#ffb700';
             ctx.textAlign = 'center';
@@ -1049,10 +1134,10 @@
 
         async function verifyCaptcha() {
             const val = sanitizeInput(document.getElementById('captcha-input').value).toUpperCase();
-            if (!val) return alert("يرجى إدخال رمز الكابتشا!");
+            if (!val) return showAlert(currentLang === 'en' ? "Please enter captcha code!" : "يرجى إدخال رمز الكابتشا!");
 
             if (val !== currentCaptchaCode) {
-                alert("رمز الكابتشا غير صحيح! حاول مرة أخرى.");
+                showAlert(currentLang === 'en' ? "Invalid Captcha code! Try again." : "رمز الكابتشا غير صحيح! حاول مرة أخرى.");
                 generateCaptcha();
                 document.getElementById('captcha-input').value = '';
                 return;
@@ -1061,17 +1146,18 @@
             debounceButton('btn-verify-captcha', 2000);
 
             if (db) {
-                await db.collection('users').doc(String(tgUser.id)).update({
-                    lastCaptchaTime: Date.now()
-                });
+                try {
+                    await db.collection('users').doc(String(tgUser.id)).update({
+                        lastCaptchaTime: Date.now()
+                    });
+                } catch(e){}
             }
 
             document.getElementById('captcha-input').value = '';
             closeModal('captcha-modal');
-            alert("تم التحقق من الكابتشا بنجاح! شكراً لك ✅");
+            showAlert(currentLang === 'en' ? "Captcha verified successfully! Thank you ✅" : "تم التحقق من الكابتشا بنجاح! شكراً لك ✅");
         }
 
-        // Navigation Management
         function switchView(viewId) {
             document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
@@ -1081,16 +1167,15 @@
         function openModal(id) { document.getElementById(id).classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-        // Referrals Engine
         function copyRefLink() {
             const input = document.getElementById('ref-link-input');
             input.select();
             document.execCommand('copy');
-            alert("تم نسخ رابط الإحالة بنجاح!");
+            showAlert(currentLang === 'en' ? "Referral link copied successfully!" : "تم نسخ رابط الإحالة بنجاح!");
         }
 
         function shareRefTelegram() {
-            const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(`https://t.me/${BOT_USERNAME}?start=REF_${tgUser.id}`)}&text=${encodeURIComponent("انضم الآن إلى بوت سوريا الرسمي وابدأ بكسب الأرباح بالليرة السورية سهلة وموثوقة! 🚀💰")}`;
+            const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(`https://t.me/${BOT_USERNAME}?start=REF_${tgUser.id}`)}&text=${encodeURIComponent(currentLang === 'en' ? "Join official BOT SYRIA now and start earning SYP!" : "انضم الآن إلى بوت سوريا الرسمي وابدأ بكسب الأرباح بالليرة السورية سهلة وموثوقة! 🚀💰")}`;
             
             if (tg && tg.openTelegramLink) tg.openTelegramLink(shareUrl);
             else window.open(shareUrl, '_blank');
@@ -1111,8 +1196,8 @@
                     list.innerHTML += `
                         <div class="leader-item">
                             <div class="leader-rank ${rankClass}">${badge}</div>
-                            <div style="flex-grow:1; font-weight:800;">${sanitizeInput(u.name || 'مستخدم')}</div>
-                            <div style="color:var(--gold-primary); font-weight:900;">${(u.referralCount || 0).toLocaleString('ar-SY')} إحالة</div>
+                            <div style="flex-grow:1; font-weight:800;">${sanitizeInput(u.name || (currentLang === 'en' ? 'User' : 'مستخدم'))}</div>
+                            <div style="color:var(--gold-primary); font-weight:900;">${(u.referralCount || 0).toLocaleString('ar-SY')} ${currentLang === 'en' ? 'Refs' : 'إحالة'}</div>
                         </div>
                     `;
                     rank++;
@@ -1120,7 +1205,6 @@
             });
         }
 
-        // Tasks Realtime Engine
         function loadRealtimeTasks() {
             if (!db) return;
             db.collection('tasks').onSnapshot(snapshot => {
@@ -1140,15 +1224,15 @@
                             <div class="task-card">
                                 <div class="task-header">
                                     <div class="task-title">${sanitizeInput(task.title)}</div>
-                                    <div class="task-reward">+${task.reward} ل.س</div>
+                                    <div class="task-reward">+${task.reward} ${currentLang === 'en' ? 'SYP' : 'ل.س'}</div>
                                 </div>
-                                <div class="task-seats">المقاعد المتبقية: ${task.totalSeats - task.claimedSeats} من ${task.totalSeats}</div>
+                                <div class="task-seats">${currentLang === 'en' ? 'Remaining seats' : 'المقاعد المتبقية'}: ${task.totalSeats - task.claimedSeats} / ${task.totalSeats}</div>
                                 <div class="progress-bar-bg">
                                     <div class="progress-bar-fill" style="width: ${progress}%"></div>
                                 </div>
                                 <div style="display:flex; gap:8px;">
-                                    <button class="btn-action secondary" style="flex:1;" onclick="openTaskLink('${task.link}')">زيارة الرابط 🔗</button>
-                                    <button class="btn-action" style="flex:1;" onclick="openTaskProofModal('${taskId}', '${sanitizeInput(task.title)}')">تقديم إثبات 📤</button>
+                                    <button class="btn-action secondary" style="flex:1;" onclick="openTaskLink('${task.link}')">${currentLang === 'en' ? 'Visit Link 🔗' : 'زيارة الرابط 🔗'}</button>
+                                    <button class="btn-action" style="flex:1;" onclick="openTaskProofModal('${taskId}', '${sanitizeInput(task.title)}')">${currentLang === 'en' ? 'Submit Proof 📤' : 'تقديم إثبات 📤'}</button>
                                 </div>
                             </div>
                         `;
@@ -1156,7 +1240,7 @@
                 });
 
                 if (container.innerHTML === '') {
-                    container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:25px;">لا توجد مهام جديدة حالياً.</div>';
+                    container.innerHTML = `<div style="text-align:center; color:var(--text-muted); padding:25px;">${currentLang === 'en' ? 'No active tasks available right now.' : 'لا توجد مهام جديدة حالياً.'}</div>`;
                 }
             });
         }
@@ -1178,26 +1262,29 @@
             const title = document.getElementById('proof-task-title').value;
             const proofText = sanitizeInput(document.getElementById('proof-input-text').value);
 
-            if (!proofText) return alert("يرجى أدخل تفاصيل الإثبات!");
+            if (!proofText) return showAlert(currentLang === 'en' ? "Please enter proof details!" : "يرجى إدخال تفاصيل الإثبات!");
 
             debounceButton('btn-submit-proof', 4000);
 
             if (db) {
-                // Sent to admin_proofs collection for future Admin Panel linking
-                await db.collection('admin_proofs').add({
-                    userId: tgUser.id,
-                    userName: sanitizeInput(tgUser.first_name),
-                    taskId: taskId,
-                    taskTitle: title,
-                    proofText: proofText,
-                    status: 'pending',
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                try {
+                    await db.collection('admin_proofs').add({
+                        userId: tgUser.id,
+                        userName: sanitizeInput(tgUser.first_name),
+                        taskId: taskId,
+                        taskTitle: title,
+                        proofText: proofText,
+                        status: 'pending',
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
 
-                // Clear input textarea after sending
-                document.getElementById('proof-input-text').value = '';
-                closeModal('proof-modal');
-                alert("تم إرسال الإثبات إلى صفحة المراجعة بنجاح! 🚀");
+                    // Clear textarea immediately after sending
+                    document.getElementById('proof-input-text').value = '';
+                    closeModal('proof-modal');
+                    showAlert(currentLang === 'en' ? "Proof submitted successfully for review! 🚀" : "تم إرسال الإثبات إلى صفحة المراجعة بنجاح! 🚀");
+                } catch(e) {
+                    showAlert(currentLang === 'en' ? "Failed to send proof. Try again." : "تعذر إرسال الإثبات. حاول مجدداً.");
+                }
             }
         }
 
@@ -1214,14 +1301,13 @@
                     if (!snapshot.empty) {
                         const data = snapshot.docs[0].data();
                         
-                        // Hide proof box when approved or rejected by admin
                         if (data.status === 'pending') {
                             box.innerHTML = `
                                 <div class="status-card">
-                                    <div style="font-size:0.85rem; color:var(--text-muted);">حالة أحدث إثبات مقدم للمهام</div>
-                                    <div class="status-tag tag-pending">قيد المراجعة ⏳</div>
-                                    <div style="font-weight:800; font-size:0.95rem;">المهمة: ${sanitizeInput(data.taskTitle)}</div>
-                                    <div style="font-size:0.8rem; color:var(--text-muted);">الإثبات: ${sanitizeInput(data.proofText)}</div>
+                                    <div style="font-size:0.85rem; color:var(--text-muted);">${currentLang === 'en' ? 'Latest Task Proof Status' : 'حالة أحدث إثبات مقدم للمهام'}</div>
+                                    <div class="status-tag tag-pending">${currentLang === 'en' ? 'Under Review ⏳' : 'قيد المراجعة ⏳'}</div>
+                                    <div style="font-weight:800; font-size:0.95rem;">${currentLang === 'en' ? 'Task' : 'المهمة'}: ${sanitizeInput(data.taskTitle)}</div>
+                                    <div style="font-size:0.8rem; color:var(--text-muted);">${currentLang === 'en' ? 'Proof' : 'الإثبات'}: ${sanitizeInput(data.proofText)}</div>
                                 </div>
                             `;
                         }
@@ -1231,13 +1317,13 @@
 
         // Withdrawal Engine
         async function submitWithdrawal() {
-            const method = document.getElementById('withdraw-method').value;
+            const method = selectedWithdrawMethodVal;
             const account = sanitizeInput(document.getElementById('withdraw-account').value);
             const amount = parseInt(document.getElementById('withdraw-amount').value);
 
-            if (!account || isNaN(amount) || amount <= 0) return alert("يرجى إدخال بيانات السحب بشكل صحيح!");
-            if (amount < 5000) return alert("الحد الأدنى للسحب هو 5000 ل.س!");
-            if (amount > userData.balance) return alert("رصيدك الحالي غير كافٍ لهذا الطلب!");
+            if (!account || isNaN(amount) || amount <= 0) return showAlert(currentLang === 'en' ? "Please enter valid withdrawal data!" : "يرجى إدخال بيانات السحب بشكل صحيح!");
+            if (amount < 5000) return showAlert(currentLang === 'en' ? "Minimum withdrawal is 5000 SYP!" : "الحد الأدنى للسحب هو 5000 ل.س!");
+            if (amount > userData.balance) return showAlert(currentLang === 'en' ? "Insufficient balance for this request!" : "رصيدك الحالي غير كافٍ لهذا الطلب!");
 
             debounceButton('btn-submit-withdraw', 4000);
 
@@ -1247,15 +1333,13 @@
                 try {
                     await db.runTransaction(async (transaction) => {
                         const sfDoc = await transaction.get(userRef);
-                        if (!sfDoc.exists) throw "حساب المستخدم غير موجود!";
+                        if (!sfDoc.exists) throw currentLang === 'en' ? "User record not found!" : "حساب المستخدم غير موجود!";
 
                         const currentBalance = sfDoc.data().balance || 0;
-                        if (currentBalance < amount) throw "رصيد غير كافٍ!";
+                        if (currentBalance < amount) throw currentLang === 'en' ? "Insufficient balance!" : "رصيد غير كافٍ!";
 
-                        // Deduct balance atomically
                         transaction.update(userRef, { balance: currentBalance - amount });
 
-                        // Add withdrawal request to admin_withdrawals collection for future Admin Panel linking
                         const newWithdrawRef = db.collection('admin_withdrawals').doc();
                         transaction.set(newWithdrawRef, {
                             userId: tgUser.id,
@@ -1268,12 +1352,12 @@
                         });
                     });
 
-                    // Clear inputs immediately
+                    // Clear input fields immediately
                     document.getElementById('withdraw-account').value = '';
                     document.getElementById('withdraw-amount').value = '';
-                    alert("تم إرسال طلب السحب إلى صفحة الإدارة بنجاح!");
+                    showAlert(currentLang === 'en' ? "Withdrawal request submitted successfully!" : "تم إرسال طلب السحب بنجاح!");
                 } catch (e) {
-                    alert("فشلت العملية: " + e);
+                    showAlert((currentLang === 'en' ? "Operation failed: " : "فشلت العملية: ") + e);
                 }
             }
         }
@@ -1291,24 +1375,24 @@
                     if (!snapshot.empty) {
                         const data = snapshot.docs[0].data();
                         let tagClass = data.status === 'pending' ? 'tag-pending' : data.status === 'approved' ? 'tag-success' : 'tag-rejected';
-                        let statusText = data.status === 'pending' ? 'قيد الانتظار ⏳' : data.status === 'approved' ? 'تم التحويل ✅' : 'مرفوض ❌';
+                        let statusText = data.status === 'pending' ? (currentLang === 'en' ? 'Pending ⏳' : 'قيد الانتظار ⏳') : data.status === 'approved' ? (currentLang === 'en' ? 'Transferred ✅' : 'تم التحويل ✅') : (currentLang === 'en' ? 'Rejected ❌' : 'مرفوض ❌');
 
                         box.innerHTML = `
                             <div class="status-card">
-                                <div style="font-size:0.85rem; color:var(--text-muted);">حالة أحدث طلب سحب</div>
+                                <div style="font-size:0.85rem; color:var(--text-muted);">${currentLang === 'en' ? 'Latest Withdrawal Request' : 'حالة أحدث طلب سحب'}</div>
                                 <div class="status-tag ${tagClass}">${statusText}</div>
-                                <div style="font-weight:800; font-size:1rem;">المبلغ: ${data.amount.toLocaleString('ar-SY')} ل.س</div>
-                                <div style="font-size:0.8rem; color:var(--text-muted);">الحساب: ${sanitizeInput(data.account)} (${data.method})</div>
+                                <div style="font-weight:800; font-size:1rem;">${currentLang === 'en' ? 'Amount' : 'المبلغ'}: ${data.amount.toLocaleString('ar-SY')} ${currentLang === 'en' ? 'SYP' : 'ل.س'}</div>
+                                <div style="font-size:0.8rem; color:var(--text-muted);">${currentLang === 'en' ? 'Account' : 'الحساب'}: ${sanitizeInput(data.account)} (${data.method})</div>
                             </div>
                         `;
                     }
                 });
         }
 
-        // Promo Code Realtime Engine (Auto-deletes when exhausted in Admin)
+        // Promo Code Realtime Engine (Custom modal alerts)
         async function claimPromoCode() {
             const code = sanitizeInput(document.getElementById('promo-input').value).toUpperCase();
-            if (!code) return alert("أدخل الكود الترويجي أولاً!");
+            if (!code) return showAlert(currentLang === 'en' ? "Please enter promo code first!" : "أدخل الكود الترويجي أولاً!");
 
             debounceButton('btn-claim-promo', 3000);
 
@@ -1321,23 +1405,21 @@
                         const promoDoc = await transaction.get(promoRef);
                         const userDoc = await transaction.get(userRef);
 
-                        if (!promoDoc.exists) throw "الكود الترويجي غير صحيح أو قد تم حذفه!";
+                        if (!promoDoc.exists) throw currentLang === 'en' ? "Invalid or expired promo code!" : "الكود الترويجي غير صحيح أو قد تم حذفه!";
                         const promo = promoDoc.data();
 
-                        if (promo.status !== 'active') throw "هذا الكود غير فعال حالياً!";
+                        if (promo.status !== 'active') throw currentLang === 'en' ? "This promo code is currently inactive!" : "هذا الكود غير فعال حالياً!";
 
                         if ((promo.usedCount || 0) >= (promo.maxUses || 0)) {
-                            throw "عذراً، نفذت المقاعد المتاحة لهذا الكود وانتهى صلاحيته!";
+                            throw currentLang === 'en' ? "Promo code usage limit reached!" : "عذراً، نفذت المقاعد المتاحة لهذا الكود وانتهت صلاحيته!";
                         }
 
                         const claimed = userDoc.data().claimedPromos || [];
-                        if (claimed.includes(code)) throw "لقد قمت بتفعيل هذا الكود سابقاً!";
+                        if (claimed.includes(code)) throw currentLang === 'en' ? "You have already claimed this promo code!" : "لقد قمت بتفعيل هذا الكود سابقاً!";
 
                         const newUsedCount = (promo.usedCount || 0) + 1;
 
-                        // Increment usage count atomically
                         if (newUsedCount >= promo.maxUses) {
-                            // Automatically set inactive / delete if limit reached
                             transaction.update(promoRef, {
                                 usedCount: newUsedCount,
                                 status: 'exhausted'
@@ -1348,44 +1430,46 @@
                             });
                         }
 
-                        // Credit user balance
                         transaction.update(userRef, {
                             balance: (userDoc.data().balance || 0) + (promo.reward || 0),
                             claimedPromos: firebase.firestore.FieldValue.arrayUnion(code)
                         });
                     });
 
-                    // Clear promo input after claiming
+                    // Clear promo input immediately after claiming
                     document.getElementById('promo-input').value = '';
-                    alert("تم تفعيل الكود بنجاح وإضافة الأرباح لحسابك! 🎁");
+                    showAlert(currentLang === 'en' ? "Promo code activated successfully! Reward added to balance. 🎁" : "تم تفعيل الكود بنجاح وإضافة الأرباح لحسابك! 🎁");
                 } catch (err) {
-                    alert(err);
+                    showAlert(err);
                 }
             }
         }
 
-        // Support Engine (Clears text immediately & Expires after 5h from admin reply)
+        // Support Engine (Clears text immediately)
         async function submitSupportTicket() {
             const msg = sanitizeInput(document.getElementById('support-msg').value);
-            if (!msg) return alert("اكتب تفاصيل الشكوى أولاً!");
+            if (!msg) return showAlert(currentLang === 'en' ? "Please write details first!" : "اكتب تفاصيل الشكوى أولاً!");
 
             debounceButton('btn-submit-support', 4000);
 
             if (db) {
-                // Sent to admin_support collection for future Admin Panel linking
-                await db.collection('admin_support').add({
-                    userId: tgUser.id,
-                    userName: sanitizeInput(tgUser.first_name),
-                    message: msg,
-                    reply: '',
-                    replyTimestamp: null,
-                    status: 'open',
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                try {
+                    await db.collection('admin_support').add({
+                        userId: tgUser.id,
+                        userName: sanitizeInput(tgUser.first_name),
+                        message: msg,
+                        reply: '',
+                        replyTimestamp: null,
+                        status: 'open',
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
 
-                // Clear textarea immediately after sending
-                document.getElementById('support-msg').value = '';
-                alert("تم إرسال الرسالة إلى الدعم الفني بنجاح وسيتم الرد قريباً!");
+                    // Clear textarea immediately after sending
+                    document.getElementById('support-msg').value = '';
+                    showAlert(currentLang === 'en' ? "Support message sent successfully!" : "تم إرسال الرسالة إلى الدعم الفني بنجاح وسيتم الرد قريباً!");
+                } catch (e) {
+                    showAlert(currentLang === 'en' ? "Failed to send message." : "تعذر إرسال الرسالة.");
+                }
             }
         }
 
@@ -1402,22 +1486,21 @@
                     if (!snapshot.empty) {
                         const data = snapshot.docs[0].data();
 
-                        // Auto-hide ticket 5 hours after admin replies
                         if (data.replyTimestamp) {
                             const replyTime = data.replyTimestamp.toDate ? data.replyTimestamp.toDate().getTime() : data.replyTimestamp;
                             const hoursPassed = (Date.now() - replyTime) / (1000 * 60 * 60);
 
                             if (hoursPassed >= 5) {
-                                return; // Hidden automatically
+                                return;
                             }
                         }
 
                         box.innerHTML = `
                             <div class="status-card">
-                                <div style="font-size:0.85rem; color:var(--text-muted);">أحدث استفسار مقدم</div>
+                                <div style="font-size:0.85rem; color:var(--text-muted);">${currentLang === 'en' ? 'Latest Submitted Inquiry' : 'أحدث استفسار مقدم'}</div>
                                 <div style="font-weight:700; margin: 6px 0;">"${sanitizeInput(data.message)}"</div>
                                 <div style="font-size:0.85rem; color:var(--gold-primary); margin-top:8px; font-weight:800;">
-                                    رد الإدارة: ${data.reply ? sanitizeInput(data.reply) : 'قيد المراجعة والرد ⏳'}
+                                    ${currentLang === 'en' ? 'Admin Reply: ' : 'رد الإدارة: '}${data.reply ? sanitizeInput(data.reply) : (currentLang === 'en' ? 'Under review ⏳' : 'قيد المراجعة والرد ⏳')}
                                 </div>
                             </div>
                         `;
@@ -1425,37 +1508,142 @@
                 });
         }
 
-        // Settings Utilities
-        function toggleTheme() {
-            const theme = document.getElementById('setting-theme').value;
+        // Settings Controllers (Full Multi-language Engine)
+        function selectTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
+            document.getElementById('selected-theme-text').innerText = theme === 'light' ? (currentLang === 'en' ? 'Light Gold' : 'الوضع النهاري (Light Gold)') : (currentLang === 'en' ? 'Dark Gold' : 'الوضع الليلي (Dark Gold)');
+            document.querySelectorAll('#theme-options .custom-option').forEach(el => el.classList.remove('selected'));
+            document.getElementById('theme-options').classList.remove('open');
         }
 
-        function switchLanguage() {
-            const lang = document.getElementById('setting-lang').value;
+        function selectLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('selected-lang-text').innerText = lang === 'en' ? 'English' : 'العربية (Arabic)';
+            document.querySelectorAll('#lang-options .custom-option').forEach(el => el.classList.remove('selected'));
+            document.getElementById('lang-options').classList.remove('open');
+
             if (lang === 'en') {
+                document.documentElement.setAttribute('dir', 'ltr');
                 document.getElementById('menu-btn-tasks').innerText = 'Tasks & Earn';
-                document.getElementById('menu-btn-referrals').innerText = 'Referrals';
-                document.getElementById('menu-btn-withdraw').innerText = 'Withdraw';
+                document.getElementById('menu-btn-referrals').innerText = 'Referral System';
+                document.getElementById('menu-btn-withdraw').innerText = 'Withdrawal';
                 document.getElementById('menu-btn-promo').innerText = 'Promo Code';
                 document.getElementById('menu-btn-support').innerText = 'Support';
                 document.getElementById('lbl-balance-title').innerText = 'Current Balance';
-                document.getElementById('lbl-lang').innerText = 'App Language / اللغة';
-                document.getElementById('lbl-theme').innerText = 'Theme Mode';
-                document.getElementById('lbl-guide-title').innerText = 'User Guide & Usage';
-                document.getElementById('lbl-guide-body').innerText = 'Welcome to BOT SYRIA! Complete tasks, invite friends, and use promo codes to earn SYP easily and safely.';
+                document.getElementById('lbl-currency').innerText = 'SYP';
+                
+                document.getElementById('lbl-settings-title').innerText = '⚙️ Settings & Info';
+                document.getElementById('lbl-user-id').innerText = 'Telegram ID:';
+                document.getElementById('lbl-join-date').innerText = 'Joined Date:';
+                document.getElementById('lbl-lang').innerText = '🌐 App Language';
+                document.getElementById('lbl-theme').innerText = '🌙 Theme Mode';
+                document.getElementById('lbl-guide-title').innerText = '📖 User Guide & Manual';
+                document.getElementById('lbl-guide-body').innerHTML = 'Welcome to **BOT SYRIA** platform.<br>🔹 **Tasks**: Complete tasks and submit proof to earn rewards.<br>🔹 **Referrals**: Share your referral link to earn commissions.<br>🔹 **Withdraw**: Cash out through Syriatel Cash or Sham Cash.<br>🔹 **Promo Code**: Activate daily promo codes for instant rewards.';
+                
+                document.getElementById('lbl-tasks-head').innerText = '🎯 Available Tasks';
+                document.getElementById('btn-back-1').innerText = 'Home ↩';
+                document.getElementById('btn-back-2').innerText = 'Home ↩';
+                document.getElementById('btn-back-3').innerText = 'Home ↩';
+                document.getElementById('btn-back-4').innerText = 'Home ↩';
+                document.getElementById('btn-back-5').innerText = 'Home ↩';
+
+                document.getElementById('lbl-ref-head').innerText = '👥 Referral System';
+                document.getElementById('lbl-ref-link').innerText = 'Your Referral Link';
+                document.getElementById('btn-ref-copy').innerText = 'Copy 📋';
+                document.getElementById('btn-ref-share').innerText = 'Share 🚀';
+                document.getElementById('lbl-ref-count').innerText = 'Invited Friends';
+                document.getElementById('lbl-ref-earnings').innerText = 'Total Referral Earnings';
+                document.getElementById('lbl-leaderboard').innerText = '🏆 Top 10 Referrers';
+
+                document.getElementById('lbl-withdraw-head').innerText = '💰 Withdraw Earnings';
+                document.getElementById('lbl-withdraw-method').innerText = 'Payment Method';
+                document.getElementById('lbl-withdraw-acc').innerText = 'Account / Phone Number';
+                document.getElementById('lbl-withdraw-amt').innerText = 'Amount to Withdraw (SYP)';
+                document.getElementById('btn-submit-withdraw').innerText = 'Confirm Withdrawal 🚀';
+
+                document.getElementById('lbl-promo-head').innerText = '🎁 Promo Code';
+                document.getElementById('lbl-promo-input').innerText = 'Enter Promo Code';
+                document.getElementById('btn-claim-promo').innerText = 'Activate Code 🎁';
+
+                document.getElementById('lbl-support-head').innerText = '💬 Technical Support';
+                document.getElementById('lbl-support-desc').innerText = 'Inquiry / Complaint Details';
+                document.getElementById('btn-submit-support').innerText = 'Send to Support 📩';
+
+                document.getElementById('lbl-proof-title').innerText = '📤 Submit Task Proof';
+                document.getElementById('lbl-proof-task').innerText = 'Task Title';
+                document.getElementById('lbl-proof-desc').innerText = 'Proof Details / Username';
+                document.getElementById('btn-submit-proof').innerText = 'Submit Proof 🚀';
+
+                document.getElementById('lbl-captcha-title').innerText = 'Security Check 🛡️';
+                document.getElementById('lbl-captcha-desc').innerText = 'Please enter the code shown below (Once every 24 hours).';
+                document.getElementById('lbl-captcha-refresh').innerText = 'Refresh 🔄';
+                document.getElementById('btn-verify-captcha').innerText = 'Verify Identity ✅';
+                document.getElementById('lbl-alert-close').innerText = 'OK 👍';
+
             } else {
+                document.documentElement.setAttribute('dir', 'rtl');
                 document.getElementById('menu-btn-tasks').innerText = 'المهام والربح';
                 document.getElementById('menu-btn-referrals').innerText = 'نظام الإحالات';
                 document.getElementById('menu-btn-withdraw').innerText = 'طلب السحب';
                 document.getElementById('menu-btn-promo').innerText = 'برومو كود';
                 document.getElementById('menu-btn-support').innerText = 'الدعم الفني';
                 document.getElementById('lbl-balance-title').innerText = 'الرصيد الحالي';
+                document.getElementById('lbl-currency').innerText = 'ل.س';
+
+                document.getElementById('lbl-settings-title').innerText = '⚙️ الإعدادات والمعلومات';
+                document.getElementById('lbl-user-id').innerText = 'معرف التلغرام (Telegram ID):';
+                document.getElementById('lbl-join-date').innerText = 'تاريخ الإنضمام للبوت:';
                 document.getElementById('lbl-lang').innerText = '🌐 لغة التطبيق / Language';
                 document.getElementById('lbl-theme').innerText = '🌙 نمط الإضاءة';
                 document.getElementById('lbl-guide-title').innerText = '📖 الشرح الشامل وطريقة الاستخدام';
-                document.getElementById('lbl-guide-body').innerText = 'أهلاً بك في منصة BOT SYRIA الأولى والأكثر أماناً لكسب الأرباح بالليرة السورية.';
+                document.getElementById('lbl-guide-body').innerHTML = 'أهلاً بك في منصة **BOT SYRIA** الأولى والأكثر أماناً لكسب الأرباح بالليرة السورية.<br>🔹 **المهام**: قم بتنفيذ المهام المتاحة وإرسال إثباتك، وسيتم مراجعته وإضافة المكافأة فوراً.<br>🔹 **الإحالات**: شارك رابطك الخاص مع أصدقائك، واكسب نقاط وأرباح مباشرة عن كل شخص ينضم عبر بوتنا الرسمى.<br>🔹 **السحب**: اختر وسيلة السحب المناسبة (سيرياتيل كاش / شام كاش) وسيتم معالجة طلبك بدقة عالية.<br>🔹 **البرومو كود**: تابع قناتنا للحصول على أكواد الهدايا اليومية وتفعيلها مباشرة.';
+
+                document.getElementById('lbl-tasks-head').innerText = '🎯 المهام المتاحة';
+                document.getElementById('btn-back-1').innerText = 'الرئيسية ↩';
+                document.getElementById('btn-back-2').innerText = 'الرئيسية ↩';
+                document.getElementById('btn-back-3').innerText = 'الرئيسية ↩';
+                document.getElementById('btn-back-4').innerText = 'الرئيسية ↩';
+                document.getElementById('btn-back-5').innerText = 'الرئيسية ↩';
+
+                document.getElementById('lbl-ref-head').innerText = '👥 نظام الإحالات';
+                document.getElementById('lbl-ref-link').innerText = 'رابط الدعوة الخاص بك';
+                document.getElementById('btn-ref-copy').innerText = 'نسخ 📋';
+                document.getElementById('btn-ref-share').innerText = 'مشاركة 🚀';
+                document.getElementById('lbl-ref-count').innerText = 'عدد الأصدقاء المدعوين';
+                document.getElementById('lbl-ref-earnings').innerText = 'إجمالي أرباح الإحالات';
+                document.getElementById('lbl-leaderboard').innerText = '🏆 أعلى 10 دُعاة (Leaderboard)';
+
+                document.getElementById('lbl-withdraw-head').innerText = '💰 طلب سحب الأرباح';
+                document.getElementById('lbl-withdraw-method').innerText = 'وسيلة الدفع حصراً';
+                document.getElementById('lbl-withdraw-acc').innerText = 'رقم الحساب / الهاتف';
+                document.getElementById('lbl-withdraw-amt').innerText = 'المبلغ المراد سحبه (ل.س)';
+                document.getElementById('btn-submit-withdraw').innerText = 'تأكيد طلب السحب 🚀';
+
+                document.getElementById('lbl-promo-head').innerText = '🎁 الكود الترويجي';
+                document.getElementById('lbl-promo-input').innerText = 'أدخل الكود الترويجي';
+                document.getElementById('btn-claim-promo').innerText = 'تفعيل الكود 🎁';
+
+                document.getElementById('lbl-support-head').innerText = '💬 الدعم الفني';
+                document.getElementById('lbl-support-desc').innerText = 'تفاصيل الشكوى أو الاستفسار';
+                document.getElementById('btn-submit-support').innerText = 'إرسال إلى الإدارة 📩';
+
+                document.getElementById('lbl-proof-title').innerText = '📤 تقديم إثبات المهمة';
+                document.getElementById('lbl-proof-task').innerText = 'عنوان المهمة';
+                document.getElementById('lbl-proof-desc').innerText = 'تفاصيل الإثبات / معرف التلغرام';
+                document.getElementById('btn-submit-proof').innerText = 'إرسال الإثبات للمراجعة 🚀';
+
+                document.getElementById('lbl-captcha-title').innerText = 'التحقق الأمني (الكابتشا) 🛡️';
+                document.getElementById('lbl-captcha-desc').innerText = 'يرجى كتابة الرمز الظاهر في الصورة أدناه لتأكيد أنك لست روبوت (مرة واحدة كل 24 ساعة).';
+                document.getElementById('lbl-captcha-refresh').innerText = 'تحديث الرمز 🔄';
+                document.getElementById('btn-verify-captcha').innerText = 'تأكيد الهوية ✅';
+                document.getElementById('lbl-alert-close').innerText = 'حسناً 👍';
             }
+
+            loadLeaderboard();
+            loadRealtimeTasks();
+            loadLatestWithdrawal();
+            loadLatestSupportTicket();
+            loadLatestProof();
         }
     </script>
 </body>
