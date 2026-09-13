@@ -942,14 +942,16 @@
             document.getElementById('withdraw-options').classList.remove('open');
         }
 
-        // Firebase Setup
+        // Firebase Setup (Real API Key Integration)
         const firebaseConfig = {
-            apiKey: "YOUR_FIREBASE_API_KEY",
+            apiKey: "AIzaSyD4EFPpYoKA0z-Jh5EaT-JmyJP-tAJKP9M",
             authDomain: "bot-syria.firebaseapp.com",
+            databaseURL: "https://bot-syria-default-rtdb.firebaseio.com",
             projectId: "bot-syria",
-            storageBucket: "bot-syria.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:abcdef"
+            storageBucket: "bot-syria.firebasestorage.app",
+            messagingSenderId: "865938637842",
+            appId: "1:865938637842:web:0a6040b189eb34d55084cb",
+            measurementId: "G-ZPL146P3C7"
         };
 
         let db = null;
@@ -1171,7 +1173,6 @@
             document.getElementById(viewId).classList.add('active');
             window.scrollTo(0,0);
 
-            // التعديل 2: تفريغ خانة الشكوى عند العودة لصفحة الدعم لتكون جاهزة لكتابة استفسار جديد
             if (viewId === 'view-support') {
                 document.getElementById('support-msg').value = '';
             }
@@ -1417,7 +1418,6 @@
                         const promoDoc = await transaction.get(promoRef);
                         const userDoc = await transaction.get(userRef);
 
-                        // التعديل 1: رسالة غير صحيح وحذف الكود مباشرة
                         if (!promoDoc.exists) {
                             throw currentLang === 'en' ? "Invalid code!" : "غير صحيح";
                         }
@@ -1455,7 +1455,6 @@
                     codeInput.value = '';
                     showAlert(currentLang === 'en' ? "Promo code activated successfully! 🎁" : "تم تفعيل الكود بنجاح وإضافة الأرباح لحسابك! 🎁");
                 } catch (err) {
-                    // تفريغ المدخل في حال الفشل كما طلبتم
                     codeInput.value = '';
                     showAlert(err);
                 }
