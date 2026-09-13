@@ -20,12 +20,12 @@
     <style>
         :root {
             --bg-dark: #060709;
-            --card-bg: rgba(18, 20, 26, 0.82);
+            --card-bg: rgba(18, 20, 26, 0.85);
             --gold-primary: #ffb700;
             --gold-secondary: #d4af37;
             --gold-light: #fff0a8;
             --gold-glow: rgba(255, 183, 0, 0.45);
-            --gold-glow-intense: rgba(255, 183, 0, 0.75);
+            --gold-glow-intense: rgba(255, 183, 0, 0.85);
             --text-main: #f8f9fa;
             --text-muted: #9aa0a6;
             --danger: #ff4757;
@@ -37,10 +37,11 @@
 
         [data-theme="light"] {
             --bg-dark: #f0f2f5;
-            --card-bg: rgba(255, 255, 255, 0.90);
+            --card-bg: rgba(255, 255, 255, 0.92);
             --gold-primary: #d4af37;
             --gold-secondary: #b8860b;
             --gold-glow: rgba(212, 175, 55, 0.25);
+            --gold-glow-intense: rgba(212, 175, 55, 0.5);
             --text-main: #1c1e21;
             --text-muted: #606770;
         }
@@ -63,7 +64,7 @@
             padding-bottom: 30px;
         }
 
-        /* --- Dark Gold Luxury Dynamic Background --- */
+        /* --- Dynamic Glow Background --- */
         .bg-canvas {
             position: fixed;
             top: 0;
@@ -81,18 +82,7 @@
             height: 100%;
             background-image: radial-gradient(var(--gold-glow) 1.2px, transparent 0);
             background-size: 22px 22px;
-            opacity: 0.3;
-        }
-
-        .candlestick-chart {
-            position: absolute;
-            bottom: 0;
-            right: -10px;
-            width: 280px;
-            height: 320px;
-            opacity: 0.15;
-            background: linear-gradient(0deg, var(--gold-primary) 0%, transparent 85%);
-            clip-path: polygon(5% 100%, 15% 75%, 25% 85%, 35% 55%, 45% 65%, 55% 35%, 65% 45%, 75% 15%, 85% 25%, 100% 5%, 100% 100%);
+            opacity: 0.35;
         }
 
         .light-beam {
@@ -100,8 +90,8 @@
             top: -180px;
             left: 50%;
             transform: translateX(-50%);
-            width: 420px;
-            height: 420px;
+            width: 450px;
+            height: 450px;
             background: radial-gradient(circle, var(--gold-glow-intense) 0%, transparent 70%);
             filter: blur(60px);
             animation: pulseGlow 4s infinite alternate ease-in-out;
@@ -112,7 +102,6 @@
             100% { opacity: 0.9; transform: translateX(-50%) scale(1.1); }
         }
 
-        /* --- Layout Container --- */
         .app-container {
             max-width: 480px;
             margin: 0 auto;
@@ -146,7 +135,6 @@
             font-size: 1.1rem;
             box-shadow: 0 0 20px var(--gold-glow);
             border: 1px solid var(--gold-light);
-            letter-spacing: 0.5px;
         }
 
         .brand-name {
@@ -175,11 +163,9 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
-        .btn-icon:active {
-            transform: scale(0.92);
-        }
+        .btn-icon:active { transform: scale(0.92); }
 
-        /* --- User Card & Balance --- */
+        /* --- User Profile Card --- */
         .user-card {
             background: var(--card-bg);
             border: 1px solid rgba(255, 183, 0, 0.35);
@@ -254,7 +240,7 @@
             letter-spacing: 1px;
         }
 
-        /* --- Grid Menu --- */
+        /* --- Main Menu Grid (5 Main Items) --- */
         .grid-menu {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -266,7 +252,7 @@
             background: var(--card-bg);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: var(--radius-md);
-            padding: 20px 14px;
+            padding: 22px 14px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -275,21 +261,11 @@
             cursor: pointer;
             backdrop-filter: blur(10px);
             transition: var(--transition);
-            position: relative;
-            overflow: hidden;
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
         }
 
-        .grid-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
-            opacity: 0;
-            transition: var(--transition);
+        .grid-card.full-width {
+            grid-column: span 2;
         }
 
         .grid-card:active {
@@ -298,12 +274,8 @@
             box-shadow: 0 8px 22px var(--gold-glow);
         }
 
-        .grid-card:active::before {
-            opacity: 1;
-        }
-
         .card-icon {
-            font-size: 2.1rem;
+            font-size: 2.2rem;
             filter: drop-shadow(0 0 8px rgba(255, 183, 0, 0.3));
         }
 
@@ -313,15 +285,13 @@
             color: var(--text-main);
         }
 
-        /* --- Panel Navigation & Animations --- */
+        /* --- Panel Navigation --- */
         .view-panel {
             display: none;
             animation: fadeIn 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        .view-panel.active {
-            display: block;
-        }
+        .view-panel.active { display: block; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(12px); }
@@ -355,11 +325,9 @@
             transition: var(--transition);
         }
 
-        .btn-back:active {
-            transform: scale(0.95);
-        }
+        .btn-back:active { transform: scale(0.95); }
 
-        /* --- Tasks Card --- */
+        /* --- Task Cards & Stats --- */
         .task-card {
             background: var(--card-bg);
             border: 1px solid rgba(255, 183, 0, 0.2);
@@ -379,10 +347,7 @@
             align-items: flex-start;
         }
 
-        .task-title {
-            font-size: 1rem;
-            font-weight: 800;
-        }
+        .task-title { font-size: 1rem; font-weight: 800; }
 
         .task-reward {
             background: rgba(255, 183, 0, 0.15);
@@ -395,10 +360,7 @@
             box-shadow: 0 0 10px var(--gold-glow);
         }
 
-        .task-seats {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
+        .task-seats { font-size: 0.8rem; color: var(--text-muted); }
 
         .progress-bar-bg {
             width: 100%;
@@ -431,19 +393,22 @@
             transition: var(--transition);
         }
 
+        .btn-action.secondary {
+            background: transparent;
+            border: 1px solid var(--gold-primary);
+            color: var(--gold-primary);
+            box-shadow: none;
+        }
+
         .btn-action:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             box-shadow: none;
         }
 
-        .btn-action:not(:disabled):active {
-            transform: scale(0.97);
-        }
+        .btn-action:not(:disabled):active { transform: scale(0.97); }
 
-        .form-group {
-            margin-bottom: 14px;
-        }
+        .form-group { margin-bottom: 14px; text-align: right; }
 
         .form-label {
             display: block;
@@ -482,17 +447,12 @@
             margin-bottom: 8px;
         }
 
-        .leader-rank {
-            font-weight: 900;
-            font-size: 1.1rem;
-            width: 35px;
-        }
-
+        .leader-rank { font-weight: 900; font-size: 1.1rem; width: 35px; }
         .rank-1 { color: #ffd700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
         .rank-2 { color: #c0c0c0; text-shadow: 0 0 10px rgba(192, 192, 192, 0.5); }
         .rank-3 { color: #cd7f32; text-shadow: 0 0 10px rgba(205, 127, 50, 0.5); }
 
-        /* --- Status Single Card (Withdraw & Support) --- */
+        /* --- Status Single Cards --- */
         .status-card {
             background: var(--card-bg);
             border: 1px dashed var(--gold-primary);
@@ -500,6 +460,7 @@
             padding: 16px;
             margin-top: 16px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            text-align: right;
         }
 
         .status-tag {
@@ -531,20 +492,20 @@
             padding: 20px;
         }
 
-        .modal-overlay.active {
-            display: flex;
-        }
+        .modal-overlay.active { display: flex; }
 
         .modal-content {
             background: #11131a;
             border: 1px solid var(--gold-primary);
             border-radius: var(--radius-lg);
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
             padding: 24px;
             box-shadow: 0 0 35px var(--gold-glow-intense);
             text-align: center;
             position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal-title {
@@ -563,13 +524,9 @@
             border: 2px solid var(--gold-primary);
         }
 
-        .captcha-img-box img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-        }
+        .captcha-img-box img { max-width: 100%; height: auto; display: block; }
 
-        /* --- Splash Screen (Guaranteed Dismissal Fix) --- */
+        /* --- Splash Screen --- */
         #splash-screen {
             position: fixed;
             top: 0;
@@ -596,37 +553,52 @@
             box-shadow: 0 0 15px var(--gold-glow);
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
         }
+
+        .stat-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 183, 0, 0.2);
+            padding: 10px;
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+
+        .stat-box-val { font-size: 1.2rem; font-weight: 900; color: var(--gold-primary); }
+        .stat-box-lbl { font-size: 0.75rem; color: var(--text-muted); }
     </style>
 </head>
 <body>
 
-    <!-- Dynamic Luxury Background -->
+    <!-- Dynamic Background -->
     <div class="bg-canvas">
         <div class="matrix-map"></div>
-        <div class="candlestick-chart"></div>
         <div class="light-beam"></div>
     </div>
 
-    <!-- Splash Screen (Fixed with SYP logo) -->
+    <!-- Splash Screen -->
     <div id="splash-screen">
         <div class="brand-logo" style="width: 75px; height: 75px; font-size: 1.8rem; border-radius: 22px;">SYP</div>
         <div class="brand-name" style="font-size: 1.8rem;">BOT SYRIA</div>
         <div class="spinner"></div>
     </div>
 
-    <!-- 2Captcha 24-Hour Verification Modal (Soft ID 5870) -->
+    <!-- 2Captcha Daily Modal -->
     <div class="modal-overlay" id="captcha-modal">
         <div class="modal-content">
             <div class="modal-title">التحقق اليومي من الأمان 🛡️</div>
-            <p style="font-size: 0.85rem; color: var(--text-muted);">يرجى حل رمز التحقق لحماية الحساب وتأكيد النشاط اليومي</p>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">يرجى حل رمز التحقق اليومي للحفاظ على أمان حسابك ومنع الحسابات الوهمية.</p>
             <div class="captcha-img-box">
                 <img id="captcha-img" src="" alt="Captcha Challenge">
             </div>
             <div class="form-group">
-                <input type="text" id="captcha-input" class="form-input" placeholder="أدخل الرمز هنا..." style="text-align: center; font-weight: 800; font-size: 1.1rem;">
+                <input type="text" id="captcha-input" class="form-input" placeholder="أدخل رمز الكابتشا..." style="text-align: center; font-weight: 800; font-size: 1.1rem;">
             </div>
             <button class="btn-action" id="btn-verify-captcha" onclick="verifyCaptcha()">تأكيد الهوية ✅</button>
         </div>
@@ -634,34 +606,65 @@
 
     <!-- Settings Modal -->
     <div class="modal-overlay" id="settings-modal">
-        <div class="modal-content" style="text-align: right;">
+        <div class="modal-content">
             <div class="section-header">
-                <div class="section-title">⚙️ الإعدادات</div>
+                <div class="section-title">⚙️ الإعدادات والمعلومات</div>
                 <button class="btn-back" onclick="closeModal('settings-modal')">إغلاق ✖</button>
             </div>
             
+            <div style="background: rgba(0,0,0,0.3); border:1px solid rgba(255,183,0,0.2); padding:12px; border-radius:14px; margin-bottom:14px; text-align:right;">
+                <div style="font-size:0.85rem; color:var(--text-muted);">معرف الحساب (Telegram ID):</div>
+                <div style="font-weight:800; color:var(--gold-primary);" id="info-user-id">...</div>
+                <div style="font-size:0.85rem; color:var(--text-muted); margin-top:6px;">تاريخ الإنضمام:</div>
+                <div style="font-weight:800; color:var(--text-main);" id="info-join-date">...</div>
+            </div>
+
             <div class="form-group">
-                <label class="form-label">🌐 لغة التطبيق / Language</label>
-                <select class="form-select" id="setting-lang">
+                <label class="form-label" id="lbl-lang">🌐 لغة التطبيق / Language</label>
+                <select class="form-select" id="setting-lang" onchange="switchLanguage()">
                     <option value="ar">العربية (Arabic)</option>
                     <option value="en">English</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label class="form-label">🌙 نمط الإضاءة</label>
+                <label class="form-label" id="lbl-theme">🌙 نمط الإضاءة</label>
                 <select class="form-select" id="setting-theme" onchange="toggleTheme()">
-                    <option value="dark">الوضع الداكن الفخم (Dark Gold)</option>
-                    <option value="light">الوضع المضيء (Light Gold)</option>
+                    <option value="dark">الوضع الليلي الفخم (Dark Gold)</option>
+                    <option value="light">الوضع النهاري المضيء (Light Gold)</option>
                 </select>
             </div>
 
             <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 15px 0;">
 
-            <div class="section-title" style="font-size: 0.95rem; margin-bottom: 8px;">📖 دليل الاستخدام</div>
-            <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;">
-                مرحباً بك في **BOT SYRIA**! يمكنك جمع الأرباح بالليرة السورية عند إنجاز المهام، دعوة الأصدقاء، أو تفعيل البرومو كود. يتم تحويل السحوبات عبر سيرياتيل كاش وشام كاش.
+            <div class="section-title" style="font-size: 0.95rem; margin-bottom: 8px;" id="lbl-guide-title">📖 الشرح الشامل وطريقة الاستخدام</div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.7; text-align: right;" id="lbl-guide-body">
+                أهلاً بك في منصة **BOT SYRIA** الأولى والأكثر أماناً لكسب الأرباح بالليرة السورية.<br>
+                🔹 **المهام**: قم بتنفيذ المهام المتاحة وإرسال إثباتك، وسيتم مراجعته وإضافة المكافأة فوراً.<br>
+                🔹 **الإحالات**: شارك رابطك الخاص مع أصدقائك، واكسب نقاط وأرباح مباشرة عن كل شخص ينضم.<br>
+                🔹 **السحب**: اختر وسيلة السحب المناسبة (سيرياتيل كاش / شام كاش) وسيتم معالجة طلبك بدقة عالية.<br>
+                🔹 **البرومو كود**: تابع قناتنا للحصول على أكواد الهدايا اليومية وتفعيلها مباشرة.
             </p>
+        </div>
+    </div>
+
+    <!-- Task Proof Submission Modal -->
+    <div class="modal-overlay" id="proof-modal">
+        <div class="modal-content">
+            <div class="section-header">
+                <div class="section-title">📤 تقديم إثبات المهمة</div>
+                <button class="btn-back" onclick="closeModal('proof-modal')">إغلاق ✖</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">عنوان المهمة</label>
+                <input type="text" id="proof-task-title" class="form-input" readonly>
+                <input type="hidden" id="proof-task-id">
+            </div>
+            <div class="form-group">
+                <label class="form-label">نص الإثبات / معرف التلغرام أو رابط الصورة</label>
+                <textarea id="proof-input-text" class="form-textarea" rows="3" placeholder="أدخل اسم المستخدم الخاص بك أو رابط اللقطة..."></textarea>
+            </div>
+            <button class="btn-action" id="btn-submit-proof" onclick="submitTaskProof()">إرسال الإثبات للمراجعة 🚀</button>
         </div>
     </div>
 
@@ -677,7 +680,7 @@
             <button class="btn-icon" onclick="openModal('settings-modal')">⚙️</button>
         </header>
 
-        <!-- Profile & Balance Card -->
+        <!-- User Profile & Balance -->
         <div class="user-card">
             <div class="user-avatar-wrap" id="avatar-container">
                 <div class="avatar-placeholder" id="avatar-fallback">U</div>
@@ -686,36 +689,32 @@
                 <span id="user-display-name">المستخدم</span>
                 <span class="badge-verified">✔</span>
             </div>
-            <div class="balance-label">الرصيد الحالي</div>
+            <div class="balance-label" id="lbl-balance-title">الرصيد الحالي</div>
             <div class="balance-amount"><span id="user-balance">0</span> <span style="font-size: 1.1rem; font-weight: 700;">ل.س</span></div>
         </div>
 
-        <!-- DASHBOARD VIEW -->
+        <!-- DASHBOARD VIEW (5 Grid Elements Only) -->
         <div id="view-dashboard" class="view-panel active">
             <div class="grid-menu">
                 <div class="grid-card" onclick="switchView('view-tasks')">
                     <div class="card-icon">🎯</div>
-                    <div class="card-title">المهام والربح</div>
+                    <div class="card-title" id="menu-btn-tasks">المهام والربح</div>
                 </div>
                 <div class="grid-card" onclick="switchView('view-referrals')">
                     <div class="card-icon">👥</div>
-                    <div class="card-title">نظام الإحالات</div>
+                    <div class="card-title" id="menu-btn-referrals">نظام الإحالات</div>
                 </div>
                 <div class="grid-card" onclick="switchView('view-withdraw')">
                     <div class="card-icon">💰</div>
-                    <div class="card-title">طلب السحب</div>
+                    <div class="card-title" id="menu-btn-withdraw">طلب السحب</div>
                 </div>
                 <div class="grid-card" onclick="switchView('view-promo')">
                     <div class="card-icon">🎁</div>
-                    <div class="card-title">برومو كود</div>
+                    <div class="card-title" id="menu-btn-promo">برومو كود</div>
                 </div>
-                <div class="grid-card" onclick="switchView('view-support')">
+                <div class="grid-card full-width" onclick="switchView('view-support')">
                     <div class="card-icon">💬</div>
-                    <div class="card-title">الدعم الفني</div>
-                </div>
-                <div class="grid-card" onclick="openModal('settings-modal')">
-                    <div class="card-icon">⚙️</div>
-                    <div class="card-title">الإعدادات</div>
+                    <div class="card-title" id="menu-btn-support">الدعم الفني</div>
                 </div>
             </div>
         </div>
@@ -726,9 +725,13 @@
                 <div class="section-title">🎯 المهام المتاحة</div>
                 <button class="btn-back" onclick="switchView('view-dashboard')">الرئيسية ↩</button>
             </div>
+            
             <div id="tasks-container">
-                <!-- Dynamically Populated Tasks -->
+                <!-- Dynamically Rendered Tasks -->
             </div>
+
+            <!-- Single Latest Task Proof Status -->
+            <div id="latest-proof-box"></div>
         </div>
 
         <!-- REFERRALS VIEW -->
@@ -741,7 +744,22 @@
             <div class="user-card" style="padding: 18px; margin-bottom: 16px;">
                 <div style="font-size: 0.85rem; color: var(--text-muted);">رابط الدعوة الخاص بك</div>
                 <input type="text" id="ref-link-input" class="form-input" readonly style="margin: 10px 0; text-align: center; font-weight: 700;" value="https://t.me/BOTSYRIA_BOT?start=REF_">
-                <button class="btn-action" onclick="copyRefLink()">نسخ الرابط 📋</button>
+                
+                <div style="display: flex; gap: 8px; margin-top: 4px;">
+                    <button class="btn-action" style="flex:1;" onclick="copyRefLink()">نسخ 📋</button>
+                    <button class="btn-action secondary" style="flex:1;" onclick="shareRefTelegram()">مشاركة 🚀</button>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-box-val" id="user-ref-count">0</div>
+                        <div class="stat-box-lbl">عدد الأصدقاء المدعوين</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-val" id="user-ref-earnings">0 ل.س</div>
+                        <div class="stat-box-lbl">إجمالي أرباح الإحالات</div>
+                    </div>
+                </div>
             </div>
 
             <div class="section-title" style="margin-bottom: 10px;">🏆 أعلى 10 دُعاة (Leaderboard)</div>
@@ -759,10 +777,10 @@
 
             <div class="task-card">
                 <div class="form-group">
-                    <label class="form-label">وسيلة الدفع المتاحة</label>
+                    <label class="form-label">وسيلة الدفع حصراً</label>
                     <select class="form-select" id="withdraw-method">
-                        <option value="syriatel">سيرياتيل كاش (Syriatel Cash)</option>
-                        <option value="sham">شام كاش (Sham Cash)</option>
+                        <option value="سيرياتيل كاش (Syriatel Cash)">سيرياتيل كاش (Syriatel Cash)</option>
+                        <option value="شام كاش (Sham Cash)">شام كاش (Sham Cash)</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -771,7 +789,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">المبلغ المراد سحبه (ل.س)</label>
-                    <input type="number" id="withdraw-amount" class="form-input" placeholder="أدخل المبلغ (الحد الأدنى 5000)">
+                    <input type="number" id="withdraw-amount" class="form-input" placeholder="أدخل المبلغ">
                 </div>
                 <button class="btn-action" id="btn-submit-withdraw" onclick="submitWithdrawal()">تأكيد طلب السحب 🚀</button>
             </div>
@@ -817,9 +835,9 @@
 
     </div>
 
-    <!-- Application Core Script -->
+    <!-- Application Engine Logic -->
     <script>
-        // --- Anti-Cheat Helpers & Security Utils ---
+        // --- Security Helper Utils ---
         function sanitizeInput(str) {
             if (!str) return '';
             return String(str).replace(/[&<>"']/g, function (m) {
@@ -835,7 +853,7 @@
             }
         }
 
-        // --- 1. Firebase Initialization Config ---
+        // --- Firebase Configuration ---
         const firebaseConfig = {
             apiKey: "YOUR_FIREBASE_API_KEY",
             authDomain: "bot-syria.firebaseapp.com",
@@ -850,15 +868,13 @@
             firebase.initializeApp(firebaseConfig);
             db = firebase.firestore();
         } catch (e) {
-            console.error("Firebase Initialization Exception:", e);
+            console.error("Firebase init error:", e);
         }
 
-        // --- 2. Global State ---
+        // --- Application State ---
         let tgUser = null;
-        let userData = { balance: 0, completedTasks: [], lastCaptchaTime: 0 };
-        const SOFT_ID = "5870"; // 2Captcha Software Identifier
+        let userData = { balance: 0, referralCount: 0, referralEarnings: 0, completedTasks: [], lastCaptchaTime: 0, claimedPromos: [] };
 
-        // --- 3. Telegram WebApp Setup ---
         const tg = window.Telegram ? window.Telegram.WebApp : null;
         if (tg) {
             try {
@@ -867,17 +883,14 @@
                 if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                     tgUser = tg.initDataUnsafe.user;
                 }
-            } catch (err) {
-                console.warn("Telegram WebApp initialization fallback", err);
-            }
+            } catch (err) { console.warn("Telegram WebApp init warning", err); }
         }
 
-        // Default Fallback User
         if (!tgUser) {
             tgUser = { id: 88888888, first_name: "مستخدم تجريبي", username: "demo_user" };
         }
 
-        // --- 4. Initialization Workflow with Guaranteed Splash Removal ---
+        // --- Application Startup ---
         window.addEventListener('DOMContentLoaded', async () => {
             setupUserProfile();
             
@@ -889,26 +902,28 @@
                     loadRealtimeTasks();
                     loadLatestWithdrawal();
                     loadLatestSupportTicket();
+                    loadLatestProof();
                 }
             } catch (err) {
-                console.error("Startup Loading Error:", err);
+                console.error("Startup error:", err);
             } finally {
-                // GUARANTEED UNBLOCK: Hide splash screen regardless of network/firebase state
+                // Guaranteed splash dismissal
                 setTimeout(() => {
                     const splash = document.getElementById('splash-screen');
                     if (splash) {
                         splash.style.opacity = '0';
                         setTimeout(() => splash.style.display = 'none', 500);
                     }
-                }, 1200);
+                }, 1000);
             }
         });
 
-        // --- 5. Profile & Firebase Sync ---
+        // --- User Profile Sync ---
         function setupUserProfile() {
             document.getElementById('user-display-name').innerText = sanitizeInput(tgUser.first_name);
             document.getElementById('ref-link-input').value = `https://t.me/BOTSYRIA_BOT?start=REF_${tgUser.id}`;
-            
+            document.getElementById('info-user-id').innerText = tgUser.id;
+
             if (tgUser.photo_url) {
                 document.getElementById('avatar-container').innerHTML = `<img src="${tgUser.photo_url}" class="user-avatar" alt="Avatar">`;
             } else {
@@ -928,21 +943,32 @@
                     name: sanitizeInput(tgUser.first_name),
                     username: sanitizeInput(tgUser.username || ""),
                     balance: 0,
+                    referralCount: 0,
+                    referralEarnings: 0,
                     completedTasks: [],
                     lastCaptchaTime: 0,
+                    claimedPromos: [],
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
                 await userRef.set(userData);
+                document.getElementById('info-join-date').innerText = new Date().toLocaleDateString('ar-SY');
             } else {
                 userData = doc.data();
+                if (userData.createdAt) {
+                    const dateObj = userData.createdAt.toDate ? userData.createdAt.toDate() : new Date();
+                    document.getElementById('info-join-date').innerText = dateObj.toLocaleDateString('ar-SY');
+                }
             }
 
-            // Realtime Balance Listener
+            // Realtime user update listener
             userRef.onSnapshot(snapshot => {
                 if (snapshot.exists) {
                     userData = snapshot.data();
                     const currentVal = parseInt(document.getElementById("user-balance").innerText.replace(/,/g, '')) || 0;
                     animateValue("user-balance", currentVal, userData.balance || 0, 800);
+                    
+                    document.getElementById('user-ref-count').innerText = (userData.referralCount || 0).toLocaleString('ar-SY');
+                    document.getElementById('user-ref-earnings').innerText = `${(userData.referralEarnings || 0).toLocaleString('ar-SY')} ل.س`;
                 }
             });
         }
@@ -969,7 +995,7 @@
             }, stepTime || 20);
         }
 
-        // --- 6. 2Captcha 24-Hour System (SoftID 5870) ---
+        // --- 2Captcha 24-Hour Check ---
         function check24HourCaptcha() {
             const now = Date.now();
             const lastTime = userData.lastCaptchaTime || 0;
@@ -981,7 +1007,6 @@
         }
 
         function fetch2CaptchaChallenge() {
-            // Software ID 5870 captcha endpoint reference
             document.getElementById('captcha-img').src = "https://via.placeholder.com/180x60/ffb700/000000?text=CAPTCHA+5870";
             openModal('captcha-modal');
         }
@@ -999,10 +1024,10 @@
             }
 
             closeModal('captcha-modal');
-            alert("تم إكمال التحقق بنجاح! شكراً لك.");
+            alert("تم إكمال التحقق الأمني بنجاح! شكراً لك.");
         }
 
-        // --- 7. Navigation ---
+        // --- Navigation ---
         function switchView(viewId) {
             document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
@@ -1012,54 +1037,23 @@
         function openModal(id) { document.getElementById(id).classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-        // --- 8. Dynamic Tasks System ---
-        function loadRealtimeTasks() {
-            if (!db) return;
-            db.collection('tasks').onSnapshot(snapshot => {
-                const container = document.getElementById('tasks-container');
-                container.innerHTML = '';
-
-                snapshot.forEach(doc => {
-                    const task = doc.data();
-                    const taskId = doc.id;
-
-                    const isCompleted = (userData.completedTasks || []).includes(taskId);
-                    const isFull = task.claimedSeats >= task.totalSeats;
-
-                    // Strictly hide completed or exhausted tasks
-                    if (!isCompleted && !isFull) {
-                        const progress = (task.claimedSeats / task.totalSeats) * 100;
-                        container.innerHTML += `
-                            <div class="task-card">
-                                <div class="task-header">
-                                    <div class="task-title">${sanitizeInput(task.title)}</div>
-                                    <div class="task-reward">+${task.reward} ل.س</div>
-                                </div>
-                                <div class="task-seats">المقاعد المتبقية: ${task.totalSeats - task.claimedSeats} من ${task.totalSeats}</div>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: ${progress}%"></div>
-                                </div>
-                                <button class="btn-action" onclick="executeTask('${taskId}', '${task.link}')">بدء المهمة 🔗</button>
-                            </div>
-                        `;
-                    }
-                });
-
-                if (container.innerHTML === '') {
-                    container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:25px;">لا توجد مهام متاحة حالياً.</div>';
-                }
-            });
+        // --- Referrals Engine ---
+        function copyRefLink() {
+            const input = document.getElementById('ref-link-input');
+            input.select();
+            document.execCommand('copy');
+            alert("تم نسخ رابط الإحالة بنجاح!");
         }
 
-        function executeTask(taskId, link) {
-            if (tg && tg.openTelegramLink && link.includes('t.me')) {
-                tg.openTelegramLink(link);
-            } else {
-                window.open(link, '_blank');
-            }
+        function shareRefTelegram() {
+            const url = encodeURIComponent(`https://t.me/BOTSYRIA_BOT?start=REF_${tgUser.id}`);
+            const text = encodeURIComponent("انضم الآن إلى بوت سوريا وابدأ بكسب الليرة السورية مجاناً! 🚀💰");
+            const shareUrl = `https://t.me/share/url?url=${url}&text=${text}`;
+            
+            if (tg && tg.openTelegramLink) tg.openTelegramLink(shareUrl);
+            else window.open(shareUrl, '_blank');
         }
 
-        // --- 9. Leaderboard ---
         function loadLeaderboard() {
             if (!db) return;
             db.collection('users').orderBy('referralCount', 'desc').limit(10).onSnapshot(snapshot => {
@@ -1076,7 +1070,7 @@
                         <div class="leader-item">
                             <div class="leader-rank ${rankClass}">${badge}</div>
                             <div style="flex-grow:1; font-weight:800;">${sanitizeInput(u.name || 'مستخدم')}</div>
-                            <div style="color:var(--gold-primary); font-weight:900;">${u.referralCount || 0} إحالة</div>
+                            <div style="color:var(--gold-primary); font-weight:900;">${(u.referralCount || 0).toLocaleString('ar-SY')} إحالة</div>
                         </div>
                     `;
                     rank++;
@@ -1084,14 +1078,113 @@
             });
         }
 
-        function copyRefLink() {
-            const input = document.getElementById('ref-link-input');
-            input.select();
-            document.execCommand('copy');
-            alert("تم نسخ رابط الإحالة بنجاح!");
+        // --- Tasks Engine ---
+        function loadRealtimeTasks() {
+            if (!db) return;
+            db.collection('tasks').onSnapshot(snapshot => {
+                const container = document.getElementById('tasks-container');
+                container.innerHTML = '';
+
+                snapshot.forEach(doc => {
+                    const task = doc.data();
+                    const taskId = doc.id;
+
+                    const isCompleted = (userData.completedTasks || []).includes(taskId);
+                    const isFull = task.claimedSeats >= task.totalSeats;
+
+                    if (!isCompleted && !isFull) {
+                        const progress = (task.claimedSeats / task.totalSeats) * 100;
+                        container.innerHTML += `
+                            <div class="task-card">
+                                <div class="task-header">
+                                    <div class="task-title">${sanitizeInput(task.title)}</div>
+                                    <div class="task-reward">+${task.reward} ل.س</div>
+                                </div>
+                                <div class="task-seats">المقاعد المتبقية: ${task.totalSeats - task.claimedSeats} من ${task.totalSeats}</div>
+                                <div class="progress-bar-bg">
+                                    <div class="progress-bar-fill" style="width: ${progress}%"></div>
+                                </div>
+                                <div style="display:flex; gap:8px;">
+                                    <button class="btn-action secondary" style="flex:1;" onclick="openTaskLink('${task.link}')">زيارة الرابط 🔗</button>
+                                    <button class="btn-action" style="flex:1;" onclick="openTaskProofModal('${taskId}', '${sanitizeInput(task.title)}')">تقديم إثبات 📤</button>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+
+                if (container.innerHTML === '') {
+                    container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:25px;">لا توجد مهام متاحة حالياً.</div>';
+                }
+            });
         }
 
-        // --- 10. Withdrawal Engine ---
+        function openTaskLink(link) {
+            if (tg && tg.openTelegramLink && link.includes('t.me')) tg.openTelegramLink(link);
+            else window.open(link, '_blank');
+        }
+
+        function openTaskProofModal(taskId, title) {
+            document.getElementById('proof-task-id').value = taskId;
+            document.getElementById('proof-task-title').value = title;
+            document.getElementById('proof-input-text').value = '';
+            openModal('proof-modal');
+        }
+
+        async function submitTaskProof() {
+            const taskId = document.getElementById('proof-task-id').value;
+            const title = document.getElementById('proof-task-title').value;
+            const proofText = sanitizeInput(document.getElementById('proof-input-text').value);
+
+            if (!proofText) return alert("يرجى أدخل تفاصيل الإثبات!");
+
+            debounceButton('btn-submit-proof', 4000);
+
+            if (db) {
+                await db.collection('task_proofs').add({
+                    userId: tgUser.id,
+                    userName: sanitizeInput(tgUser.first_name),
+                    taskId: taskId,
+                    taskTitle: title,
+                    proofText: proofText,
+                    status: 'pending',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                closeModal('proof-modal');
+                alert("تم إرسال الإثبات إلى صفحة المراجعة بنجاح! 🚀");
+            }
+        }
+
+        function loadLatestProof() {
+            if (!db) return;
+            db.collection('task_proofs')
+                .where('userId', '==', tgUser.id)
+                .orderBy('timestamp', 'desc')
+                .limit(1)
+                .onSnapshot(snapshot => {
+                    const box = document.getElementById('latest-proof-box');
+                    box.innerHTML = '';
+
+                    if (!snapshot.empty) {
+                        const data = snapshot.docs[0].data();
+                        
+                        // Hide proof if approved/rejected and completed
+                        if (data.status === 'pending') {
+                            box.innerHTML = `
+                                <div class="status-card">
+                                    <div style="font-size:0.85rem; color:var(--text-muted);">حالة أحدث إثبات مقدم للمهام</div>
+                                    <div class="status-tag tag-pending">قيد المراجعة ⏳</div>
+                                    <div style="font-weight:800; font-size:0.95rem;">المهمة: ${sanitizeInput(data.taskTitle)}</div>
+                                    <div style="font-size:0.8rem; color:var(--text-muted);">الإثبات: ${sanitizeInput(data.proofText)}</div>
+                                </div>
+                            `;
+                        }
+                    }
+                });
+        }
+
+        // --- Withdrawal Engine ---
         async function submitWithdrawal() {
             const method = document.getElementById('withdraw-method').value;
             const account = sanitizeInput(document.getElementById('withdraw-account').value);
@@ -1104,19 +1197,20 @@
             debounceButton('btn-submit-withdraw', 4000);
 
             if (db) {
-                // Atomic Firebase Transaction to prevent cheat / double spend
                 const userRef = db.collection('users').doc(String(tgUser.id));
 
                 try {
                     await db.runTransaction(async (transaction) => {
                         const sfDoc = await transaction.get(userRef);
-                        if (!sfDoc.exists) throw "User record missing!";
+                        if (!sfDoc.exists) throw "حساب المستخدم غير موجود!";
 
                         const currentBalance = sfDoc.data().balance || 0;
                         if (currentBalance < amount) throw "رصيد غير كافٍ!";
 
+                        // Deduct balance securely
                         transaction.update(userRef, { balance: currentBalance - amount });
 
+                        // Add withdrawal request (sent to admin panel)
                         const newWithdrawRef = db.collection('admin_withdrawals').doc();
                         transaction.set(newWithdrawRef, {
                             userId: tgUser.id,
@@ -1165,7 +1259,7 @@
                 });
         }
 
-        // --- 11. Promo Code Engine ---
+        // --- Promo Code Engine ---
         async function claimPromoCode() {
             const code = sanitizeInput(document.getElementById('promo-input').value).toUpperCase();
             if (!code) return alert("أدخل الكود الترويجي أولاً!");
@@ -1184,8 +1278,17 @@
                         if (!promoDoc.exists) throw "الكود غير صحيح أو غير متوفر!";
                         const promo = promoDoc.data();
 
+                        if ((promo.usedCount || 0) >= (promo.maxUses || 0)) {
+                            throw "عذراً، نفذت المقاعد المتاحة لهذا الكود!";
+                        }
+
                         const claimed = userDoc.data().claimedPromos || [];
-                        if (claimed.includes(code)) throw "لقد قمت بتفعيل هذا الكود من قبل!";
+                        if (claimed.includes(code)) throw "لقد قمت بتفعيل هذا الكود سابقاً!";
+
+                        // Atomically increment code usage & add reward to user balance
+                        transaction.update(promoRef, {
+                            usedCount: firebase.firestore.FieldValue.increment(1)
+                        });
 
                         transaction.update(userRef, {
                             balance: (userDoc.data().balance || 0) + promo.reward,
@@ -1193,7 +1296,7 @@
                         });
                     });
 
-                    alert("تم تفعيل الكود وإضافة المكافأة لرصيدك بنجاح! 🎁");
+                    alert("تم تفعيل الكود بنجاح وإضافة الأرباح لرصيدك! 🎁");
                     document.getElementById('promo-input').value = '';
                 } catch (err) {
                     alert(err);
@@ -1201,7 +1304,7 @@
             }
         }
 
-        // --- 12. Support Engine ---
+        // --- Support Engine (Auto-Disappear after 5 Hours of Reply) ---
         async function submitSupportTicket() {
             const msg = sanitizeInput(document.getElementById('support-msg').value);
             if (!msg) return alert("اكتب تفاصيل الشكوى أولاً!");
@@ -1214,12 +1317,13 @@
                     userName: sanitizeInput(tgUser.first_name),
                     message: msg,
                     reply: '',
+                    replyTimestamp: null,
                     status: 'open',
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
                 alert("تم إرسال الشكوى للإدارة وسيتم الرد قريباً!");
-                document.getElementById('support-msg').value = '';
+                document.getElementById('support-msg').value = ''; // Input cleared
             }
         }
 
@@ -1235,9 +1339,21 @@
 
                     if (!snapshot.empty) {
                         const data = snapshot.docs[0].data();
+
+                        // 5 Hours expiration check after admin reply
+                        if (data.replyTimestamp) {
+                            const replyTime = data.replyTimestamp.toDate ? data.replyTimestamp.toDate().getTime() : data.replyTimestamp;
+                            const hoursPassed = (Date.now() - replyTime) / (1000 * 60 * 60);
+
+                            if (hoursPassed >= 5) {
+                                // Exceeded 5 hours -> Hide ticket completely
+                                return;
+                            }
+                        }
+
                         box.innerHTML = `
                             <div class="status-card">
-                                <div style="font-size:0.85rem; color:var(--text-muted);">آخر شكوى قدمتها</div>
+                                <div style="font-size:0.85rem; color:var(--text-muted);">آخر شكوى مقدمة</div>
                                 <div style="font-weight:700; margin: 6px 0;">"${sanitizeInput(data.message)}"</div>
                                 <div style="font-size:0.85rem; color:var(--gold-primary); margin-top:8px; font-weight:800;">
                                     رد الإدارة: ${data.reply ? sanitizeInput(data.reply) : 'قيد المراجعة ⏳'}
@@ -1248,9 +1364,37 @@
                 });
         }
 
+        // --- Settings Utilities ---
         function toggleTheme() {
             const theme = document.getElementById('setting-theme').value;
             document.documentElement.setAttribute('data-theme', theme);
+        }
+
+        function switchLanguage() {
+            const lang = document.getElementById('setting-lang').value;
+            if (lang === 'en') {
+                document.getElementById('menu-btn-tasks').innerText = 'Tasks & Earn';
+                document.getElementById('menu-btn-referrals').innerText = 'Referrals';
+                document.getElementById('menu-btn-withdraw').innerText = 'Withdraw';
+                document.getElementById('menu-btn-promo').innerText = 'Promo Code';
+                document.getElementById('menu-btn-support').innerText = 'Support';
+                document.getElementById('lbl-balance-title').innerText = 'Current Balance';
+                document.getElementById('lbl-lang').innerText = 'App Language / اللغة';
+                document.getElementById('lbl-theme').innerText = 'Theme Mode';
+                document.getElementById('lbl-guide-title').innerText = 'User Guide & Usage';
+                document.getElementById('lbl-guide-body').innerText = 'Welcome to BOT SYRIA! Complete tasks, invite friends, and use promo codes to earn SYP easily and safely.';
+            } else {
+                document.getElementById('menu-btn-tasks').innerText = 'المهام والربح';
+                document.getElementById('menu-btn-referrals').innerText = 'نظام الإحالات';
+                document.getElementById('menu-btn-withdraw').innerText = 'طلب السحب';
+                document.getElementById('menu-btn-promo').innerText = 'برومو كود';
+                document.getElementById('menu-btn-support').innerText = 'الدعم الفني';
+                document.getElementById('lbl-balance-title').innerText = 'الرصيد الحالي';
+                document.getElementById('lbl-lang').innerText = '🌐 لغة التطبيق / Language';
+                document.getElementById('lbl-theme').innerText = '🌙 نمط الإضاءة';
+                document.getElementById('lbl-guide-title').innerText = '📖 الشرح الشامل وطريقة الاستخدام';
+                document.getElementById('lbl-guide-body').innerText = 'أهلاً بك في منصة BOT SYRIA الأولى والأكثر أماناً لكسب الأرباح بالليرة السورية.';
+            }
         }
     </script>
 </body>
