@@ -4,455 +4,1650 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BOT SYRIA - Mini App</title>
-
+    
     <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
-    <!-- Firebase SDKs -->
+    <!-- Firebase SDK (Compat Version) -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-color: #0f1219;
-            --card-bg: #181d29;
-            --accent-gold: #ffb703;
-            --text-color: #ffffff;
-            --text-muted: #94a3b8;
-            --danger-color: #ef4444;
-            --success-color: #22c55e;
-            --border-color: #2a3245;
+            --bg-dark: #060709;
+            --card-bg: rgba(18, 20, 26, 0.88);
+            --gold-primary: #ffb700;
+            --gold-secondary: #d4af37;
+            --gold-light: #fff0a8;
+            --gold-glow: rgba(255, 183, 0, 0.4);
+            --gold-glow-intense: rgba(255, 183, 0, 0.8);
+            --text-main: #f8f9fa;
+            --text-muted: #9aa0a6;
+            --danger: #ff4757;
+            --success: #2ed573;
+            --radius-lg: 22px;
+            --radius-md: 16px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        [data-theme="light"] {
+            --bg-dark: #f0f2f5;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --gold-primary: #d4af37;
+            --gold-secondary: #b8860b;
+            --gold-glow: rgba(212, 175, 55, 0.25);
+            --gold-glow-intense: rgba(212, 175, 55, 0.5);
+            --text-main: #1c1e21;
+            --text-muted: #606770;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            user-select: none;
-            -webkit-user-select: none;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Cairo', sans-serif;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            padding-bottom: 30px;
+        }
+
+        .bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .matrix-map {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(var(--gold-glow) 1.2px, transparent 0);
+            background-size: 22px 22px;
+            opacity: 0.35;
+        }
+
+        .light-beam {
+            position: absolute;
+            top: -180px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, var(--gold-glow-intense) 0%, transparent 70%);
+            filter: blur(60px);
+            animation: pulseGlow 4s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0% { opacity: 0.5; transform: translateX(-50%) scale(0.9); }
+            100% { opacity: 0.9; transform: translateX(-50%) scale(1.1); }
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
             padding: 16px;
+        }
+
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0 18px 0;
+        }
+
+        .brand-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            color: #000;
+            font-size: 1.1rem;
+            box-shadow: 0 0 20px var(--gold-glow);
+            border: 1px solid var(--gold-light);
+        }
+
+        .brand-name {
+            font-size: 1.35rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #ffffff 30%, var(--gold-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn-icon {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 183, 0, 0.3);
+            color: var(--text-main);
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-icon:active { transform: scale(0.92); }
+
+        .user-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 183, 0, 0.35);
+            border-radius: var(--radius-lg);
+            padding: 22px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.6), inset 0 0 20px rgba(255, 183, 0, 0.08);
+            margin-bottom: 22px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-avatar-wrap {
+            position: relative;
+            width: 76px;
+            height: 76px;
+            margin: 0 auto 12px auto;
+        }
+
+        .user-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--gold-primary);
+            box-shadow: 0 0 22px var(--gold-glow);
+        }
+
+        .avatar-placeholder {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #232733, #11131a);
+            border: 2px solid var(--gold-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--gold-primary);
+            box-shadow: 0 0 22px var(--gold-glow);
+        }
+
+        .user-name {
+            font-size: 1.15rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .badge-verified {
+            color: var(--gold-primary);
+            font-size: 0.95rem;
+        }
+
+        .balance-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 14px;
+        }
+
+        .balance-amount {
+            font-size: 2.3rem;
+            font-weight: 900;
+            color: var(--gold-primary);
+            text-shadow: 0 0 16px var(--gold-glow);
+            margin-top: 2px;
+            letter-spacing: 1px;
+        }
+
+        .grid-menu {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .grid-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-md);
+            padding: 22px 14px;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
+        .grid-card.full-width {
+            grid-column: span 2;
         }
 
-        .header h1 {
-            color: var(--accent-gold);
-            font-size: 1.5rem;
-            margin-bottom: 4px;
+        .grid-card:active {
+            transform: translateY(-3px) scale(0.98);
+            border-color: var(--gold-primary);
+            box-shadow: 0 8px 22px var(--gold-glow);
         }
 
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 16px;
+        .card-icon { font-size: 2.2rem; }
+        .card-title { font-size: 0.95rem; font-weight: 800; color: var(--text-main); }
+
+        .view-panel {
+            display: none;
+            animation: fadeIn 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .view-panel.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin-bottom: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .section-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-back {
+            background: rgba(255, 183, 0, 0.1);
+            border: 1px solid var(--gold-primary);
+            color: var(--gold-primary);
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-back:active { transform: scale(0.95); }
+
+        .task-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 183, 0, 0.2);
+            border-radius: var(--radius-md);
+            padding: 18px;
+            margin-bottom: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .task-title { font-size: 1rem; font-weight: 800; }
+
+        .task-reward {
+            background: rgba(255, 183, 0, 0.15);
+            color: var(--gold-primary);
+            border: 1px solid var(--gold-primary);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 0.85rem;
+        }
+
+        .task-seats { font-size: 0.8rem; color: var(--text-muted); }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 7px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold-secondary), var(--gold-primary));
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .btn-action {
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+            color: #000;
+            border: none;
+            padding: 13px;
+            border-radius: var(--radius-md);
+            font-weight: 900;
+            font-size: 0.95rem;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 4px 18px var(--gold-glow);
+            transition: var(--transition);
+        }
+
+        .btn-action.secondary {
+            background: transparent;
+            border: 1px solid var(--gold-primary);
+            color: var(--gold-primary);
+            box-shadow: none;
+        }
+
+        .btn-action:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .btn-action:not(:disabled):active { transform: scale(0.97); }
+
+        .form-group { margin-bottom: 14px; text-align: right; }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text-muted);
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 183, 0, 0.25);
+            padding: 12px 14px;
+            border-radius: var(--radius-md);
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 12px var(--gold-glow);
+        }
+
+        /* --- Internal Custom Dropdown System --- */
+        .custom-select-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .custom-select-trigger {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 183, 0, 0.35);
+            padding: 14px;
+            border-radius: var(--radius-md);
+            color: var(--gold-primary);
+            font-size: 0.95rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+
+        .custom-select-options {
+            position: absolute;
+            top: 110%;
+            left: 0;
+            right: 0;
+            background: #11131a;
+            border: 1px solid var(--gold-primary);
+            border-radius: var(--radius-md);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            display: none;
+            overflow: hidden;
+        }
+
+        .custom-select-options.open { display: block; animation: fadeIn 0.2s ease; }
+
+        .custom-option {
+            padding: 14px;
+            color: var(--text-main);
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .custom-option:last-child { border-bottom: none; }
+        .custom-option:hover, .custom-option.selected {
+            background: rgba(255, 183, 0, 0.15);
+            color: var(--gold-primary);
+        }
+
+        .leader-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 14px 16px;
+            border-radius: var(--radius-md);
+            margin-bottom: 8px;
+        }
+
+        .leader-rank { font-weight: 900; font-size: 1.1rem; width: 35px; }
+        .rank-1 { color: #ffd700; }
+        .rank-2 { color: #c0c0c0; }
+        .rank-3 { color: #cd7f32; }
+
+        .status-card {
+            background: var(--card-bg);
+            border: 1px dashed var(--gold-primary);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-top: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            text-align: right;
+        }
+
+        .status-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .tag-pending { background: #ffa500; color: #000; }
+        .tag-success { background: #2ed573; color: #000; }
+        .tag-rejected { background: #ff4757; color: #fff; }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(14px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal-content {
+            background: #11131a;
+            border: 1px solid var(--gold-primary);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 420px;
+            padding: 24px;
+            box-shadow: 0 0 35px var(--gold-glow-intense);
+            text-align: center;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 900;
+            margin-bottom: 12px;
+            color: var(--gold-primary);
         }
 
         .captcha-box {
             background: #000;
-            border: 2px solid var(--accent-gold);
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-            margin: 15px 0;
-        }
-
-        .captcha-text {
-            font-size: 2rem;
-            font-weight: 900;
-            letter-spacing: 6px;
-            color: var(--accent-gold);
-            text-shadow: 0 0 10px rgba(255, 183, 3, 0.5);
-            font-family: monospace;
-        }
-
-        .form-input {
-            width: 100%;
+            border: 2px solid var(--gold-primary);
+            border-radius: var(--radius-md);
             padding: 12px;
-            background: #0d1117;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: #fff;
-            text-align: center;
-            font-size: 1.2rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            outline: none;
-            margin-bottom: 12px;
-        }
-
-        .form-input:focus {
-            border-color: var(--accent-gold);
-        }
-
-        .btn {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-primary {
-            background: var(--accent-gold);
-            color: #000;
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .btn-secondary {
-            background: #2a3245;
-            color: #fff;
-            margin-top: 8px;
-        }
-
-        .nav-tabs {
+            margin: 14px 0;
             display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
         }
 
-        .tab-btn {
-            flex: 1;
-            padding: 10px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
+        #captcha-canvas {
             border-radius: 8px;
-            font-weight: bold;
+            background: #11131a;
+            box-shadow: 0 0 10px rgba(255, 183, 0, 0.2);
         }
 
-        .tab-btn.active {
-            background: var(--accent-gold);
-            color: #000;
-            border-color: var(--accent-gold);
-        }
-
-        .page {
-            display: none;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        .modal {
+        #splash-screen {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.85);
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: var(--bg-dark);
+            z-index: 10000;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 16px;
-            z-index: 1000;
+            gap: 16px;
+            transition: opacity 0.5s ease;
         }
 
-        .stat-val {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: var(--accent-gold);
+        .spinner {
+            width: 44px;
+            height: 44px;
+            border: 3.5px solid rgba(255, 183, 0, 0.2);
+            border-top-color: var(--gold-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
 
-        .alert-box {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--accent-gold);
-            color: #000;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            z-index: 2000;
-            display: none;
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
         }
+
+        .stat-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 183, 0, 0.2);
+            padding: 10px;
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+
+        .stat-box-val { font-size: 1.2rem; font-weight: 900; color: var(--gold-primary); }
+        .stat-box-lbl { font-size: 0.75rem; color: var(--text-muted); }
     </style>
 </head>
 <body>
 
-    <div id="alert" class="alert-box"></div>
-
-    <div class="header">
-        <h1>BOT SYRIA</h1>
-        <p style="color: var(--text-muted); font-size: 0.85rem;">نظام الإحالات والمهام المعتمد</p>
+    <div class="bg-canvas">
+        <div class="matrix-map"></div>
+        <div class="light-beam"></div>
     </div>
 
-    <!-- القائمة السفلية / التنقل -->
-    <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchPage('main-page')">الرئيسية</button>
-        <button class="tab-btn" onclick="switchPage('referral-page')">الإحالات</button>
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <div class="brand-logo" style="width: 75px; height: 75px; font-size: 1.8rem; border-radius: 22px;">SYP</div>
+        <div class="brand-name" style="font-size: 1.8rem;">BOT SYRIA</div>
+        <div class="spinner"></div>
     </div>
 
-    <!-- الصفحة الرئيسية -->
-    <div id="main-page" class="page active">
-        <div class="card">
-            <h3>رصيدك الحالي</h3>
-            <div class="stat-val" id="user-balance">0.00 ل.س</div>
-        </div>
-        <div class="card">
-            <h3>حالة الحساب</h3>
-            <p id="captcha-status" style="color: var(--danger-color); font-weight: bold; margin-top: 5px;">غير متاح - يتطلب كابتشا</p>
+    <!-- Internal Notification Modal (Replaces Browser Alerts) -->
+    <div class="modal-overlay" id="alert-modal">
+        <div class="modal-content" style="padding: 20px;">
+            <div class="modal-title" id="alert-title">تنبيه</div>
+            <p id="alert-msg" style="font-size: 0.95rem; color: var(--text-main); margin: 15px 0;"></p>
+            <button class="btn-action" onclick="closeModal('alert-modal')" id="lbl-alert-close">حسناً 👍</button>
         </div>
     </div>
 
-    <!-- صفحة الإحالات -->
-    <div id="referral-page" class="page">
-        <div class="card">
-            <h3>نظام الإحالة الآمن 👥</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 8px 0;">
-                احصل على <b>2 ليرة سورية</b> فوراً عن كل صديق يقوم بالانضمام وتجاوز التحقق الأمني (الكابتشا).
-            </p>
-            <div style="margin-top: 15px;">
-                <label style="font-size: 0.8rem; color: var(--text-muted);">رابط الإحالة الخاص بك:</label>
-                <input type="text" id="ref-link" class="form-input" style="font-size: 0.8rem; letter-spacing: 0;" readonly>
-                <button class="btn btn-primary" onclick="copyRefLink()">نسخ الرابط 📋</button>
-            </div>
-        </div>
-        <div class="card">
-            <h3>إحصائيات الإحالة</h3>
-            <p style="margin-top: 5px;">عدد الإحالات الناجحة: <span id="ref-count" class="stat-val">0</span></p>
-        </div>
-    </div>
-
-    <!-- نافذة الكابتشا 🔒 -->
-    <div id="captcha-modal" class="modal">
-        <div class="card" style="width: 100%; max-width: 360px; margin: 0;">
-            <h3 style="text-align: center; color: var(--accent-gold);">التحقق الأمني (الكابتشا) 🛡️</h3>
-            <p style="text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">
-                يرجى كتابة الرمز أدناه لتأكيد أنك لست روبوت وتفعيل الحساب.
-            </p>
+    <!-- Canvas Captcha Modal -->
+    <div class="modal-overlay" id="captcha-modal">
+        <div class="modal-content">
+            <div class="modal-title" id="lbl-captcha-title">التحقق الأمني (الكابتشا) 🛡️</div>
+            <p style="font-size: 0.85rem; color: var(--text-muted);" id="lbl-captcha-desc">يرجى كتابة الرمز الظاهر في الصورة أدناه لتأكيد أنك لست روبوت (مرة واحدة كل 24 ساعة).</p>
             
             <div class="captcha-box">
-                <div id="captcha-code" class="captcha-text">----</div>
+                <canvas id="captcha-canvas" width="220" height="70"></canvas>
+                <button class="btn-action secondary" style="padding: 5px 12px; font-size: 0.8rem; width: auto;" onclick="generateCaptcha()" id="lbl-captcha-refresh">تحديث الرمز 🔄</button>
             </div>
 
-            <button class="btn btn-secondary" onclick="generateCaptcha()" style="margin-bottom: 12px; font-size: 0.8rem;">تحديث الرمز 🔄</button>
-
-            <input type="text" id="captcha-input" class="form-input" placeholder="أدخل الرمز..." autocomplete="off" autocorrect="off" spellcheck="false">
-            
-            <button class="btn btn-primary" id="btn-verify" onclick="verifyCaptcha()">تأكيد الهوية ✅</button>
+            <div class="form-group">
+                <input type="text" id="captcha-input" class="form-input" placeholder="أدخل كود الكابتشا..." style="text-align: center; font-weight: 800; font-size: 1.2rem; letter-spacing: 2px;">
+            </div>
+            <button class="btn-action" id="btn-verify-captcha" onclick="verifyCaptcha()">تأكيد الهوية ✅</button>
         </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal-content">
+            <div class="section-header">
+                <div class="section-title" id="lbl-settings-title">⚙️ الإعدادات والمعلومات</div>
+                <button class="btn-back" onclick="closeModal('settings-modal')">إغلاق ✖</button>
+            </div>
+            
+            <div style="background: rgba(0,0,0,0.3); border:1px solid rgba(255,183,0,0.2); padding:12px; border-radius:14px; margin-bottom:14px; text-align:right;">
+                <div style="font-size:0.85rem; color:var(--text-muted);" id="lbl-user-id">معرف التلغرام (Telegram ID):</div>
+                <div style="font-weight:800; color:var(--gold-primary); font-size: 1.1rem;" id="info-user-id">جار التحميل...</div>
+                <div style="font-size:0.85rem; color:var(--text-muted); margin-top:8px;" id="lbl-join-date">تاريخ الإنضمام للبوت:</div>
+                <div style="font-weight:800; color:var(--text-main);" id="info-join-date">جار التحميل...</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" id="lbl-lang">🌐 لغة التطبيق / Language</label>
+                <div class="custom-select-wrapper">
+                    <div class="custom-select-trigger" onclick="toggleDropdown('lang-options')">
+                        <span id="selected-lang-text">العربية (Arabic)</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="custom-select-options" id="lang-options">
+                        <div class="custom-option selected" onclick="selectLanguage('ar')">العربية (Arabic)</div>
+                        <div class="custom-option" onclick="selectLanguage('en')">English</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" id="lbl-theme">🌙 نمط الإضاءة</label>
+                <div class="custom-select-wrapper">
+                    <div class="custom-select-trigger" onclick="toggleDropdown('theme-options')">
+                        <span id="selected-theme-text">الوضع الليلي (Dark Gold)</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="custom-select-options" id="theme-options">
+                        <div class="custom-option selected" onclick="selectTheme('dark')">الوضع الليلي (Dark Gold)</div>
+                        <div class="custom-option" onclick="selectTheme('light')">الوضع النهاري (Light Gold)</div>
+                    </div>
+                </div>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 15px 0;">
+
+            <div class="section-title" style="font-size: 0.95rem; margin-bottom: 8px;" id="lbl-guide-title">📖 الشرح الشامل وطريقة الاستخدام</div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.7; text-align: right;" id="lbl-guide-body">
+                أهلاً بك في منصة **BOT SYRIA** الأولى والأكثر أماناً لكسب الأرباح بالليرة السورية.<br>
+                🔹 **المهام**: قم بتنفيذ المهام المتاحة وإرسال إثباتك، وسيتم مراجعته وإضافة المكافأة فوراً.<br>
+                🔹 **الإحالات**: شارك رابطك الخاص مع أصدقائك، واكسب نقاط وأرباح مباشرة عن كل شخص ينضم عبر بوتنا الرسمى.<br>
+                🔹 **السحب**: اختر وسيلة السحب المناسبة (سيرياتيل كاش / شام كاش) وسيتم معالجة طلبك بدقة عالية.<br>
+                🔹 **البرومو كود**: تابع قناتنا للحصول على أكواد الهدايا اليومية وتفعيلها مباشرة.
+            </p>
+        </div>
+    </div>
+
+    <!-- Task Proof Submission Modal -->
+    <div class="modal-overlay" id="proof-modal">
+        <div class="modal-content">
+            <div class="section-header">
+                <div class="section-title" id="lbl-proof-title">📤 تقديم إثبات المهمة</div>
+                <button class="btn-back" onclick="closeModal('proof-modal')">إغلاق ✖</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label" id="lbl-proof-task">عنوان المهمة</label>
+                <input type="text" id="proof-task-title" class="form-input" readonly style="color:var(--gold-primary); font-weight:800;">
+                <input type="hidden" id="proof-task-id">
+            </div>
+            <div class="form-group">
+                <label class="form-label" id="lbl-proof-desc">تفاصيل الإثبات / معرف التلغرام</label>
+                <textarea id="proof-input-text" class="form-textarea" rows="3" placeholder="أدخل اسم المستخدم الخاص بك أو تفاصيل الإثبات..."></textarea>
+            </div>
+            <button class="btn-action" id="btn-submit-proof" onclick="submitTaskProof()">إرسال الإثبات للمراجعة 🚀</button>
+        </div>
+    </div>
+
+    <div class="app-container">
+
+        <header class="app-header">
+            <div class="brand-title">
+                <div class="brand-logo">SYP</div>
+                <div class="brand-name">BOT SYRIA</div>
+            </div>
+            <button class="btn-icon" onclick="openModal('settings-modal')">⚙️</button>
+        </header>
+
+        <div class="user-card">
+            <div class="user-avatar-wrap" id="avatar-container">
+                <div class="avatar-placeholder" id="avatar-fallback">U</div>
+            </div>
+            <div class="user-name">
+                <span id="user-display-name">المستخدم</span>
+                <span class="badge-verified">✔</span>
+            </div>
+            <div class="balance-label" id="lbl-balance-title">الرصيد الحالي</div>
+            <div class="balance-amount"><span id="user-balance">0</span> <span style="font-size: 1.1rem; font-weight: 700;" id="lbl-currency">ل.س</span></div>
+        </div>
+
+        <!-- DASHBOARD VIEW -->
+        <div id="view-dashboard" class="view-panel active">
+            <div class="grid-menu">
+                <div class="grid-card" onclick="switchView('view-tasks')">
+                    <div class="card-icon">🎯</div>
+                    <div class="card-title" id="menu-btn-tasks">المهام والربح</div>
+                </div>
+                <div class="grid-card" onclick="switchView('view-referrals')">
+                    <div class="card-icon">👥</div>
+                    <div class="card-title" id="menu-btn-referrals">نظام الإحالات</div>
+                </div>
+                <div class="grid-card" onclick="switchView('view-withdraw')">
+                    <div class="card-icon">💰</div>
+                    <div class="card-title" id="menu-btn-withdraw">طلب السحب</div>
+                </div>
+                <div class="grid-card" onclick="switchView('view-promo')">
+                    <div class="card-icon">🎁</div>
+                    <div class="card-title" id="menu-btn-promo">برومو كود</div>
+                </div>
+                <div class="grid-card full-width" onclick="switchView('view-support')">
+                    <div class="card-icon">💬</div>
+                    <div class="card-title" id="menu-btn-support">الدعم الفني</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TASKS VIEW -->
+        <div id="view-tasks" class="view-panel">
+            <div class="section-header">
+                <div class="section-title" id="lbl-tasks-head">🎯 المهام المتاحة</div>
+                <button class="btn-back" onclick="switchView('view-dashboard')" id="btn-back-1">الرئيسية ↩</button>
+            </div>
+            
+            <div id="tasks-container"></div>
+            <div id="latest-proof-box"></div>
+        </div>
+
+        <!-- REFERRALS VIEW -->
+        <div id="view-referrals" class="view-panel">
+            <div class="section-header">
+                <div class="section-title" id="lbl-ref-head">👥 نظام الإحالات</div>
+                <button class="btn-back" onclick="switchView('view-dashboard')" id="btn-back-2">الرئيسية ↩</button>
+            </div>
+
+            <div class="user-card" style="padding: 18px; margin-bottom: 16px;">
+                <div style="font-size: 0.85rem; color: var(--text-muted);" id="lbl-ref-link">رابط الدعوة الخاص بك</div>
+                <input type="text" id="ref-link-input" class="form-input" readonly style="margin: 10px 0; text-align: center; font-weight: 700; direction: ltr;" value="https://t.me/BotSyria_2026_bot?start=REF_">
+                
+                <div style="display: flex; gap: 8px; margin-top: 4px;">
+                    <button class="btn-action" style="flex:1;" onclick="copyRefLink()" id="btn-ref-copy">نسخ 📋</button>
+                    <button class="btn-action secondary" style="flex:1;" onclick="shareRefTelegram()" id="btn-ref-share">مشاركة 🚀</button>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-box-val" id="user-ref-count">0</div>
+                        <div class="stat-box-lbl" id="lbl-ref-count">عدد الأصدقاء المدعوين</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-val" id="user-ref-earnings">0 ل.س</div>
+                        <div class="stat-box-lbl" id="lbl-ref-earnings">إجمالي أرباح الإحالات</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title" style="margin-bottom: 10px;" id="lbl-leaderboard">🏆 أعلى 10 دُعاة (Leaderboard)</div>
+            <div id="leaderboard-list"></div>
+        </div>
+
+        <!-- WITHDRAW VIEW -->
+        <div id="view-withdraw" class="view-panel">
+            <div class="section-header">
+                <div class="section-title" id="lbl-withdraw-head">💰 طلب سحب الأرباح</div>
+                <button class="btn-back" onclick="switchView('view-dashboard')" id="btn-back-3">الرئيسية ↩</button>
+            </div>
+
+            <div class="task-card">
+                <div class="form-group">
+                    <label class="form-label" id="lbl-withdraw-method">وسيلة الدفع حصراً</label>
+                    <div class="custom-select-wrapper">
+                        <div class="custom-select-trigger" onclick="toggleDropdown('withdraw-options')">
+                            <span id="selected-withdraw-text">سيرياتيل كاش (Syriatel Cash)</span>
+                            <span>▼</span>
+                        </div>
+                        <div class="custom-select-options" id="withdraw-options">
+                            <div class="custom-option selected" onclick="selectWithdrawMethod('سيرياتيل كاش (Syriatel Cash)')">سيرياتيل كاش (Syriatel Cash)</div>
+                            <div class="custom-option" onclick="selectWithdrawMethod('شام كاش (Sham Cash)')">شام كاش (Sham Cash)</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" id="lbl-withdraw-acc">رقم الحساب / الهاتف</label>
+                    <input type="number" id="withdraw-account" class="form-input" placeholder="09xxxxxxxx">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" id="lbl-withdraw-amt">المبلغ المراد سحبه (ل.س)</label>
+                    <input type="number" id="withdraw-amount" class="form-input" placeholder="أدخل المبلغ">
+                </div>
+                <button class="btn-action" id="btn-submit-withdraw" onclick="submitWithdrawal()">تأكيد طلب السحب 🚀</button>
+            </div>
+
+            <div id="latest-withdraw-box"></div>
+        </div>
+
+        <!-- PROMO CODE VIEW -->
+        <div id="view-promo" class="view-panel">
+            <div class="section-header">
+                <div class="section-title" id="lbl-promo-head">🎁 الكود الترويجي</div>
+                <button class="btn-back" onclick="switchView('view-dashboard')" id="btn-back-4">الرئيسية ↩</button>
+            </div>
+
+            <div class="task-card">
+                <div class="form-group">
+                    <label class="form-label" id="lbl-promo-input">أدخل الكود الترويجي</label>
+                    <input type="text" id="promo-input" class="form-input" placeholder="مثال: SYRIA2026" style="text-align: center; text-transform: uppercase; font-weight: 800; letter-spacing: 1px;">
+                </div>
+                <button class="btn-action" id="btn-claim-promo" onclick="claimPromoCode()">تفعيل الكود 🎁</button>
+            </div>
+        </div>
+
+        <!-- SUPPORT VIEW -->
+        <div id="view-support" class="view-panel">
+            <div class="section-header">
+                <div class="section-title" id="lbl-support-head">💬 الدعم الفني</div>
+                <button class="btn-back" onclick="switchView('view-dashboard')" id="btn-back-5">الرئيسية ↩</button>
+            </div>
+
+            <div class="task-card">
+                <div class="form-group">
+                    <label class="form-label" id="lbl-support-desc">تفاصيل الشكوى أو الاستفسار</label>
+                    <textarea id="support-msg" class="form-textarea" rows="4" placeholder="اكتب استفسارك بدقة..."></textarea>
+                </div>
+                <button class="btn-action" id="btn-submit-support" onclick="submitSupportTicket()">إرسال إلى الإدارة 📩</button>
+            </div>
+
+            <div id="latest-support-box"></div>
+        </div>
+
     </div>
 
     <script>
-        // تهيئة Telegram WebApp
-        const tg = window.Telegram.WebApp;
-        tg.expand();
+        const BOT_USERNAME = "BotSyria_2026_bot";
+        let currentLang = 'ar';
+        let selectedWithdrawMethodVal = 'سيرياتيل كاش (Syriatel Cash)';
 
-        // تهيئة Firebase (استبدل القيم بالبيانات الخاصة بك)
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-        
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
+        // Internal Alert Helper
+        function showAlert(msg, title = null) {
+            document.getElementById('alert-msg').innerText = msg;
+            document.getElementById('alert-title').innerText = title || (currentLang === 'en' ? 'Notice' : 'تنبيه');
+            openModal('alert-modal');
         }
-        const db = firebase.firestore();
 
-        // متغيرات النظام
-        let tgUser = tg.initDataUnsafe?.user || { id: 9999999, first_name: "مستخدم تجريبي" };
-        let currentCaptchaCode = "";
-        let isVerified = false;
-        let referrerId = null;
+        function sanitizeInput(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>"']/g, function (m) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+            }).trim();
+        }
 
-        // 1. استخراج معرف المحيل بشكل آمن لمنع مشكلة "لم يتم العثور على اسم المستخدم"
-        function extractReferrer() {
-            const startParam = tg.initDataUnsafe?.start_param;
-            if (startParam) {
-                // معالجة الصيغ المختلفة (ref12345 أو 12345)
-                const cleanId = startParam.replace('ref', '').trim();
-                if (cleanId && cleanId !== String(tgUser.id)) {
-                    referrerId = cleanId;
-                }
+        function debounceButton(btnId, delayMs = 3000) {
+            const btn = document.getElementById(btnId);
+            if (btn) {
+                btn.disabled = true;
+                setTimeout(() => { btn.disabled = false; }, delayMs);
             }
         }
 
-        // 2. إدارة الصفحات والحماية الشاملة لكل الأقسام
-        function switchPage(pageId) {
-            // جدار الحماية: منع الوصول لأي صفحة قبل اجتياز الكابتشا
-            if (!isVerified && pageId !== 'main-page') {
-                showAlert("يجب إكمال التحقق الأمني أولاً!");
-                document.getElementById('captcha-modal').style.display = 'flex';
+        // Custom Internal Dropdown Controllers
+        function toggleDropdown(id) {
+            const options = document.getElementById(id);
+            const isOpened = options.classList.contains('open');
+            document.querySelectorAll('.custom-select-options').forEach(el => el.classList.remove('open'));
+            if (!isOpened) options.classList.add('open');
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.custom-select-wrapper')) {
+                document.querySelectorAll('.custom-select-options').forEach(el => el.classList.remove('open'));
+            }
+        });
+
+        function selectWithdrawMethod(val) {
+            selectedWithdrawMethodVal = val;
+            document.getElementById('selected-withdraw-text').innerText = val;
+            document.querySelectorAll('#withdraw-options .custom-option').forEach(el => {
+                el.classList.toggle('selected', el.innerText === val);
+            });
+            document.getElementById('withdraw-options').classList.remove('open');
+        }
+
+        // Firebase Setup
+        const firebaseConfig = {
+            apiKey: "YOUR_FIREBASE_API_KEY",
+            authDomain: "bot-syria.firebaseapp.com",
+            projectId: "bot-syria",
+            storageBucket: "bot-syria.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef"
+        };
+
+        let db = null;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+        } catch (e) {
+            console.error("Firebase Init Error:", e);
+        }
+
+        let tgUser = null;
+        let userData = { balance: 0, referralCount: 0, referralEarnings: 0, completedTasks: [], lastCaptchaTime: 0, claimedPromos: [] };
+        let currentCaptchaCode = "";
+
+        const tg = window.Telegram ? window.Telegram.WebApp : null;
+        if (tg) {
+            try {
+                tg.expand();
+                tg.ready();
+                if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                    tgUser = tg.initDataUnsafe.user;
+                }
+            } catch (err) { console.warn("Telegram WebApp Error:", err); }
+        }
+
+        if (!tgUser) {
+            tgUser = { id: 77777777, first_name: "مستخدم اختباري", username: "demo_user" };
+        }
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            setupUserProfile();
+            
+            try {
+                if (db) {
+                    await syncUserWithFirebase();
+                    check24HourCaptcha();
+                    loadLeaderboard();
+                    loadRealtimeTasks();
+                    loadLatestWithdrawal();
+                    loadLatestSupportTicket();
+                    loadLatestProof();
+                }
+            } catch (err) {
+                console.error("Startup Logic Error:", err);
+            } finally {
+                setTimeout(() => {
+                    const splash = document.getElementById('splash-screen');
+                    if (splash) {
+                        splash.style.opacity = '0';
+                        setTimeout(() => splash.style.display = 'none', 500);
+                    }
+                }, 800);
+            }
+        });
+
+        function setupUserProfile() {
+            document.getElementById('user-display-name').innerText = sanitizeInput(tgUser.first_name);
+            document.getElementById('ref-link-input').value = `https://t.me/${BOT_USERNAME}?start=REF_${tgUser.id}`;
+            document.getElementById('info-user-id').innerText = tgUser.id;
+
+            if (tgUser.photo_url) {
+                document.getElementById('avatar-container').innerHTML = `<img src="${tgUser.photo_url}" class="user-avatar" alt="Avatar">`;
+            } else {
+                const initial = tgUser.first_name ? tgUser.first_name.charAt(0).toUpperCase() : 'U';
+                document.getElementById('avatar-fallback').innerText = initial;
+            }
+        }
+
+        async function syncUserWithFirebase() {
+            if (!db) return;
+            const userRef = db.collection('users').doc(String(tgUser.id));
+            
+            try {
+                const doc = await userRef.get();
+
+                if (!doc.exists) {
+                    userData = {
+                        userId: tgUser.id,
+                        name: sanitizeInput(tgUser.first_name),
+                        username: sanitizeInput(tgUser.username || ""),
+                        balance: 0,
+                        referralCount: 0,
+                        referralEarnings: 0,
+                        completedTasks: [],
+                        lastCaptchaTime: 0,
+                        claimedPromos: [],
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                    await userRef.set(userData);
+                    document.getElementById('info-join-date').innerText = new Date().toLocaleDateString('ar-SY');
+                } else {
+                    userData = doc.data();
+                    if (userData.createdAt) {
+                        const dateObj = userData.createdAt.toDate ? userData.createdAt.toDate() : new Date();
+                        document.getElementById('info-join-date').innerText = dateObj.toLocaleDateString('ar-SY');
+                    } else {
+                        document.getElementById('info-join-date').innerText = new Date().toLocaleDateString('ar-SY');
+                    }
+                }
+
+                userRef.onSnapshot(snapshot => {
+                    if (snapshot.exists) {
+                        userData = snapshot.data();
+                        const currentVal = parseInt(document.getElementById("user-balance").innerText.replace(/,/g, '')) || 0;
+                        animateValue("user-balance", currentVal, userData.balance || 0, 600);
+                        
+                        document.getElementById('user-ref-count').innerText = (userData.referralCount || 0).toLocaleString('ar-SY');
+                        document.getElementById('user-ref-earnings').innerText = `${(userData.referralEarnings || 0).toLocaleString('ar-SY')} ${currentLang === 'en' ? 'SYP' : 'ل.س'}`;
+                    }
+                });
+            } catch (err) {
+                console.error("Firestore sync bypassed:", err);
+            }
+        }
+
+        function animateValue(id, start, end, duration) {
+            if (start === end) {
+                document.getElementById(id).innerText = end.toLocaleString('ar-SY');
                 return;
             }
-
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            const range = end - start;
+            let current = start;
+            const increment = end > start ? Math.ceil(range / 15) : Math.floor(range / 15);
+            const stepTime = Math.abs(Math.floor(duration / 15));
+            const obj = document.getElementById(id);
             
-            document.getElementById(pageId).classList.add('active');
-            event.target.classList.add('active');
+            const timer = setInterval(() => {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    obj.innerText = end.toLocaleString('ar-SY');
+                    clearInterval(timer);
+                } else {
+                    obj.innerText = current.toLocaleString('ar-SY');
+                }
+            }, stepTime || 20);
         }
 
-        // 3. توليد كود الكابتشا
+        // Canvas Captcha System
         function generateCaptcha() {
-            const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-            let code = "";
+            const canvas = document.getElementById('captcha-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#11131a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            currentCaptchaCode = '';
             for (let i = 0; i < 5; i++) {
-                code += chars.charAt(Math.floor(Math.random() * chars.length));
+                currentCaptchaCode += chars.charAt(Math.floor(Math.random() * chars.length));
             }
-            currentCaptchaCode = code;
-            document.getElementById('captcha-code').innerText = code;
+
+            for (let i = 0; i < 7; i++) {
+                ctx.strokeStyle = i % 2 === 0 ? 'rgba(255, 183, 0, 0.4)' : 'rgba(255, 255, 255, 0.15)';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.stroke();
+            }
+
+            ctx.font = '900 26px Cairo, sans-serif';
+            ctx.fillStyle = '#ffb700';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.shadowColor = 'rgba(255, 183, 0, 0.8)';
+            ctx.shadowBlur = 10;
+            ctx.fillText(currentCaptchaCode, canvas.width / 2, canvas.height / 2);
         }
 
-        // 4. معالجة وتأكيد الكابتشا واحتساب الإحالات بأمان عالي (Atomic Transactions)
-        async function verifyCaptcha() {
-            const inputEl = document.getElementById('captcha-input');
-            const val = inputEl.value.trim().toUpperCase();
+        function check24HourCaptcha() {
+            const now = Date.now();
+            const lastTime = userData.lastCaptchaTime || 0;
+            const hoursPassed = (now - lastTime) / (1000 * 60 * 60);
 
-            if (!val) {
-                return showAlert("يرجى إدخال كود الكابتشا!");
+            if (hoursPassed >= 24) {
+                generateCaptcha();
+                openModal('captcha-modal');
             }
+        }
+
+        async function verifyCaptcha() {
+            const val = sanitizeInput(document.getElementById('captcha-input').value).toUpperCase();
+            if (!val) return showAlert(currentLang === 'en' ? "Please enter captcha code!" : "يرجى إدخال رمز الكابتشا!");
 
             if (val !== currentCaptchaCode) {
-                showAlert("رمز الكابتشا غير صحيح!");
+                showAlert(currentLang === 'en' ? "Invalid Captcha code! Try again." : "رمز الكابتشا غير صحيح! حاول مرة أخرى.");
                 generateCaptcha();
-                inputEl.value = '';
+                document.getElementById('captcha-input').value = '';
                 return;
             }
 
-            const btn = document.getElementById('btn-verify');
-            btn.disabled = true;
-            btn.innerText = "جاري التحقق...";
+            debounceButton('btn-verify-captcha', 2000);
 
-            try {
-                const userRef = db.collection('users').doc(String(tgUser.id));
+            // إخلاق نافذة الكابتشا مباشرة لتفادي التعليق
+            document.getElementById('captcha-input').value = '';
+            closeModal('captcha-modal');
 
-                await db.runTransaction(async (transaction) => {
-                    const userDoc = await transaction.get(userRef);
+            const now = Date.now();
+            userData.lastCaptchaTime = now;
 
-                    if (!userDoc.exists) {
-                        // إنشاء حساب جديد للمستخدم
-                        transaction.set(userRef, {
-                            id: tgUser.id,
-                            name: tgUser.first_name || 'مستخدم',
-                            balance: 0,
-                            verified: true,
-                            referredBy: referrerId || null,
-                            refCount: 0,
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                        });
+            if (db) {
+                try {
+                    await db.collection('users').doc(String(tgUser.id)).update({
+                        lastCaptchaTime: now
+                    });
+                } catch(e){
+                    console.error("Captcha update fallback:", e);
+                }
+            }
 
-                        // احتساب مكافأة 2 ليرة للمحيل فوراً في حال وجود محيل شرعي
-                        if (referrerId) {
-                            const refUserRef = db.collection('users').doc(String(referrerId));
-                            const refDoc = await transaction.get(refUserRef);
+            showAlert(currentLang === 'en' ? "Captcha verified successfully! Thank you ✅" : "تم التحقق من الكابتشا بنجاح! شكراً لك ✅");
+        }
 
-                            if (refDoc.exists) {
-                                transaction.update(refUserRef, {
-                                    balance: firebase.firestore.FieldValue.increment(2),
-                                    refCount: firebase.firestore.FieldValue.increment(1)
-                                });
-                            }
-                        }
-                    } else {
-                        // تحديث حالة الحساب الحالي
-                        transaction.update(userRef, { verified: true });
+        function switchView(viewId) {
+            document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        function copyRefLink() {
+            const input = document.getElementById('ref-link-input');
+            input.select();
+            document.execCommand('copy');
+            showAlert(currentLang === 'en' ? "Referral link copied successfully!" : "تم نسخ رابط الإحالة بنجاح!");
+        }
+
+        function shareRefTelegram() {
+            const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(`https://t.me/${BOT_USERNAME}?start=REF_${tgUser.id}`)}&text=${encodeURIComponent(currentLang === 'en' ? "Join official BOT SYRIA now and start earning SYP!" : "انضم الآن إلى بوت سوريا الرسمي وابدأ بكسب الأرباح بالليرة السورية سهلة وموثوقة! 🚀💰")}`;
+            
+            if (tg && tg.openTelegramLink) tg.openTelegramLink(shareUrl);
+            else window.open(shareUrl, '_blank');
+        }
+
+        function loadLeaderboard() {
+            if (!db) return;
+            db.collection('users').orderBy('referralCount', 'desc').limit(10).onSnapshot(snapshot => {
+                const list = document.getElementById('leaderboard-list');
+                list.innerHTML = '';
+                let rank = 1;
+
+                snapshot.forEach(doc => {
+                    const u = doc.data();
+                    let rankClass = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : '';
+                    let badge = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+
+                    list.innerHTML += `
+                        <div class="leader-item">
+                            <div class="leader-rank ${rankClass}">${badge}</div>
+                            <div style="flex-grow:1; font-weight:800;">${sanitizeInput(u.name || (currentLang === 'en' ? 'User' : 'مستخدم'))}</div>
+                            <div style="color:var(--gold-primary); font-weight:900;">${(u.referralCount || 0).toLocaleString('ar-SY')} ${currentLang === 'en' ? 'Refs' : 'إحالة'}</div>
+                        </div>
+                    `;
+                    rank++;
+                });
+            });
+        }
+
+        function loadRealtimeTasks() {
+            if (!db) return;
+            db.collection('tasks').onSnapshot(snapshot => {
+                const container = document.getElementById('tasks-container');
+                container.innerHTML = '';
+
+                snapshot.forEach(doc => {
+                    const task = doc.data();
+                    const taskId = doc.id;
+
+                    const isCompleted = (userData.completedTasks || []).includes(taskId);
+                    const isFull = task.claimedSeats >= task.totalSeats;
+
+                    if (!isCompleted && !isFull) {
+                        const progress = (task.claimedSeats / task.totalSeats) * 100;
+                        container.innerHTML += `
+                            <div class="task-card">
+                                <div class="task-header">
+                                    <div class="task-title">${sanitizeInput(task.title)}</div>
+                                    <div class="task-reward">+${task.reward} ${currentLang === 'en' ? 'SYP' : 'ل.س'}</div>
+                                </div>
+                                <div class="task-seats">${currentLang === 'en' ? 'Remaining seats' : 'المقاعد المتبقية'}: ${task.totalSeats - task.claimedSeats} / ${task.totalSeats}</div>
+                                <div class="progress-bar-bg">
+                                    <div class="progress-bar-fill" style="width: ${progress}%"></div>
+                                </div>
+                                <div style="display:flex; gap:8px;">
+                                    <button class="btn-action secondary" style="flex:1;" onclick="openTaskLink('${task.link}')">${currentLang === 'en' ? 'Visit Link 🔗' : 'زيارة الرابط 🔗'}</button>
+                                    <button class="btn-action" style="flex:1;" onclick="openTaskProofModal('${taskId}', '${sanitizeInput(task.title)}')">${currentLang === 'en' ? 'Submit Proof 📤' : 'تقديم إثبات 📤'}</button>
+                                </div>
+                            </div>
+                        `;
                     }
                 });
 
-                isVerified = true;
-                document.getElementById('captcha-modal').style.display = 'none';
-                document.getElementById('captcha-status').innerText = "مفعل ومحمي ✅";
-                document.getElementById('captcha-status').style.color = "var(--success-color)";
-                showAlert("تم التحقق بنجاح! شكراً لك ✅");
-
-                loadUserData();
-
-            } catch (error) {
-                console.error("Captcha Transaction Error:", error);
-                showAlert("حدث خطأ في النظام، يرجى إعادة المحاولة.");
-                btn.disabled = false;
-                btn.innerText = "تأكيد الهوية ✅";
-            }
-        }
-
-        // 5. تحميل بيانات المستخدم
-        async function loadUserData() {
-            try {
-                const doc = await db.collection('users').doc(String(tgUser.id)).get();
-                if (doc.exists) {
-                    const data = doc.data();
-                    document.getElementById('user-balance').innerText = `${(data.balance || 0).toFixed(2)} ل.س`;
-                    document.getElementById('ref-count').innerText = data.refCount || 0;
-                }
-            } catch (e) {
-                console.error("Error loading user data:", e);
-            }
-        }
-
-        // 6. نسخ رابط الإحالة المباشر مع معالجة البوت السليمة
-        function copyRefLink() {
-            const linkInput = document.getElementById('ref-link');
-            linkInput.select();
-            document.execCommand('copy');
-            showAlert("تم نسخ رابط الإحالة بنجاح!");
-        }
-
-        function showAlert(msg) {
-            const alertBg = document.getElementById('alert');
-            alertBg.innerText = msg;
-            alertBg.style.display = 'block';
-            setTimeout(() => { alertBg.style.display = 'none'; }, 2500);
-        }
-
-        // التهيئة عند تحميل الصفحة
-        window.onload = async function() {
-            extractReferrer();
-            generateCaptcha();
-
-            // إنشاء رابط الإحالة المباشر بالتنسيق الذي يدعمه BotFather
-            const botUsername = "BOTSYRIA_BOT"; // اسم المستخدم لبوتك
-            document.getElementById('ref-link').value = `https://t.me/${botUsername}?start=ref${tgUser.id}`;
-
-            // التحقق من حالة المستخدم المسجلة مسبقاً
-            try {
-                const doc = await db.collection('users').doc(String(tgUser.id)).get();
-                if (doc.exists && doc.data().verified) {
-                    isVerified = true;
-                    document.getElementById('captcha-modal').style.display = 'none';
-                    document.getElementById('captcha-status').innerText = "مفعل ومحمي ✅";
-                    document.getElementById('captcha-status').style.color = "var(--success-color)";
-                    loadUserData();
-                } else {
-                    document.getElementById('captcha-modal').style.display = 'flex';
-                }
-            } catch (e) {
-                document.getElementById('captcha-modal').style.display = 'flex';
-            }
-
-            // إتاحة التأكيد عبر زر Enter
-            document.getElementById('captcha-input').addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') {
-                    verifyCaptcha();
+                if (container.innerHTML === '') {
+                    container.innerHTML = `<div style="text-align:center; color:var(--text-muted); padding:25px;">${currentLang === 'en' ? 'No active tasks available right now.' : 'لا توجد مهام جديدة حالياً.'}</div>`;
                 }
             });
-        };
+        }
+
+        function openTaskLink(link) {
+            if (tg && tg.openTelegramLink && link.includes('t.me')) tg.openTelegramLink(link);
+            else window.open(link, '_blank');
+        }
+
+        function openTaskProofModal(taskId, title) {
+            document.getElementById('proof-task-id').value = taskId;
+            document.getElementById('proof-task-title').value = title;
+            document.getElementById('proof-input-text').value = '';
+            openModal('proof-modal');
+        }
+
+        async function submitTaskProof() {
+            const taskId = document.getElementById('proof-task-id').value;
+            const title = document.getElementById('proof-task-title').value;
+            const proofText = sanitizeInput(document.getElementById('proof-input-text').value);
+
+            if (!proofText) return showAlert(currentLang === 'en' ? "Please enter proof details!" : "يرجى إدخال تفاصيل الإثبات!");
+
+            debounceButton('btn-submit-proof', 4000);
+
+            if (db) {
+                try {
+                    await db.collection('admin_proofs').add({
+                        userId: tgUser.id,
+                        userName: sanitizeInput(tgUser.first_name),
+                        taskId: taskId,
+                        taskTitle: title,
+                        proofText: proofText,
+                        status: 'pending',
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    document.getElementById('proof-input-text').value = '';
+                    closeModal('proof-modal');
+                    showAlert(currentLang === 'en' ? "Proof submitted successfully for review! 🚀" : "تم إرسال الإثبات إلى صفحة المراجعة بنجاح! 🚀");
+                } catch(e) {
+                    showAlert(currentLang === 'en' ? "Failed to send proof. Try again." : "تعذر إرسال الإثبات. حاول مجدداً.");
+                }
+            }
+        }
+
+        function loadLatestProof() {
+            if (!db) return;
+            db.collection('admin_proofs')
+                .where('userId', '==', tgUser.id)
+                .orderBy('timestamp', 'desc')
+                .limit(1)
+                .onSnapshot(snapshot => {
+                    const box = document.getElementById('latest-proof-box');
+                    box.innerHTML = '';
+
+                    if (!snapshot.empty) {
+                        const data = snapshot.docs[0].data();
+                        
+                        if (data.status === 'pending') {
+                            box.innerHTML = `
+                                <div class="status-card">
+                                    <div style="font-size:0.85rem; color:var(--text-muted);">${currentLang === 'en' ? 'Latest Task Proof Status' : 'حالة أحدث إثبات مقدم للمهام'}</div>
+                                    <div class="status-tag tag-pending">${currentLang === 'en' ? 'Under Review ⏳' : 'قيد المراجعة ⏳'}</div>
+                                    <div style="font-weight:800; font-size:0.95rem;">${currentLang === 'en' ? 'Task' : 'المهمة'}: ${sanitizeInput(data.taskTitle)}</div>
+                                    <div style="font-size:0.8rem; color:var(--text-muted);">${currentLang === 'en' ? 'Proof' : 'الإثبات'}: ${sanitizeInput(data.proofText)}</div>
+                                </div>
+                            `;
+                        }
+                    }
+                });
+        }
+
+        // Withdrawal Engine
+        async function submitWithdrawal() {
+            const method = selectedWithdrawMethodVal;
+            const account = sanitizeInput(document.getElementById('withdraw-account').value);
+            const amount = parseInt(document.getElementById('withdraw-amount').value);
+
+            if (!account || isNaN(amount) || amount <= 0) return showAlert(currentLang === 'en' ? "Please enter valid withdrawal data!" : "يرجى إدخال بيانات السحب بشكل صحيح!");
+            if (amount < 5000) return showAlert(currentLang === 'en' ? "Minimum withdrawal is 5000 SYP!" : "الحد الأدنى للسحب هو 5000 ل.س!");
+            if (amount > userData.balance) return showAlert(currentLang === 'en' ? "Insufficient balance for this request!" : "رصيدك الحالي غير كافٍ لهذا الطلب!");
+
+            debounceButton('btn-submit-withdraw', 4000);
+
+            if (db) {
+                const userRef = db.collection('users').doc(String(tgUser.id));
+
+                try {
+                    await db.runTransaction(async (transaction) => {
+                        const sfDoc = await transaction.get(userRef);
+                        if (!sfDoc.exists) throw currentLang === 'en' ? "User record not found!" : "حساب المستخدم غير موجود!";
+
+                        const currentBalance = sfDoc.data().balance || 0;
+                        if (currentBalance < amount) throw currentLang === 'en' ? "Insufficient balance!" : "رصيد غير كافٍ!";
+
+                        transaction.update(userRef, { balance: currentBalance - amount });
+
+                        const newWithdrawRef = db.collection('admin_withdrawals').doc();
+                        transaction.set(newWithdrawRef, {
+                            userId: tgUser.id,
+                            userName: sanitizeInput(tgUser.first_name),
+                            method: method,
+                            account: account,
+                            amount: amount,
+                            status: 'pending',
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    });
+
+                    document.getElementById('withdraw-account').value = '';
+                    document.getElementById('withdraw-amount').value = '';
+                    showAlert(currentLang === 'en' ? "Withdrawal request submitted successfully!" : "تم إرسال طلب السحب بنجاح!");
+                } catch (e) {
+                    showAlert((currentLang === 'en' ? "Operation failed: " : "فشلت العملية: ") + e);
+                }
+            }
+        }
+
+        function loadLatestWithdrawal() {
+            if (!db) return;
+            db.collection('admin_withdrawals')
+                .where('userId', '==', tgUser.id)
+                .orderBy('timestamp', 'desc')
+                .limit(1)
+                .onSnapshot(snapshot => {
+                    const box = document.getElementById('latest-withdraw-box');
+                    box.innerHTML = '';
+
+                    if (!snapshot.empty) {
+                        const data = snapshot.docs[0].data();
+                        let tagClass = data.status === 'pending' ? 'tag-pending' : data.status === 'approved' ? 'tag-success' : 'tag-rejected';
+                        let statusText = data.status === 'pending' ? (currentLang === 'en' ? 'Pending ⏳' : 'قيد الانتظار ⏳') : data.status === 'approved' ? (currentLang === 'en' ? 'Transferred ✅' : 'تم التحويل ✅') : (currentLang === 'en' ? 'Rejected ❌' : 'مرفوض ❌');
+
+                        box.innerHTML = `
+                            <div class="status-card">
+                                <div style="font-size:0.85rem; color:var(--text-muted);">${currentLang === 'en' ? 'Latest Withdrawal Request' : 'حالة أحدث طلب سحب'}</div>
+                                <div class="status-tag ${tagClass}">${statusText}</div>
+                                <div style="font-weight:800; font-size:1rem;">${currentLang === 'en' ? 'Amount' : 'المبلغ'}: ${data.amount.toLocaleString('ar-SY')} ${currentLang === 'en' ? 'SYP' : 'ل.س'}</div>
+                                <div style="font-size:0.8rem; color:var(--text-muted);">${currentLang === 'en' ? 'Account' : 'الحساب'}: ${sanitizeInput(data.account)} (${data.method})</div>
+                            </div>
+                        `;
+                    }
+                });
+        }
+
+        // Promo Code Realtime Engine
+        async function claimPromoCode() {
+            const code = sanitizeInput(document.getElementById('promo-input').value).toUpperCase();
+            if (!code) return showAlert(currentLang === 'en' ? "Please enter promo code first!" : "أدخل الكود الترويجي أولاً!");
+
+            debounceButton('btn-claim-promo', 3000);
+
+            if (db) {
+                const promoRef = db.collection('promo_codes').doc(code);
+                const userRef = db.collection('users').doc(String(tgUser.id));
+
+                try {
+                    await db.runTransaction(async (transaction) => {
+                        const promoDoc = await transaction.get(promoRef);
+                        const userDoc = await transaction.get(userRef);
+
+                        if (!promoDoc.exists) throw currentLang === 'en' ? "Invalid or expired promo code!" : "الكود الترويجي غير صحيح أو قد تم حذفه!";
+                        const promo = promoDoc.data();
+
+                        if (promo.status !== 'active') throw currentLang === 'en' ? "This promo code is currently inactive!" : "هذا الكود غير فعال حالياً!";
+
+                        if ((promo.usedCount || 0) >= (promo.maxUses || 0)) {
+                            throw currentLang === 'en' ? "Promo code usage limit reached!" : "عذراً، نفذت المقاعد المتاحة لهذا الكود وانتهت صلاحيته!";
+                        }
+
+                        const claimed = userDoc.data().claimedPromos || [];
+                        if (claimed.includes(code)) throw currentLang === 'en' ? "You have already claimed this promo code!" : "لقد قمت بتفعيل هذا الكود سابقاً!";
+
+                        const newUsedCount = (promo.usedCount || 0) + 1;
+
+                        if (newUsedCount >= promo.maxUses) {
+                            transaction.update(promoRef, {
+                                usedCount: newUsedCount,
+                                status: 'exhausted'
+                            });
+                        } else {
+                            transaction.update(promoRef, {
+                                usedCount: newUsedCount
+                            });
+                        }
+
+                        transaction.update(userRef, {
+                            balance: (userDoc.data().balance || 0) + (promo.reward || 0),
+                            claimedPromos: firebase.firestore.FieldValue.arrayUnion(code)
+                        });
+                    });
+
+                    document.getElementById('promo-input').value = '';
+                    showAlert(currentLang === 'en' ? "Promo code activated successfully! Reward added to balance. 🎁" : "تم تفعيل الكود بنجاح وإضافة الأرباح لحسابك! 🎁");
+                } catch (err) {
+                    showAlert(err);
+                }
+            }
+        }
+
+        // Support Engine
+        async function submitSupportTicket() {
+            const msg = sanitizeInput(document.getElementById('support-msg').value);
+            if (!msg) return showAlert(currentLang === 'en' ? "Please write details first!" : "اكتب تفاصيل الشكوى أولاً!");
+
+            debounceButton('btn-submit-support', 4000);
+
+            if (db) {
+                try {
+                    await db.collection('admin_support').add({
+                        userId: tgUser.id,
+                        userName: sanitizeInput(tgUser.first_name),
+                        message: msg,
+                        reply: '',
+                        replyTimestamp: null,
+                        status: 'open',
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    document.getElementById('support-msg').value = '';
+                    showAlert(currentLang === 'en' ? "Support message sent successfully!" : "تم إرسال الرسالة إلى الدعم الفني بنجاح وسيتم الرد قريباً!");
+                } catch (e) {
+                    showAlert(currentLang === 'en' ? "Failed to send message." : "تعذر إرسال الرسالة.");
+                }
+            }
+        }
+
+        function loadLatestSupportTicket() {
+            if (!db) return;
+            db.collection('admin_support')
+                .where('userId', '==', tgUser.id)
+                .orderBy('timestamp', 'desc')
+                .limit(1)
+                .onSnapshot(snapshot => {
+                    const box = document.getElementById('latest-support-box');
+                    box.innerHTML = '';
+
+                    if (!snapshot.empty) {
+                        const data = snapshot.docs[0].data();
+
+                        if (data.replyTimestamp) {
+                            const replyTime = data.replyTimestamp.toDate ? data.replyTimestamp.toDate().getTime() : data.replyTimestamp;
+                            const hoursPassed = (Date.now() - replyTime) / (1000 * 60 * 60);
+
+                            if (hoursPassed >= 5) {
+                                return;
+                            }
+                        }
+
+                        box.innerHTML = `
+                            <div class="status-card">
+                                <div style="font-size:0.85rem; color:var(--text-muted);">${currentLang === 'en' ? 'Latest Submitted Inquiry' : 'أحدث استفسار مقدم'}</div>
+                                <div style="font-weight:700; margin: 6px 0;">"${sanitizeInput(data.message)}"</div>
+                                <div style="font-size:0.85rem; color:var(--gold-primary); margin-top:8px; font-weight:800;">
+                                    ${currentLang === 'en' ? 'Admin Reply: ' : 'رد الإدارة: '}${data.reply ? sanitizeInput(data.reply) : (currentLang === 'en' ? 'Under review ⏳' : 'قيد المراجعة والرد ⏳')}
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+        }
+
+        // Settings Controllers
+        function selectTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            document.getElementById('selected-theme-text').innerText = theme === 'light' ? (currentLang === 'en' ? 'Light Gold' : 'الوضع النهاري (Light Gold)') : (currentLang === 'en' ? 'Dark Gold' : 'الوضع الليلي (Dark Gold)');
+            document.querySelectorAll('#theme-options .custom-option').forEach(el => el.classList.remove('selected'));
+            document.getElementById('theme-options').classList.remove('open');
+        }
+
+        function selectLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('selected-lang-text').innerText = lang === 'en' ? 'English' : 'العربية (Arabic)';
+            document.querySelectorAll('#lang-options .custom-option').forEach(el => el.classList.remove('selected'));
+            document.getElementById('lang-options').classList.remove('open');
+
+            if (lang === 'en') {
+                document.documentElement.setAttribute('dir', 'ltr');
+                document.getElementById('menu-btn-tasks').innerText = 'Tasks & Earn';
+                document.getElementById('menu-btn-referrals').innerText = 'Referral System';
+                document.getElementById('menu-btn-withdraw').innerText = 'Withdrawal';
+                document.getElementById('menu-btn-promo').innerText = 'Promo Code';
+                document.getElementById('menu-btn-support').innerText = 'Support';
+                document.getElementById('lbl-balance-title').innerText = 'Current Balance';
+                document.getElementById('lbl-currency').innerText = 'SYP';
+                
+                document.getElementById('lbl-settings-title').innerText = '⚙️ Settings & Info';
+                document.getElementById('lbl-user-id').innerText = 'Telegram ID:';
+                document.getElementById('lbl-join-date').innerText = 'Joined Date:';
+                document.getElementById('lbl-lang').innerText = '🌐 App Language';
+                document.getElementById('lbl-theme').innerText = '🌙 Theme Mode';
+                document.getElementById('lbl-guide-title').innerText = '📖 User Guide & Manual';
+                document.getElementById('lbl-guide-body').innerHTML = 'Welcome to **BOT SYRIA** platform.<br>🔹 **Tasks**: Complete tasks and submit proof to earn rewards.<br>🔹 **Referrals**: Share your referral link to earn commissions.<br>🔹 **Withdraw**: Cash out through Syriatel Cash or Sham Cash.<br>🔹 **Promo Code**: Activate daily promo codes for instant rewards.';
+                
+                document.getElementById('lbl-tasks-head').innerText = '🎯 Available Tasks';
+                document.getElementById('btn-back-1').innerText = 'Home ↩';
+                document.getElementById('btn-back-2').innerText = 'Home ↩';
+                document.getElementById('btn-back-3').innerText = 'Home ↩';
+                document.getElementById('btn-back-4').innerText = 'Home ↩';
+                document.getElementById('btn-back-5').innerText = 'Home ↩';
+
+                document.getElementById('lbl-ref-head').innerText = '👥 Referral System';
+                document.getElementById('lbl-ref-link').innerText = 'Your Referral Link';
+                document.getElementById('btn-ref-copy').innerText = 'Copy 📋';
+                document.getElementById('btn-ref-share').innerText = 'Share 🚀';
+                document.getElementById('lbl-ref-count').innerText = 'Invited Friends';
+                document.getElementById('lbl-ref-earnings').innerText = 'Total Referral Earnings';
+                document.getElementById('lbl-leaderboard').innerText = '🏆 Top 10 Referrers';
+
+                document.getElementById('lbl-withdraw-head').innerText = '💰 Withdraw Earnings';
+                document.getElementById('lbl-withdraw-method').innerText = 'Payment Method';
+                document.getElementById('lbl-withdraw-acc').innerText = 'Account / Phone Number';
+                document.getElementById('lbl-withdraw-amt').innerText = 'Amount to Withdraw (SYP)';
+                document.getElementById('btn-submit-withdraw').innerText = 'Confirm Withdrawal 🚀';
+
+                document.getElementById('lbl-promo-head').innerText = '🎁 Promo Code';
+                document.getElementById('lbl-promo-input').innerText = 'Enter Promo Code';
+                document.getElementById('btn-claim-promo').innerText = 'Activate Code 🎁';
+
+                document.getElementById('lbl-support-head').innerText = '💬 Technical Support';
+                document.getElementById('lbl-support-desc').innerText = 'Inquiry / Complaint Details';
+                document.getElementById('btn-submit-support').innerText = 'Send to Support 📩';
+
+                document.getElementById('lbl-proof-title').innerText = '📤 Submit Task Proof';
+                document.getElementById('lbl-proof-task').innerText = 'Task Title';
+                document.getElementById('lbl-proof-desc').innerText = 'Proof Details / Username';
+                document.getElementById('btn-submit-proof').innerText = 'Submit Proof 🚀';
+
+                document.getElementById('lbl-captcha-title').innerText = 'Security Check 🛡️';
+                document.getElementById('lbl-captcha-desc').innerText = 'Please enter the code shown below (Once every 24 hours).';
+                document.getElementById('lbl-captcha-refresh').innerText = 'Refresh 🔄';
+                document.getElementById('btn-verify-captcha').innerText = 'Verify Identity ✅';
+                document.getElementById('lbl-alert-close').innerText = 'OK 👍';
+
+            } else {
+                document.documentElement.setAttribute('dir', 'rtl');
+                document.getElementById('menu-btn-tasks').innerText = 'المهام والربح';
+                document.getElementById('menu-btn-referrals').innerText = 'نظام الإحالات';
+                document.getElementById('menu-btn-withdraw').innerText = 'طلب السحب';
+                document.getElementById('menu-btn-promo').innerText = 'برومو كود';
+                document.getElementById('menu-btn-support').innerText = 'الدعم الفني';
+                document.getElementById('lbl-balance-title').innerText = 'الرصيد الحالي';
+                document.getElementById('lbl-currency').innerText = 'ل.س';
+
+                document.getElementById('lbl-settings-title').innerText = '⚙️ الإعدادات والمعلومات';
+                document.getElementById('lbl-user-id').innerText = 'معرف التلغرام (Telegram ID):';
+                document.getElementById('lbl-join-date').innerText = 'تاريخ الإنضمام للبوت:';
+                document.getElementById('lbl-lang').innerText = '🌐 لغة التطبيق / Language';
+                document.getElementById('lbl-theme').innerText = '🌙 نمط الإضاءة';
+                document.getElementById('lbl-guide-title').innerText = '📖 الشرح الشامل وطريقة الاستخدام';
+                document.getElementById('lbl-guide-body').innerHTML = 'أهلاً بك في منصة **BOT SYRIA** الأولى والأكثر أماناً لكسب الأرباح بالليرة السورية.<br>🔹 **المهام**: قم بتنفيذ المهام المتاحة وإرسال إثباتك، وسيتم مراجعته وإضافة المكافأة فوراً.<br>🔹 **الإحالات**: شارك رابطك الخاص مع أصدقائك، واكسب نقاط وأرباح مباشرة عن كل شخص ينضم عبر بوتنا الرسمى.<br>🔹 **السحب**: اختر وسيلة السحب المناسبة (سيرياتيل كاش / شام كاش) وسيتم معالجة طلبك بدقة عالية.<br>🔹 **البرومو كود**: تابع قناتنا للحصول على أكواد الهدايا اليومية وتفعيلها مباشرة.';
+
+                document.getElementById('lbl-tasks-head').innerText = '🎯 المهام المتاحة';
+                document.getElementById('btn-back-1').innerText = 'الرئيسية ↩';
+                document.getElementById('btn-back-2').innerText = 'الرئيسية ↩';
+                document.getElementById('btn-back-3').innerText = 'الرئيسية ↩';
+                document.getElementById('btn-back-4').innerText = 'الرئيسية ↩';
+                document.getElementById('btn-back-5').innerText = 'الرئيسية ↩';
+
+                document.getElementById('lbl-ref-head').innerText = '👥 نظام الإحالات';
+                document.getElementById('lbl-ref-link').innerText = 'رابط الدعوة الخاص بك';
+                document.getElementById('btn-ref-copy').innerText = 'نسخ 📋';
+                document.getElementById('btn-ref-share').innerText = 'مشاركة 🚀';
+                document.getElementById('lbl-ref-count').innerText = 'عدد الأصدقاء المدعوين';
+                document.getElementById('lbl-ref-earnings').innerText = 'إجمالي أرباح الإحالات';
+                document.getElementById('lbl-leaderboard').innerText = '🏆 أعلى 10 دُعاة (Leaderboard)';
+
+                document.getElementById('lbl-withdraw-head').innerText = '💰 طلب سحب الأرباح';
+                document.getElementById('lbl-withdraw-method').innerText = 'وسيلة الدفع حصراً';
+                document.getElementById('lbl-withdraw-acc').innerText = 'رقم الحساب / الهاتف';
+                document.getElementById('lbl-withdraw-amt').innerText = 'المبلغ المراد سحبه (ل.س)';
+                document.getElementById('btn-submit-withdraw').innerText = 'تأكيد طلب السحب 🚀';
+
+                document.getElementById('lbl-promo-head').innerText = '🎁 الكود الترويجي';
+                document.getElementById('lbl-promo-input').innerText = 'أدخل الكود الترويجي';
+                document.getElementById('btn-claim-promo').innerText = 'تفعيل الكود 🎁';
+
+                document.getElementById('lbl-support-head').innerText = '💬 الدعم الفني';
+                document.getElementById('lbl-support-desc').innerText = 'تفاصيل الشكوى أو الاستفسار';
+                document.getElementById('btn-submit-support').innerText = 'إرسال إلى الإدارة 📩';
+
+                document.getElementById('lbl-proof-title').innerText = '📤 تقديم إثبات المهمة';
+                document.getElementById('lbl-proof-task').innerText = 'عنوان المهمة';
+                document.getElementById('lbl-proof-desc').innerText = 'تفاصيل الإثبات / معرف التلغرام';
+                document.getElementById('btn-submit-proof').innerText = 'إرسال الإثبات للمراجعة 🚀';
+
+                document.getElementById('lbl-captcha-title').innerText = 'التحقق الأمني (الكابتشا) 🛡️';
+                document.getElementById('lbl-captcha-desc').innerText = 'يرجى كتابة الرمز الظاهر في الصورة أدناه لتأكيد أنك لست روبوت (مرة واحدة كل 24 ساعة).';
+                document.getElementById('lbl-captcha-refresh').innerText = 'تحديث الرمز 🔄';
+                document.getElementById('btn-verify-captcha').innerText = 'تأكيد الهوية ✅';
+                document.getElementById('lbl-alert-close').innerText = 'حسناً 👍';
+            }
+
+            loadLeaderboard();
+            loadRealtimeTasks();
+            loadLatestWithdrawal();
+            loadLatestSupportTicket();
+            loadLatestProof();
+        }
     </script>
 </body>
 </html>
