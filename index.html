@@ -418,7 +418,7 @@
             box-shadow: 0 0 12px var(--gold-glow);
         }
 
-        /* Dropdown System */
+        /* --- Custom Dropdown System --- */
         .custom-select-wrapper {
             position: relative;
             width: 100%;
@@ -703,7 +703,7 @@
             <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.7; text-align: right;" id="lbl-guide-body">
                 أهلاً بك في منصة **BOT SYRIA** الأولى والأكثر أماناً لكسب الأرباح بالليرة السورية.<br>
                 🔹 **المهام**: قم بتنفيذ المهام المتاحة وإرسال إثباتك، وسيتم مراجعته وإضافة المكافأة فوراً.<br>
-                🔹 **الإحالات**: شارك رابطك الخاص مع أصدقائك، واكسب نقاط وأرباح مباشرة عن كل شخص ينضم عبر بوتنا الرسمى.<br>
+                🔹 **الإحالات**: شارك رابطك الخاص مع أصدقائك، واكسب نقاط وأرباح مباشرة عن كل شخص ينضم عبر بوتنا الرسمي.<br>
                 🔹 **السحب**: اختر وسيلة السحب المناسبة (سيرياتيل كاش / شام كاش) وسيتم معالجة طلبك بدقة عالية.<br>
                 🔹 **البرومو كود**: تابع قناتنا للحصول على أكواد الهدايا اليومية وتفعيلها مباشرة.
             </p>
@@ -893,7 +893,7 @@
     </div>
 
     <script>
-        const BOT_USERNAME = "BotSyria_2026_bot";
+        const BOT_USERNAME = "BOTSYRIA_BOT";
         let currentLang = 'ar';
         let selectedWithdrawMethodVal = 'سيرياتيل كاش (Syriatel Cash)';
 
@@ -919,6 +919,7 @@
             }
         }
 
+        // Custom Dropdown Controller
         function toggleDropdown(id) {
             const options = document.getElementById(id);
             const isOpened = options.classList.contains('open');
@@ -974,6 +975,7 @@
             } catch (err) { console.warn("Telegram WebApp Error:", err); }
         }
 
+        // Fallback for local testing
         if (!tgUser) {
             tgUser = { id: 77777777, first_name: "مستخدم اختباري", username: "demo_user" };
         }
@@ -1060,7 +1062,7 @@
                     }
                 });
             } catch (err) {
-                console.error("Firestore sync bypassed:", err);
+                console.error("Firestore sync error:", err);
             }
         }
 
@@ -1086,7 +1088,7 @@
             }, stepTime || 20);
         }
 
-        // Canvas Captcha System
+        // Canvas Captcha System (24-Hour Enforcement)
         function generateCaptcha() {
             const canvas = document.getElementById('captcha-canvas');
             if (!canvas) return;
@@ -1120,12 +1122,12 @@
             ctx.fillText(currentCaptchaCode, canvas.width / 2, canvas.height / 2);
         }
 
-        // التعديل الرابع: التحقق من مضي 24 ساعة بدقة عبر الفايربيس والمستعرض
         function check24HourCaptcha() {
             const now = Date.now();
             const lastTime = userData.lastCaptchaTime || 0;
             const hoursPassed = (now - lastTime) / (1000 * 60 * 60);
 
+            // تظهر مرة واحدة فقط كل 24 ساعة
             if (hoursPassed >= 24) {
                 generateCaptcha();
                 openModal('captcha-modal');
@@ -1157,17 +1159,22 @@
                         lastCaptchaTime: now
                     });
                 } catch(e){
-                    console.error("Captcha update fallback:", e);
+                    console.error("Captcha update error:", e);
                 }
             }
 
-            showAlert(currentLang === 'en' ? "Captcha verified successfully! Thank you ✅" : "تم التحقق من الكابتشا بنجاح! شكراً لك ✅");
+            showAlert(currentLang === 'en' ? "Captcha verified successfully! ✅" : "تم التحقق من الكابتشا بنجاح! ✅");
         }
 
         function switchView(viewId) {
             document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
             window.scrollTo(0,0);
+
+            // التعديل 2: تفريغ خانة الشكوى عند العودة لصفحة الدعم لتكون جاهزة لكتابة استفسار جديد
+            if (viewId === 'view-support') {
+                document.getElementById('support-msg').value = '';
+            }
         }
 
         function openModal(id) { document.getElementById(id).classList.add('active'); }
@@ -1320,6 +1327,7 @@
                 });
         }
 
+        // Withdrawal Engine
         async function submitWithdrawal() {
             const method = selectedWithdrawMethodVal;
             const account = sanitizeInput(document.getElementById('withdraw-account').value);
@@ -1392,12 +1400,11 @@
                 });
         }
 
-        // التعديل الأول: تبسيط رسائل الكود الترويجي + تفريغ حقل الإدخال تلقائياً
+        // Promo Code Engine
         async function claimPromoCode() {
-            const inputEl = document.getElementById('promo-input');
-            const code = sanitizeInput(inputEl.value).toUpperCase();
-            
-            if (!code) return showAlert(currentLang === 'en' ? "Invalid code" : "كود غير صحيح");
+            const codeInput = document.getElementById('promo-input');
+            const code = sanitizeInput(codeInput.value).toUpperCase();
+            if (!code) return showAlert(currentLang === 'en' ? "Please enter promo code!" : "أدخل الكود الترويجي أولاً!");
 
             debounceButton('btn-claim-promo', 3000);
 
@@ -1410,18 +1417,21 @@
                         const promoDoc = await transaction.get(promoRef);
                         const userDoc = await transaction.get(userRef);
 
-                        // إذا كان الكود غير موجود أو غير فعال
-                        if (!promoDoc.exists) throw currentLang === 'en' ? "Invalid code" : "كود غير صحيح";
+                        // التعديل 1: رسالة غير صحيح وحذف الكود مباشرة
+                        if (!promoDoc.exists) {
+                            throw currentLang === 'en' ? "Invalid code!" : "غير صحيح";
+                        }
+                        
                         const promo = promoDoc.data();
 
-                        if (promo.status !== 'active') throw currentLang === 'en' ? "Expired code" : "كود منتهي";
-
-                        if ((promo.usedCount || 0) >= (promo.maxUses || 0)) {
-                            throw currentLang === 'en' ? "Expired code" : "كود منتهي";
+                        if (promo.status !== 'active' || (promo.usedCount || 0) >= (promo.maxUses || 0)) {
+                            throw currentLang === 'en' ? "Invalid code!" : "غير صحيح";
                         }
 
                         const claimed = userDoc.data().claimedPromos || [];
-                        if (claimed.includes(code)) throw currentLang === 'en' ? "Code already used" : "تم استخدام الكود سابقاً";
+                        if (claimed.includes(code)) {
+                            throw currentLang === 'en' ? "Code already used!" : "تم استخدام هذا الكود سابقاً!";
+                        }
 
                         const newUsedCount = (promo.usedCount || 0) + 1;
 
@@ -1442,12 +1452,11 @@
                         });
                     });
 
-                    // تفريغ الحقل عند النجاح
-                    inputEl.value = '';
-                    showAlert(currentLang === 'en' ? "Code claimed successfully! 🎁" : "تم تفعيل الكود بنجاح! 🎁");
+                    codeInput.value = '';
+                    showAlert(currentLang === 'en' ? "Promo code activated successfully! 🎁" : "تم تفعيل الكود بنجاح وإضافة الأرباح لحسابك! 🎁");
                 } catch (err) {
-                    // تفريغ الحقل تلقائياً عند الخطأ (حسب طلبك لكي لا يضطر المستخدم لحذفه يدوياً)
-                    inputEl.value = '';
+                    // تفريغ المدخل في حال الفشل كما طلبتم
+                    codeInput.value = '';
                     showAlert(err);
                 }
             }
@@ -1455,8 +1464,8 @@
 
         // Support Engine
         async function submitSupportTicket() {
-            const msgEl = document.getElementById('support-msg');
-            const msg = sanitizeInput(msgEl.value);
+            const msgInput = document.getElementById('support-msg');
+            const msg = sanitizeInput(msgInput.value);
             if (!msg) return showAlert(currentLang === 'en' ? "Please write details first!" : "اكتب تفاصيل الشكوى أولاً!");
 
             debounceButton('btn-submit-support', 4000);
@@ -1473,8 +1482,7 @@
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     });
 
-                    // تفريغ الحقل
-                    msgEl.value = '';
+                    msgInput.value = '';
                     showAlert(currentLang === 'en' ? "Support message sent successfully!" : "تم إرسال الرسالة إلى الدعم الفني بنجاح وسيتم الرد قريباً!");
                 } catch (e) {
                     showAlert(currentLang === 'en' ? "Failed to send message." : "تعذر إرسال الرسالة.");
@@ -1482,7 +1490,6 @@
             }
         }
 
-        // التعديل الثاني والثالث: ربط واقعي حقيقي مع قاعدة البيانات ومسح النص السابق عند كتابة استفسار جديد
         function loadLatestSupportTicket() {
             if (!db) return;
             db.collection('admin_support')
@@ -1496,7 +1503,6 @@
                     if (!snapshot.empty) {
                         const data = snapshot.docs[0].data();
 
-                        // إخفاء الرد القديم تلقائياً بعد مرور فترة زمنية ليتيح للمستخدم تقديم شكوى جديدة دون ازدحام
                         if (data.replyTimestamp) {
                             const replyTime = data.replyTimestamp.toDate ? data.replyTimestamp.toDate().getTime() : data.replyTimestamp;
                             const hoursPassed = (Date.now() - replyTime) / (1000 * 60 * 60);
@@ -1519,7 +1525,7 @@
                 });
         }
 
-        // Settings Controllers
+        // Settings Controller
         function selectTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
             document.getElementById('selected-theme-text').innerText = theme === 'light' ? (currentLang === 'en' ? 'Light Gold' : 'الوضع النهاري (Light Gold)') : (currentLang === 'en' ? 'Dark Gold' : 'الوضع الليلي (Dark Gold)');
@@ -1607,7 +1613,7 @@
                 document.getElementById('lbl-lang').innerText = '🌐 لغة التطبيق / Language';
                 document.getElementById('lbl-theme').innerText = '🌙 نمط الإضاءة';
                 document.getElementById('lbl-guide-title').innerText = '📖 الشرح الشامل وطريقة الاستخدام';
-                document.getElementById('lbl-guide-body').innerHTML = 'أهلاً بك في منصة **BOT SYRIA** الأولى والأكثر أماناً لكسب الأرباح بالليرة السورية.<br>🔹 **المهام**: قم بتنفيذ المهام المتاحة وإرسال إثباتك، وسيتم مراجعته وإضافة المكافأة فوراً.<br>🔹 **الإحالات**: شارك رابطك الخاص مع أصدقائك، واكسب نقاط وأرباح مباشرة عن كل شخص ينضم عبر بوتنا الرسمى.<br>🔹 **السحب**: اختر وسيلة السحب المناسبة (سيرياتيل كاش / شام كاش) وسيتم معالجة طلبك بدقة عالية.<br>🔹 **البرومو كود**: تابع قناتنا للحصول على أكواد الهدايا اليومية وتفعيلها مباشرة.';
+                document.getElementById('lbl-guide-body').innerHTML = 'أهلاً بك في منصة **BOT SYRIA** الأولى والأكثر أماناً لكسب الأرباح بالليرة السورية.<br>🔹 **المهام**: قم بتنفيذ المهام المتاحة وإرسال إثباتك، وسيتم مراجعته وإضافة المكافأة فوراً.<br>🔹 **الإحالات**: شارك رابطك الخاص مع أصدقائك، واكسب نقاط وأرباح مباشرة عن كل شخص ينضم عبر بوتنا الرسمي.<br>🔹 **السحب**: اختر وسيلة السحب المناسبة (سيرياتيل كاش / شام كاش) وسيتم معالجة طلبك بدقة عالية.<br>🔹 **البرومو كود**: تابع قناتنا للحصول على أكواد الهدايا اليومية وتفعيلها مباشرة.';
 
                 document.getElementById('lbl-tasks-head').innerText = '🎯 المهام المتاحة';
                 document.getElementById('btn-back-1').innerText = 'الرئيسية ↩';
