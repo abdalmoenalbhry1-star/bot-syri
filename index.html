@@ -418,7 +418,7 @@
             box-shadow: 0 0 12px var(--gold-glow);
         }
 
-        /* --- Internal Custom Dropdown System --- */
+        /* Dropdown System */
         .custom-select-wrapper {
             position: relative;
             width: 100%;
@@ -627,7 +627,7 @@
         <div class="spinner"></div>
     </div>
 
-    <!-- Internal Notification Modal (Replaces Browser Alerts) -->
+    <!-- Internal Notification Modal -->
     <div class="modal-overlay" id="alert-modal">
         <div class="modal-content" style="padding: 20px;">
             <div class="modal-title" id="alert-title">تنبيه</div>
@@ -919,7 +919,6 @@
             }
         }
 
-        // Custom Internal Dropdown Controllers
         function toggleDropdown(id) {
             const options = document.getElementById(id);
             const isOpened = options.classList.contains('open');
@@ -1121,6 +1120,7 @@
             ctx.fillText(currentCaptchaCode, canvas.width / 2, canvas.height / 2);
         }
 
+        // التعديل الرابع: التحقق من مضي 24 ساعة بدقة عبر الفايربيس والمستعرض
         function check24HourCaptcha() {
             const now = Date.now();
             const lastTime = userData.lastCaptchaTime || 0;
@@ -1145,7 +1145,6 @@
 
             debounceButton('btn-verify-captcha', 2000);
 
-            // إخلاق نافذة الكابتشا مباشرة لتفادي التعليق
             document.getElementById('captcha-input').value = '';
             closeModal('captcha-modal');
 
@@ -1321,7 +1320,6 @@
                 });
         }
 
-        // Withdrawal Engine
         async function submitWithdrawal() {
             const method = selectedWithdrawMethodVal;
             const account = sanitizeInput(document.getElementById('withdraw-account').value);
@@ -1394,10 +1392,12 @@
                 });
         }
 
-        // Promo Code Realtime Engine
+        // التعديل الأول: تبسيط رسائل الكود الترويجي + تفريغ حقل الإدخال تلقائياً
         async function claimPromoCode() {
-            const code = sanitizeInput(document.getElementById('promo-input').value).toUpperCase();
-            if (!code) return showAlert(currentLang === 'en' ? "Please enter promo code first!" : "أدخل الكود الترويجي أولاً!");
+            const inputEl = document.getElementById('promo-input');
+            const code = sanitizeInput(inputEl.value).toUpperCase();
+            
+            if (!code) return showAlert(currentLang === 'en' ? "Invalid code" : "كود غير صحيح");
 
             debounceButton('btn-claim-promo', 3000);
 
@@ -1410,17 +1410,18 @@
                         const promoDoc = await transaction.get(promoRef);
                         const userDoc = await transaction.get(userRef);
 
-                        if (!promoDoc.exists) throw currentLang === 'en' ? "Invalid or expired promo code!" : "الكود الترويجي غير صحيح أو قد تم حذفه!";
+                        // إذا كان الكود غير موجود أو غير فعال
+                        if (!promoDoc.exists) throw currentLang === 'en' ? "Invalid code" : "كود غير صحيح";
                         const promo = promoDoc.data();
 
-                        if (promo.status !== 'active') throw currentLang === 'en' ? "This promo code is currently inactive!" : "هذا الكود غير فعال حالياً!";
+                        if (promo.status !== 'active') throw currentLang === 'en' ? "Expired code" : "كود منتهي";
 
                         if ((promo.usedCount || 0) >= (promo.maxUses || 0)) {
-                            throw currentLang === 'en' ? "Promo code usage limit reached!" : "عذراً، نفذت المقاعد المتاحة لهذا الكود وانتهت صلاحيته!";
+                            throw currentLang === 'en' ? "Expired code" : "كود منتهي";
                         }
 
                         const claimed = userDoc.data().claimedPromos || [];
-                        if (claimed.includes(code)) throw currentLang === 'en' ? "You have already claimed this promo code!" : "لقد قمت بتفعيل هذا الكود سابقاً!";
+                        if (claimed.includes(code)) throw currentLang === 'en' ? "Code already used" : "تم استخدام الكود سابقاً";
 
                         const newUsedCount = (promo.usedCount || 0) + 1;
 
@@ -1441,9 +1442,12 @@
                         });
                     });
 
-                    document.getElementById('promo-input').value = '';
-                    showAlert(currentLang === 'en' ? "Promo code activated successfully! Reward added to balance. 🎁" : "تم تفعيل الكود بنجاح وإضافة الأرباح لحسابك! 🎁");
+                    // تفريغ الحقل عند النجاح
+                    inputEl.value = '';
+                    showAlert(currentLang === 'en' ? "Code claimed successfully! 🎁" : "تم تفعيل الكود بنجاح! 🎁");
                 } catch (err) {
+                    // تفريغ الحقل تلقائياً عند الخطأ (حسب طلبك لكي لا يضطر المستخدم لحذفه يدوياً)
+                    inputEl.value = '';
                     showAlert(err);
                 }
             }
@@ -1451,7 +1455,8 @@
 
         // Support Engine
         async function submitSupportTicket() {
-            const msg = sanitizeInput(document.getElementById('support-msg').value);
+            const msgEl = document.getElementById('support-msg');
+            const msg = sanitizeInput(msgEl.value);
             if (!msg) return showAlert(currentLang === 'en' ? "Please write details first!" : "اكتب تفاصيل الشكوى أولاً!");
 
             debounceButton('btn-submit-support', 4000);
@@ -1468,7 +1473,8 @@
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     });
 
-                    document.getElementById('support-msg').value = '';
+                    // تفريغ الحقل
+                    msgEl.value = '';
                     showAlert(currentLang === 'en' ? "Support message sent successfully!" : "تم إرسال الرسالة إلى الدعم الفني بنجاح وسيتم الرد قريباً!");
                 } catch (e) {
                     showAlert(currentLang === 'en' ? "Failed to send message." : "تعذر إرسال الرسالة.");
@@ -1476,6 +1482,7 @@
             }
         }
 
+        // التعديل الثاني والثالث: ربط واقعي حقيقي مع قاعدة البيانات ومسح النص السابق عند كتابة استفسار جديد
         function loadLatestSupportTicket() {
             if (!db) return;
             db.collection('admin_support')
@@ -1489,6 +1496,7 @@
                     if (!snapshot.empty) {
                         const data = snapshot.docs[0].data();
 
+                        // إخفاء الرد القديم تلقائياً بعد مرور فترة زمنية ليتيح للمستخدم تقديم شكوى جديدة دون ازدحام
                         if (data.replyTimestamp) {
                             const replyTime = data.replyTimestamp.toDate ? data.replyTimestamp.toDate().getTime() : data.replyTimestamp;
                             const hoursPassed = (Date.now() - replyTime) / (1000 * 60 * 60);
